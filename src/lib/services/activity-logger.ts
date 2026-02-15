@@ -1,18 +1,15 @@
-import { ActivityLog } from '@/lib/db/models';
-import type { EventType } from '@/types';
+import { prisma } from '@/lib/db/prisma';
+import type { LogActivityParams } from '@/types';
 
-export async function logActivity(params: {
-  user_id: string;
-  event_type: EventType;
-  detail: string;
-  ip_address?: string;
-}): Promise<void> {
+export async function logActivity(params: LogActivityParams): Promise<void> {
   try {
-    await ActivityLog.create({
-      user_id: params.user_id,
-      event_type: params.event_type,
-      detail: params.detail,
-      ip_address: params.ip_address ?? '',
+    await prisma.activityLog.create({
+      data: {
+        userId: params.user_id,
+        eventType: params.event_type,
+        detail: params.detail,
+        ipAddress: params.ip_address ?? '',
+      },
     });
   } catch (error) {
     console.error('Error logging activity:', error);

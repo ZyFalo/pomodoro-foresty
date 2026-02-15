@@ -1,34 +1,49 @@
 import { NextRequest } from 'next/server';
 import { withAdmin } from '@/lib/auth/middleware';
-import { connectDB } from '@/lib/db/connection';
-import { User } from '@/lib/db/models';
+import { prisma } from '@/lib/db/prisma';
+import { Prisma } from '@/generated/prisma/client';
 
 export const GET = withAdmin(async (req: NextRequest) => {
-  await connectDB();
-
   const { searchParams } = new URL(req.url);
   const page = Math.max(1, parseInt(searchParams.get('page') || '1'));
   const limit = Math.min(50, parseInt(searchParams.get('limit') || '20'));
   const search = searchParams.get('search');
   const role = searchParams.get('role');
 
-  const filter: Record<string, unknown> = {};
+  const where: Prisma.UserWhereInput = {};
+
   if (search) {
-    filter.$or = [
-      { username: { $regex: search, $options: 'i' } },
-      { email: { $regex: search, $options: 'i' } },
+    where.OR = [
+      { username: { contains: search, mode: 'insensitive' } },
+      { email: { contains: search, mode: 'insensitive' } },
     ];
   }
-  if (role) filter.role = role;
+
+  if (role === 'user' || role === 'admin') {
+    where.role = role;
+  }
 
   const [users, total] = await Promise.all([
-    User.find(filter)
-      .select('-password_hash -verification_code -reset_code')
-      .sort({ created_at: -1 })
-      .skip((page - 1) * limit)
-      .limit(limit)
-      .lean(),
-    User.countDocuments(filter),
+    prisma.user.findMany({
+      where,
+      select: {
+        id: true,
+        username: true,
+        email: true,
+        emailVerified: true,
+        role: true,
+        pomodorosCompleted: true,
+        totalFocusMinutes: true,
+        totalTrees: true,
+        isActive: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+      orderBy: { createdAt: 'desc' },
+      skip: (page - 1) * limit,
+      take: limit,
+    }),
+    prisma.user.count({ where }),
   ]);
 
   return Response.json({

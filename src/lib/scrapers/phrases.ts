@@ -1,6 +1,5 @@
 import * as cheerio from 'cheerio';
-import { connectDB } from '@/lib/db/connection';
-import { PhraseCache } from '@/lib/db/models';
+import { prisma } from '@/lib/db/prisma';
 import {
   DEFAULT_PHRASE,
   PHRASE_BUFFER_SIZE,
@@ -72,35 +71,32 @@ async function scrapePhrases(): Promise<string[]> {
 }
 
 async function getCachedPhrases(): Promise<string[]> {
-  await connectDB();
-
-  // Try to get cached phrases
-  const cached = await PhraseCache.findOne().sort({ fetched_at: -1 });
+  const cached = await prisma.phraseCache.findFirst({
+    orderBy: { fetchedAt: 'desc' },
+  });
 
   if (cached && cached.phrases.length > 0) {
-    // If cache is from today, use it
-    if (isToday(cached.fetched_at)) {
+    if (isToday(cached.fetchedAt)) {
       return cached.phrases;
     }
 
-    // Try to scrape fresh ones
     const fresh = await scrapePhrases();
     if (fresh.length > 0) {
-      // Update cache
-      cached.phrases = fresh;
-      cached.fetched_at = new Date();
-      await cached.save();
+      await prisma.phraseCache.update({
+        where: { id: cached.id },
+        data: { phrases: fresh, fetchedAt: new Date() },
+      });
       return fresh;
     }
 
-    // If scraping failed, use stale cache
     return cached.phrases;
   }
 
-  // No cache at all, scrape
   const fresh = await scrapePhrases();
   if (fresh.length > 0) {
-    await PhraseCache.create({ phrases: fresh, fetched_at: new Date() });
+    await prisma.phraseCache.create({
+      data: { phrases: fresh },
+    });
     return fresh;
   }
 
@@ -111,22 +107,17 @@ export async function getRandomPhrase(): Promise<string> {
   try {
     const phrases = await getCachedPhrases();
 
-    // Filter out recent phrases
     let available = phrases.filter((p) => !recentPhrases.includes(p));
 
-    // If all phrases are in buffer, remove oldest
     if (available.length === 0) {
       if (recentPhrases.length > 0) recentPhrases.shift();
       available = phrases.filter((p) => !recentPhrases.includes(p));
     }
 
-    // Still empty? Return default
     if (available.length === 0) return DEFAULT_PHRASE;
 
-    // Pick random
     const phrase = available[Math.floor(Math.random() * available.length)];
 
-    // Add to buffer
     recentPhrases.push(phrase);
     if (recentPhrases.length > PHRASE_BUFFER_SIZE) {
       recentPhrases.shift();

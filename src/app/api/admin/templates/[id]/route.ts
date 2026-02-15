@@ -1,7 +1,6 @@
 import { NextRequest } from 'next/server';
 import { withAdmin } from '@/lib/auth/middleware';
-import { connectDB } from '@/lib/db/connection';
-import { Template } from '@/lib/db/models';
+import { prisma } from '@/lib/db/prisma';
 
 function getIdFromUrl(url: string): string {
   return url.split('/templates/')[1]?.split('?')[0]?.split('/')[0] ?? '';
@@ -9,9 +8,8 @@ function getIdFromUrl(url: string): string {
 
 // GET /api/admin/templates/:id
 export const GET = withAdmin(async (req: NextRequest) => {
-  await connectDB();
   const id = getIdFromUrl(req.url);
-  const template = await Template.findById(id);
+  const template = await prisma.template.findUnique({ where: { id } });
   if (!template) {
     return Response.json({ error: 'Plantilla no encontrada' }, { status: 404 });
   }
@@ -21,7 +19,6 @@ export const GET = withAdmin(async (req: NextRequest) => {
 // PUT /api/admin/templates/:id
 export const PUT = withAdmin(async (req: NextRequest) => {
   try {
-    await connectDB();
     const id = getIdFromUrl(req.url);
     const body = await req.json();
     const { name, category, description, image_url, probability, is_active } = body;
@@ -30,32 +27,47 @@ export const PUT = withAdmin(async (req: NextRequest) => {
     if (name !== undefined) update.name = name;
     if (category !== undefined) update.category = category;
     if (description !== undefined) update.description = description;
-    if (image_url !== undefined) update.image_url = image_url;
+    if (image_url !== undefined) update.imageUrl = image_url;
     if (probability !== undefined) {
       if (probability < 1 || probability > 25) {
         return Response.json({ error: 'La probabilidad debe estar entre 1 y 25' }, { status: 400 });
       }
       update.probability = probability;
     }
-    if (is_active !== undefined) update.is_active = is_active;
+    if (is_active !== undefined) update.isActive = is_active;
 
-    const template = await Template.findByIdAndUpdate(id, update, { new: true });
-    if (!template) {
+    const template = await prisma.template.update({
+      where: { id },
+      data: update,
+    });
+
+    return Response.json(template);
+  } catch (error) {
+    // Check if it's a "not found" error from Prisma
+    if ((error as { code?: string }).code === 'P2025') {
       return Response.json({ error: 'Plantilla no encontrada' }, { status: 404 });
     }
-    return Response.json(template);
-  } catch {
     return Response.json({ error: 'Error interno del servidor' }, { status: 500 });
   }
 });
 
 // DELETE /api/admin/templates/:id
 export const DELETE = withAdmin(async (req: NextRequest) => {
-  await connectDB();
   const id = getIdFromUrl(req.url);
-  const template = await Template.findByIdAndDelete(id);
-  if (!template) {
-    return Response.json({ error: 'Plantilla no encontrada' }, { status: 404 });
+  try {
+    await prisma.template.delete({ where: { id } });
+    return Response.json({ message: 'Plantilla eliminada' });
+  } catch (error) {
+    if ((error as { code?: string }).code === 'P2025') {
+      return Response.json({ error: 'Plantilla no encontrada' }, { status: 404 });
+    }
+    // P2003 = foreign key constraint (template has user_trees)
+    if ((error as { code?: string }).code === 'P2003') {
+      return Response.json(
+        { error: 'No se puede eliminar: esta plantilla ya fue ganada por usuarios' },
+        { status: 409 }
+      );
+    }
+    return Response.json({ error: 'Error interno del servidor' }, { status: 500 });
   }
-  return Response.json({ message: 'Plantilla eliminada' });
 });

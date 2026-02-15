@@ -1,23 +1,20 @@
 import { NextRequest } from 'next/server';
 import { withAdmin } from '@/lib/auth/middleware';
-import { connectDB } from '@/lib/db/connection';
-import { Template } from '@/lib/db/models';
+import { prisma } from '@/lib/db/prisma';
 
 // GET /api/admin/templates
 export const GET = withAdmin(async (req: NextRequest) => {
-  await connectDB();
-
   const { searchParams } = new URL(req.url);
   const page = Math.max(1, parseInt(searchParams.get('page') || '1'));
   const limit = Math.min(50, parseInt(searchParams.get('limit') || '20'));
 
   const [templates, total] = await Promise.all([
-    Template.find()
-      .sort({ created_at: -1 })
-      .skip((page - 1) * limit)
-      .limit(limit)
-      .lean(),
-    Template.countDocuments(),
+    prisma.template.findMany({
+      orderBy: { createdAt: 'desc' },
+      skip: (page - 1) * limit,
+      take: limit,
+    }),
+    prisma.template.count(),
   ]);
 
   return Response.json({
@@ -40,14 +37,15 @@ export const POST = withAdmin(async (req: NextRequest, user) => {
       return Response.json({ error: 'La probabilidad debe estar entre 1 y 25' }, { status: 400 });
     }
 
-    await connectDB();
-    const template = await Template.create({
-      name,
-      category,
-      description,
-      image_url,
-      probability,
-      created_by: user._id,
+    const template = await prisma.template.create({
+      data: {
+        name,
+        category,
+        description,
+        imageUrl: image_url,
+        probability,
+        createdById: user.id,
+      },
     });
 
     return Response.json(template, { status: 201 });

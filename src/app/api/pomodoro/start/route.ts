@@ -1,7 +1,6 @@
 import { NextRequest } from 'next/server';
 import { withAuth } from '@/lib/auth/middleware';
-import { connectDB } from '@/lib/db/connection';
-import { PomodoroSession } from '@/lib/db/models';
+import { prisma } from '@/lib/db/prisma';
 import { getRandomPhrase } from '@/lib/scrapers/phrases';
 import { getForestAudioUrl } from '@/lib/scrapers/audio';
 import { POMODORO_DURATIONS } from '@/lib/utils/constants';
@@ -9,29 +8,28 @@ import { POMODORO_DURATIONS } from '@/lib/utils/constants';
 export const POST = withAuth(async (req: NextRequest, user) => {
   try {
     const body = await req.json().catch(() => ({}));
-    const requestedDuration = body.duration ?? user.settings.pomodoro_duration;
+    const requestedDuration = body.duration ?? user.pomodoroDuration;
 
     if (!POMODORO_DURATIONS.includes(requestedDuration)) {
       return Response.json({ error: 'Duración no válida' }, { status: 400 });
     }
 
-    if (!user.email_verified) {
+    if (!user.emailVerified) {
       return Response.json({ error: 'Debes verificar tu email primero' }, { status: 403 });
     }
 
-    await connectDB();
-
     // Abandon any active sessions
-    await PomodoroSession.updateMany(
-      { user_id: user._id, status: 'active' },
-      { status: 'abandoned' }
-    );
+    await prisma.pomodoroSession.updateMany({
+      where: { userId: user.id, status: 'active' },
+      data: { status: 'abandoned' },
+    });
 
     // Create new session
-    const session = await PomodoroSession.create({
-      user_id: user._id,
-      duration: requestedDuration,
-      started_at: new Date(),
+    const session = await prisma.pomodoroSession.create({
+      data: {
+        userId: user.id,
+        duration: requestedDuration,
+      },
     });
 
     // Fetch phrase and audio in parallel
@@ -41,7 +39,7 @@ export const POST = withAuth(async (req: NextRequest, user) => {
     ]);
 
     return Response.json({
-      session_id: session._id.toString(),
+      session_id: session.id,
       duration: requestedDuration,
       phrase,
       audio_url,

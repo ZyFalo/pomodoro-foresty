@@ -1,11 +1,8 @@
 import { withAdmin } from '@/lib/auth/middleware';
-import { connectDB } from '@/lib/db/connection';
-import { User, Template, UserTree, PomodoroSession, ActivityLog } from '@/lib/db/models';
+import { prisma } from '@/lib/db/prisma';
 import { RARITY_RANGES } from '@/lib/utils/constants';
 
 export const GET = withAdmin(async () => {
-  await connectDB();
-
   const [
     totalUsers,
     activeUsers,
@@ -14,46 +11,34 @@ export const GET = withAdmin(async () => {
     totalSessions,
     recentActivity,
   ] = await Promise.all([
-    User.countDocuments(),
-    User.countDocuments({ is_active: true }),
-    Template.countDocuments(),
-    UserTree.countDocuments(),
-    PomodoroSession.countDocuments({ status: 'completed' }),
-    ActivityLog.find()
-      .sort({ created_at: -1 })
-      .limit(10)
-      .populate('user_id', 'username')
-      .lean(),
+    prisma.user.count(),
+    prisma.user.count({ where: { isActive: true } }),
+    prisma.template.count(),
+    prisma.userTree.count(),
+    prisma.pomodoroSession.count({ where: { status: 'completed' } }),
+    prisma.activityLog.findMany({
+      orderBy: { createdAt: 'desc' },
+      take: 10,
+      include: {
+        user: { select: { username: true } },
+      },
+    }),
   ]);
 
   // Trees by rarity
-  const rarityAgg = await UserTree.aggregate([
-    {
-      $lookup: {
-        from: 'templates',
-        localField: 'template_id',
-        foreignField: '_id',
-        as: 'template',
-      },
-    },
-    { $unwind: '$template' },
-    {
-      $group: {
-        _id: '$template.probability',
-        count: { $sum: 1 },
-      },
-    },
-  ]);
+  const treesWithProb = await prisma.userTree.findMany({
+    select: { template: { select: { probability: true } } },
+  });
 
   const byRarity: Record<string, number> = {};
   for (const range of RARITY_RANGES) {
     byRarity[range.name] = 0;
   }
-  for (const item of rarityAgg) {
-    const prob = item._id as number;
+  for (const item of treesWithProb) {
+    const prob = item.template.probability;
     for (const range of RARITY_RANGES) {
       if (prob >= range.min && prob <= range.max) {
-        byRarity[range.name] += item.count;
+        byRarity[range.name] += 1;
         break;
       }
     }

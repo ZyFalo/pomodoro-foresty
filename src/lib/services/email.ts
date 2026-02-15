@@ -1,11 +1,18 @@
 import { Resend } from 'resend';
 
+const isEmailConfigured = !!process.env.RESEND_API_KEY;
+
 function getResend() {
   return new Resend(process.env.RESEND_API_KEY);
 }
 const emailFrom = process.env.EMAIL_FROM ?? 'Pomodoro Forest <noreply@pomodoroforest.com>';
 
 export async function sendVerificationEmail(email: string, code: string): Promise<boolean> {
+  if (!isEmailConfigured) {
+    console.log(`[DEV] Código de verificación para ${email}: ${code}`);
+    return true;
+  }
+
   try {
     await getResend().emails.send({
       from: emailFrom,
@@ -39,6 +46,11 @@ export async function sendVerificationEmail(email: string, code: string): Promis
 }
 
 export async function sendResetPasswordEmail(email: string, code: string): Promise<boolean> {
+  if (!isEmailConfigured) {
+    console.log(`[DEV] Código de reset para ${email}: ${code}`);
+    return true;
+  }
+
   try {
     await getResend().emails.send({
       from: emailFrom,

@@ -1,7 +1,6 @@
 import { NextRequest } from 'next/server';
 import { withAuth, getClientIP } from '@/lib/auth/middleware';
-import { connectDB } from '@/lib/db/connection';
-import { User } from '@/lib/db/models';
+import { prisma } from '@/lib/db/prisma';
 import { verifyPassword, hashPassword } from '@/lib/auth/password';
 import { changePasswordSchema } from '@/lib/utils/validation';
 import { logActivity } from '@/lib/services/activity-logger';
@@ -22,20 +21,22 @@ export const PUT = withAuth(async (req: NextRequest, user) => {
     const { current_password, new_password } = result.data;
 
     // Verify current password
-    const isValid = await verifyPassword(current_password, user.password_hash);
+    const isValid = await verifyPassword(current_password, user.passwordHash);
     if (!isValid) {
       return Response.json({ error: 'Contraseña actual incorrecta' }, { status: 400 });
     }
 
-    // Hash new password
-    await connectDB();
-    const password_hash = await hashPassword(new_password);
-    await User.findByIdAndUpdate(user._id, { password_hash });
+    // Hash new password and update
+    const passwordHash = await hashPassword(new_password);
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { passwordHash },
+    });
 
     // Log activity
     const ip = getClientIP(req);
     await logActivity({
-      user_id: user._id.toString(),
+      user_id: user.id,
       event_type: 'contrasena_cambiada',
       detail: 'Contraseña actualizada desde ajustes',
       ip_address: ip,

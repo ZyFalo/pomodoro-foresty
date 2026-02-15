@@ -1,13 +1,10 @@
 import { NextRequest } from 'next/server';
-import { PipelineStage } from 'mongoose';
 import { withAuth } from '@/lib/auth/middleware';
-import { connectDB } from '@/lib/db/connection';
-import { UserTree } from '@/lib/db/models';
+import { prisma } from '@/lib/db/prisma';
 import { getRarityFromProbability } from '@/lib/utils/rarity';
+import { Prisma } from '@/generated/prisma/client';
 
 export const GET = withAuth(async (req: NextRequest, user) => {
-  await connectDB();
-
   const { searchParams } = new URL(req.url);
   const page = Math.max(1, parseInt(searchParams.get('page') || '1'));
   const limit = Math.min(50, Math.max(1, parseInt(searchParams.get('limit') || '12')));
@@ -15,40 +12,14 @@ export const GET = withAuth(async (req: NextRequest, user) => {
   const favorite = searchParams.get('favorite');
   const search = searchParams.get('search');
 
-  // Base filter
-  const filter: Record<string, unknown> = { user_id: user._id };
+  // Build where clause
+  const where: Prisma.UserTreeWhereInput = { userId: user.id };
 
   if (favorite === 'true') {
-    filter.is_favorite = true;
+    where.isFavorite = true;
   }
 
-  // Build aggregation to filter by rarity (calculated from template.probability)
-  const pipeline: PipelineStage[] = [
-    { $match: filter },
-    {
-      $lookup: {
-        from: 'templates',
-        localField: 'template_id',
-        foreignField: '_id',
-        as: 'template',
-      },
-    },
-    { $unwind: '$template' },
-  ];
-
-  // Filter by search (template name or custom name)
-  if (search) {
-    pipeline.push({
-      $match: {
-        $or: [
-          { 'template.name': { $regex: search, $options: 'i' } },
-          { custom_name: { $regex: search, $options: 'i' } },
-        ],
-      },
-    });
-  }
-
-  // Filter by rarity
+  // Filter by rarity (via template probability range)
   if (rarity) {
     const rarityRanges: Record<string, { min: number; max: number }> = {
       'Legendario': { min: 1, max: 2 },
@@ -59,32 +30,34 @@ export const GET = withAuth(async (req: NextRequest, user) => {
     };
     const range = rarityRanges[rarity];
     if (range) {
-      pipeline.push({
-        $match: {
-          'template.probability': { $gte: range.min, $lte: range.max },
-        },
-      });
+      where.template = {
+        probability: { gte: range.min, lte: range.max },
+      };
     }
   }
 
-  // Count total before pagination
-  const countPipeline = [...pipeline, { $count: 'total' }];
-  const countResult = await UserTree.aggregate(countPipeline);
-  const total = countResult[0]?.total || 0;
+  // Filter by search (template name or custom name)
+  if (search) {
+    where.OR = [
+      { template: { name: { contains: search, mode: 'insensitive' } } },
+      { customName: { contains: search, mode: 'insensitive' } },
+    ];
+  }
 
-  // Sort and paginate
-  pipeline.push(
-    { $sort: { earned_at: -1 } },
-    { $skip: (page - 1) * limit },
-    { $limit: limit },
-  );
+  const [trees, total] = await Promise.all([
+    prisma.userTree.findMany({
+      where,
+      include: { template: true },
+      orderBy: { earnedAt: 'desc' },
+      skip: (page - 1) * limit,
+      take: limit,
+    }),
+    prisma.userTree.count({ where }),
+  ]);
 
-  const trees = await UserTree.aggregate(pipeline);
-
-  // Add computed rarity field
-  const treesWithRarity = trees.map((tree: Record<string, unknown>) => ({
+  const treesWithRarity = trees.map((tree) => ({
     ...tree,
-    rarity: getRarityFromProbability((tree.template as Record<string, unknown>).probability as number).name,
+    rarity: getRarityFromProbability(tree.template.probability).name,
   }));
 
   return Response.json({

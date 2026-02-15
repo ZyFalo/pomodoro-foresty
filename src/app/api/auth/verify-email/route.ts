@@ -1,6 +1,5 @@
 import { NextRequest } from 'next/server';
-import { connectDB } from '@/lib/db/connection';
-import { User } from '@/lib/db/models';
+import { prisma } from '@/lib/db/prisma';
 import { verifyEmailSchema } from '@/lib/utils/validation';
 
 export async function POST(req: NextRequest) {
@@ -15,34 +14,42 @@ export async function POST(req: NextRequest) {
 
     const { email, code } = parsed.data;
 
-    await connectDB();
-
-    const user = await User.findOne({ email: email.toLowerCase() });
+    const user = await prisma.user.findUnique({
+      where: { email: email.toLowerCase() },
+    });
 
     if (!user) {
       return Response.json({ error: 'Usuario no encontrado' }, { status: 404 });
     }
 
-    if (user.email_verified) {
+    if (user.emailVerified) {
       return Response.json({ message: 'El email ya está verificado' });
     }
 
-    if (!user.verification_code || !user.verification_expires) {
-      return Response.json({ error: 'No hay código de verificación pendiente' }, { status: 400 });
+    const devMode = !process.env.RESEND_API_KEY;
+
+    if (!devMode) {
+      if (!user.verificationCode || !user.verificationExpires) {
+        return Response.json({ error: 'No hay código de verificación pendiente' }, { status: 400 });
+      }
+
+      if (new Date() > user.verificationExpires) {
+        return Response.json({ error: 'El código ha expirado. Solicita uno nuevo.' }, { status: 410 });
+      }
+
+      if (user.verificationCode !== code) {
+        return Response.json({ error: 'Código incorrecto' }, { status: 400 });
+      }
     }
 
-    if (new Date() > user.verification_expires) {
-      return Response.json({ error: 'El código ha expirado. Solicita uno nuevo.' }, { status: 410 });
-    }
-
-    if (user.verification_code !== code) {
-      return Response.json({ error: 'Código incorrecto' }, { status: 400 });
-    }
-
-    user.email_verified = true;
-    user.verification_code = undefined;
-    user.verification_expires = undefined;
-    await user.save();
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        emailVerified: true,
+        verificationCode: null,
+        verificationExpires: null,
+      },
+    });
 
     return Response.json({ message: 'Email verificado correctamente' });
   } catch (error) {

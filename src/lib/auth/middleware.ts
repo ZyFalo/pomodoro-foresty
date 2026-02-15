@@ -1,9 +1,9 @@
 import { NextRequest } from 'next/server';
 import { verifyToken } from './jwt';
-import { connectDB } from '@/lib/db/connection';
-import { User, type IUserDocument } from '@/lib/db/models';
+import { prisma } from '@/lib/db/prisma';
+import type { User } from '@/generated/prisma/client';
 
-type AuthHandler = (req: NextRequest, user: IUserDocument) => Promise<Response>;
+type AuthHandler = (req: NextRequest, user: User) => Promise<Response>;
 
 export function withAuth(handler: AuthHandler) {
   return async (req: NextRequest) => {
@@ -16,14 +16,15 @@ export function withAuth(handler: AuthHandler) {
 
     try {
       const payload = await verifyToken(token);
-      await connectDB();
-      const user = await User.findById(payload.userId);
+      const user = await prisma.user.findUnique({
+        where: { id: payload.userId },
+      });
 
       if (!user) {
         return Response.json({ error: 'Usuario no encontrado' }, { status: 401 });
       }
 
-      if (!user.is_active) {
+      if (!user.isActive) {
         return Response.json({ error: 'Cuenta desactivada' }, { status: 403 });
       }
 

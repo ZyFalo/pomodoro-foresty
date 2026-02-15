@@ -1,7 +1,6 @@
 import { NextRequest } from 'next/server';
 import { withAuth } from '@/lib/auth/middleware';
-import { connectDB } from '@/lib/db/connection';
-import { UserTree } from '@/lib/db/models';
+import { prisma } from '@/lib/db/prisma';
 import { getRarityFromProbability } from '@/lib/utils/rarity';
 
 function getTreeIdFromUrl(url: string): string {
@@ -10,25 +9,25 @@ function getTreeIdFromUrl(url: string): string {
 
 // GET /api/trees/:id
 export const GET = withAuth(async (req: NextRequest, user) => {
-  await connectDB();
   const id = getTreeIdFromUrl(req.url);
 
-  const tree = await UserTree.findOne({ _id: id, user_id: user._id }).populate('template_id');
+  const tree = await prisma.userTree.findFirst({
+    where: { id, userId: user.id },
+    include: { template: true },
+  });
+
   if (!tree) {
     return Response.json({ error: 'Árbol no encontrado' }, { status: 404 });
   }
 
-  const treeObj = tree.toObject();
   return Response.json({
-    ...treeObj,
-    template: treeObj.template_id,
-    rarity: getRarityFromProbability(treeObj.template_id.probability).name,
+    ...tree,
+    rarity: getRarityFromProbability(tree.template.probability).name,
   });
 });
 
 // PUT /api/trees/:id — Rename
 export const PUT = withAuth(async (req: NextRequest, user) => {
-  await connectDB();
   const id = getTreeIdFromUrl(req.url);
   const body = await req.json();
   const { custom_name } = body;
@@ -41,32 +40,41 @@ export const PUT = withAuth(async (req: NextRequest, user) => {
     return Response.json({ error: 'Nombre demasiado largo (máx. 50 caracteres)' }, { status: 400 });
   }
 
-  const tree = await UserTree.findOneAndUpdate(
-    { _id: id, user_id: user._id },
-    { custom_name: custom_name.trim() },
-    { new: true }
-  ).populate('template_id');
+  const existing = await prisma.userTree.findFirst({
+    where: { id, userId: user.id },
+  });
 
-  if (!tree) {
+  if (!existing) {
     return Response.json({ error: 'Árbol no encontrado' }, { status: 404 });
   }
+
+  const tree = await prisma.userTree.update({
+    where: { id },
+    data: { customName: custom_name.trim() },
+    include: { template: true },
+  });
 
   return Response.json(tree);
 });
 
 // DELETE /api/trees/:id
 export const DELETE = withAuth(async (req: NextRequest, user) => {
-  await connectDB();
   const id = getTreeIdFromUrl(req.url);
 
-  const tree = await UserTree.findOneAndDelete({ _id: id, user_id: user._id });
-  if (!tree) {
+  const existing = await prisma.userTree.findFirst({
+    where: { id, userId: user.id },
+  });
+
+  if (!existing) {
     return Response.json({ error: 'Árbol no encontrado' }, { status: 404 });
   }
 
-  // Decrement user tree count
-  const { User } = await import('@/lib/db/models');
-  await User.findByIdAndUpdate(user._id, { $inc: { total_trees: -1 } });
+  await prisma.userTree.delete({ where: { id } });
+
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { totalTrees: { decrement: 1 } },
+  });
 
   return Response.json({ message: 'Árbol eliminado' });
 });

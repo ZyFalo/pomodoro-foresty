@@ -1,6 +1,5 @@
 import { NextRequest } from 'next/server';
-import { connectDB } from '@/lib/db/connection';
-import { User } from '@/lib/db/models';
+import { prisma } from '@/lib/db/prisma';
 import { forgotPasswordSchema } from '@/lib/utils/validation';
 import { sendResetPasswordEmail, generateVerificationCode } from '@/lib/services/email';
 import { RESET_CODE_EXPIRY_MINUTES } from '@/lib/utils/constants';
@@ -17,23 +16,24 @@ export async function POST(req: NextRequest) {
 
     const { email } = parsed.data;
 
-    await connectDB();
-
-    const user = await User.findOne({ email: email.toLowerCase() });
+    const user = await prisma.user.findUnique({
+      where: { email: email.toLowerCase() },
+    });
 
     // Always return success to prevent email enumeration
-    if (!user || !user.email_verified) {
+    if (!user || !user.emailVerified) {
       return Response.json({ message: 'Si el email está registrado, recibirás un código de recuperación.' });
     }
 
-    const reset_code = generateVerificationCode();
-    const reset_expires = new Date(Date.now() + RESET_CODE_EXPIRY_MINUTES * 60 * 1000);
+    const resetCode = generateVerificationCode();
+    const resetExpires = new Date(Date.now() + RESET_CODE_EXPIRY_MINUTES * 60 * 1000);
 
-    user.reset_code = reset_code;
-    user.reset_expires = reset_expires;
-    await user.save();
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { resetCode, resetExpires },
+    });
 
-    await sendResetPasswordEmail(email, reset_code);
+    await sendResetPasswordEmail(email, resetCode);
 
     return Response.json({ message: 'Si el email está registrado, recibirás un código de recuperación.' });
   } catch (error) {

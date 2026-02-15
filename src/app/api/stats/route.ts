@@ -1,56 +1,46 @@
 import { withAuth } from '@/lib/auth/middleware';
-import { connectDB } from '@/lib/db/connection';
-import { UserTree, Template } from '@/lib/db/models';
+import { prisma } from '@/lib/db/prisma';
 import { RARITY_RANGES } from '@/lib/utils/constants';
 import { getRarityFromProbability } from '@/lib/utils/rarity';
 
 export const GET = withAuth(async (_req, user) => {
-  await connectDB();
-
-  // Get total templates for collection progress
-  const totalTemplates = await Template.countDocuments({ is_active: true });
+  // Get total active templates for collection progress
+  const totalTemplates = await prisma.template.count({
+    where: { isActive: true },
+  });
 
   // Get unique templates the user has
-  const uniqueTemplates = await UserTree.distinct('template_id', { user_id: user._id });
+  const uniqueResult = await prisma.userTree.findMany({
+    where: { userId: user.id },
+    select: { templateId: true },
+    distinct: ['templateId'],
+  });
+  const uniqueCount = uniqueResult.length;
 
-  // Get trees by rarity using aggregation
-  const rarityAgg = await UserTree.aggregate([
-    { $match: { user_id: user._id } },
-    {
-      $lookup: {
-        from: 'templates',
-        localField: 'template_id',
-        foreignField: '_id',
-        as: 'template',
-      },
-    },
-    { $unwind: '$template' },
-    {
-      $group: {
-        _id: '$template.probability',
-        count: { $sum: 1 },
-      },
-    },
-  ]);
+  // Get trees grouped by template probability for rarity stats
+  const treesWithProb = await prisma.userTree.findMany({
+    where: { userId: user.id },
+    select: { template: { select: { probability: true } } },
+  });
 
   // Group by rarity name
   const byRarity: Record<string, number> = {};
   for (const range of RARITY_RANGES) {
     byRarity[range.name] = 0;
   }
-  for (const item of rarityAgg) {
-    const { name } = getRarityFromProbability(item._id);
-    byRarity[name] = (byRarity[name] || 0) + item.count;
+  for (const item of treesWithProb) {
+    const { name } = getRarityFromProbability(item.template.probability);
+    byRarity[name] = (byRarity[name] || 0) + 1;
   }
 
   return Response.json({
-    pomodoros_completed: user.pomodoros_completed,
-    total_focus_minutes: user.total_focus_minutes,
-    total_trees: user.total_trees,
+    pomodoros_completed: user.pomodorosCompleted,
+    total_focus_minutes: user.totalFocusMinutes,
+    total_trees: user.totalTrees,
     collection: {
-      unique: uniqueTemplates.length,
+      unique: uniqueCount,
       total: totalTemplates,
-      progress: totalTemplates > 0 ? Math.round((uniqueTemplates.length / totalTemplates) * 100) : 0,
+      progress: totalTemplates > 0 ? Math.round((uniqueCount / totalTemplates) * 100) : 0,
     },
     by_rarity: byRarity,
   });

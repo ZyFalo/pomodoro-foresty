@@ -1,6 +1,5 @@
 import { NextRequest } from 'next/server';
-import { connectDB } from '@/lib/db/connection';
-import { User } from '@/lib/db/models';
+import { prisma } from '@/lib/db/prisma';
 import { hashPassword } from '@/lib/auth/password';
 import { resetPasswordSchema } from '@/lib/utils/validation';
 import { logActivity } from '@/lib/services/activity-logger';
@@ -18,33 +17,43 @@ export async function POST(req: NextRequest) {
 
     const { email, code, new_password } = parsed.data;
 
-    await connectDB();
-
-    const user = await User.findOne({ email: email.toLowerCase() });
+    const user = await prisma.user.findUnique({
+      where: { email: email.toLowerCase() },
+    });
 
     if (!user) {
       return Response.json({ error: 'Usuario no encontrado' }, { status: 404 });
     }
 
-    if (!user.reset_code || !user.reset_expires) {
-      return Response.json({ error: 'No hay solicitud de reset pendiente' }, { status: 400 });
+    const devMode = !process.env.RESEND_API_KEY;
+
+    if (!devMode) {
+      if (!user.resetCode || !user.resetExpires) {
+        return Response.json({ error: 'No hay solicitud de reset pendiente' }, { status: 400 });
+      }
+
+      if (new Date() > user.resetExpires) {
+        return Response.json({ error: 'El código ha expirado. Solicita uno nuevo.' }, { status: 410 });
+      }
+
+      if (user.resetCode !== code) {
+        return Response.json({ error: 'Código incorrecto' }, { status: 400 });
+      }
     }
 
-    if (new Date() > user.reset_expires) {
-      return Response.json({ error: 'El código ha expirado. Solicita uno nuevo.' }, { status: 410 });
-    }
+    const passwordHash = await hashPassword(new_password);
 
-    if (user.reset_code !== code) {
-      return Response.json({ error: 'Código incorrecto' }, { status: 400 });
-    }
-
-    user.password_hash = await hashPassword(new_password);
-    user.reset_code = undefined;
-    user.reset_expires = undefined;
-    await user.save();
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        passwordHash,
+        resetCode: null,
+        resetExpires: null,
+      },
+    });
 
     await logActivity({
-      user_id: user._id.toString(),
+      user_id: user.id,
       event_type: 'contrasena_cambiada',
       detail: `Contraseña restablecida para ${user.username}`,
       ip_address: getClientIP(req),

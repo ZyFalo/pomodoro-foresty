@@ -1,0 +1,165 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── ENUMs ───────────────────────────────────────────────
+
+enum UserRole {
+  user
+  admin
+}
+
+enum SessionStatus {
+  active
+  completed
+  abandoned
+}
+
+enum EventType {
+  login
+  registro
+  pomodoro_completado
+  arbol_ganado
+  template_creado
+  template_editado
+  template_eliminado
+  usuario_desactivado
+  contrasena_cambiada
+}
+
+// ─── MODELS ──────────────────────────────────────────────
+
+model User {
+  id                  String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  username            String   @unique @db.VarChar(30)
+  email               String   @unique @db.VarChar(255)
+  passwordHash        String   @map("password_hash") @db.VarChar(255)
+  emailVerified       Boolean  @default(false) @map("email_verified")
+  verificationCode    String?  @map("verification_code") @db.VarChar(6)
+  verificationExpires DateTime? @map("verification_expires") @db.Timestamp()
+  resetCode           String?  @map("reset_code") @db.VarChar(6)
+  resetExpires        DateTime? @map("reset_expires") @db.Timestamp()
+  role                UserRole @default(user)
+
+  // Preferencias (settings aplanados)
+  pomodoroDuration    Int      @default(25) @map("pomodoro_duration")
+  breakDuration       Int      @default(5) @map("break_duration")
+  sessionsPerCycle    Int      @default(4) @map("sessions_per_cycle")
+  ambientSound        Boolean  @default(true) @map("ambient_sound")
+  notifications       Boolean  @default(true)
+  autoStartBreak      Boolean  @default(false) @map("auto_start_break")
+
+  // Estadísticas
+  pomodorosCompleted  Int      @default(0) @map("pomodoros_completed")
+  totalFocusMinutes   Int      @default(0) @map("total_focus_minutes")
+  totalTrees          Int      @default(0) @map("total_trees")
+
+  isActive            Boolean  @default(true) @map("is_active")
+  createdAt           DateTime @default(now()) @map("created_at") @db.Timestamp()
+  updatedAt           DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamp()
+
+  // Relaciones
+  trees               UserTree[]
+  sessions            PomodoroSession[]
+  activityLogs        ActivityLog[]
+  templatesCreated    Template[]        @relation("TemplateCreator")
+
+  @@map("users")
+}
+
+model Template {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name        String   @db.VarChar(100)
+  category    String   @db.VarChar(50)
+  description String   @db.Text
+  imageUrl    String   @map("image_url") @db.VarChar(500)
+  probability Int
+
+  isActive    Boolean  @default(true) @map("is_active")
+  createdById String   @map("created_by") @db.Uuid
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamp()
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamp()
+
+  // Relaciones
+  createdBy   User       @relation("TemplateCreator", fields: [createdById], references: [id])
+  userTrees   UserTree[]
+
+  // Índices
+  @@index([isActive])
+  @@index([createdById])
+
+  @@map("templates")
+}
+
+model UserTree {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId     String   @map("user_id") @db.Uuid
+  templateId String   @map("template_id") @db.Uuid
+  customName String?  @map("custom_name") @db.VarChar(50)
+  isFavorite Boolean  @default(false) @map("is_favorite")
+  earnedAt   DateTime @default(now()) @map("earned_at") @db.Timestamp()
+
+  // Relaciones
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  template Template @relation(fields: [templateId], references: [id], onDelete: Restrict)
+  session  PomodoroSession?
+
+  // Índices
+  @@index([userId])
+  @@index([userId, earnedAt(sort: Desc)])
+  @@index([userId, isFavorite])
+
+  @@map("user_trees")
+}
+
+model PomodoroSession {
+  id          String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId      String        @map("user_id") @db.Uuid
+  duration    Int
+  startedAt   DateTime      @default(now()) @map("started_at") @db.Timestamp()
+  completedAt DateTime?     @map("completed_at") @db.Timestamp()
+  treeEarnedId String?      @unique @map("tree_earned_id") @db.Uuid
+  status      SessionStatus @default(active)
+
+  // Relaciones
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  treeEarned UserTree? @relation(fields: [treeEarnedId], references: [id], onDelete: SetNull)
+
+  // Índices
+  @@index([userId, status])
+  @@index([status])
+
+  @@map("pomodoro_sessions")
+}
+
+model ActivityLog {
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String    @map("user_id") @db.Uuid
+  eventType EventType @map("event_type")
+  detail    String    @db.VarChar(500)
+  ipAddress String    @default("") @map("ip_address") @db.VarChar(45)
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp()
+
+  // Relaciones
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Índices
+  @@index([userId])
+  @@index([eventType])
+  @@index([createdAt(sort: Desc)])
+
+  @@map("activity_logs")
+}
+
+model PhraseCache {
+  id        Int      @id @default(autoincrement())
+  phrases   String[] @db.Text
+  fetchedAt DateTime @default(now()) @map("fetched_at") @db.Timestamp()
+
+  @@map("phrase_cache")
+}

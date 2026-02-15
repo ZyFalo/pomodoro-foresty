@@ -1,7 +1,6 @@
 import { NextRequest } from 'next/server';
 import { withAuth, getClientIP } from '@/lib/auth/middleware';
-import { connectDB } from '@/lib/db/connection';
-import { PomodoroSession, User } from '@/lib/db/models';
+import { prisma } from '@/lib/db/prisma';
 import { earnTree } from '@/lib/services/trees';
 import { logActivity } from '@/lib/services/activity-logger';
 import { TIME_VALIDATION_THRESHOLD } from '@/lib/utils/constants';
@@ -15,12 +14,12 @@ export const POST = withAuth(async (req: NextRequest, user) => {
       return Response.json({ error: 'session_id es requerido' }, { status: 400 });
     }
 
-    await connectDB();
-
-    const session = await PomodoroSession.findOne({
-      _id: session_id,
-      user_id: user._id,
-      status: 'active',
+    const session = await prisma.pomodoroSession.findFirst({
+      where: {
+        id: session_id,
+        userId: user.id,
+        status: 'active',
+      },
     });
 
     if (!session) {
@@ -28,7 +27,7 @@ export const POST = withAuth(async (req: NextRequest, user) => {
     }
 
     // Validate elapsed time (90% of duration)
-    const elapsedMs = Date.now() - session.started_at.getTime();
+    const elapsedMs = Date.now() - session.startedAt.getTime();
     const requiredMs = session.duration * 60 * 1000 * TIME_VALIDATION_THRESHOLD;
 
     if (elapsedMs < requiredMs) {
@@ -41,7 +40,7 @@ export const POST = withAuth(async (req: NextRequest, user) => {
 
     // Earn a tree
     const ip = getClientIP(req);
-    const result = await earnTree(user._id.toString(), ip);
+    const result = await earnTree(user.id, ip);
 
     if (!result) {
       return Response.json(
@@ -51,39 +50,39 @@ export const POST = withAuth(async (req: NextRequest, user) => {
     }
 
     // Update session
-    session.status = 'completed';
-    session.completed_at = new Date();
-    session.tree_earned_id = result.userTree._id;
-    await session.save();
+    await prisma.pomodoroSession.update({
+      where: { id: session.id },
+      data: {
+        status: 'completed',
+        completedAt: new Date(),
+        treeEarnedId: result.userTree.id,
+      },
+    });
 
     // Update user stats
-    await User.findByIdAndUpdate(user._id, {
-      $inc: {
-        pomodoros_completed: 1,
-        total_focus_minutes: session.duration,
+    const updatedUser = await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        pomodorosCompleted: { increment: 1 },
+        totalFocusMinutes: { increment: session.duration },
       },
     });
 
     // Log activity
     await logActivity({
-      user_id: user._id.toString(),
+      user_id: user.id,
       event_type: 'pomodoro_completado',
       detail: `Pomodoro de ${session.duration} min completado`,
       ip_address: ip,
     });
 
-    // Fetch updated stats
-    const updatedUser = await User.findById(user._id).select(
-      'pomodoros_completed total_focus_minutes total_trees'
-    );
-
     return Response.json({
       tree: result.userTree,
       template: result.template,
       stats: {
-        pomodoros_completed: updatedUser?.pomodoros_completed ?? 0,
-        total_focus_minutes: updatedUser?.total_focus_minutes ?? 0,
-        total_trees: updatedUser?.total_trees ?? 0,
+        pomodoros_completed: updatedUser.pomodorosCompleted,
+        total_focus_minutes: updatedUser.totalFocusMinutes,
+        total_trees: updatedUser.totalTrees,
       },
     });
   } catch (error) {
