@@ -6,17 +6,16 @@ import { useAuthStore } from '@/stores/auth-store';
 import { Button, Icon } from '@/components/ui';
 
 interface UserDetail {
-  _id: string;
+  id: string;
   username: string;
   email: string;
   role: string;
-  is_active: boolean;
-  email_verified: boolean;
-  pomodoros_completed: number;
-  total_focus_minutes: number;
-  total_trees: number;
-  settings: Record<string, unknown>;
-  created_at: string;
+  isActive: boolean;
+  emailVerified: boolean;
+  pomodorosCompleted: number;
+  totalFocusMinutes: number;
+  totalTrees: number;
+  createdAt: string;
 }
 
 export default function UserDetailPage() {
@@ -93,23 +92,23 @@ export default function UserDetailPage() {
           </div>
           <div>
             <p className="text-xs text-gray-400 mb-1">Registrado</p>
-            <p className="text-sm text-gray-700">{new Date(user.created_at).toLocaleDateString('es-ES')}</p>
+            <p className="text-sm text-gray-700">{new Date(user.createdAt).toLocaleDateString('es-ES')}</p>
           </div>
           <div>
             <p className="text-xs text-gray-400 mb-1">Pomodoros completados</p>
-            <p className="text-sm font-semibold text-gray-800">{user.pomodoros_completed}</p>
+            <p className="text-sm font-semibold text-gray-800">{user.pomodorosCompleted}</p>
           </div>
           <div>
             <p className="text-xs text-gray-400 mb-1">Minutos de enfoque</p>
-            <p className="text-sm font-semibold text-gray-800">{user.total_focus_minutes}</p>
+            <p className="text-sm font-semibold text-gray-800">{user.totalFocusMinutes}</p>
           </div>
           <div>
             <p className="text-xs text-gray-400 mb-1">Árboles</p>
-            <p className="text-sm font-semibold text-gray-800">{user.total_trees}</p>
+            <p className="text-sm font-semibold text-gray-800">{user.totalTrees}</p>
           </div>
           <div>
             <p className="text-xs text-gray-400 mb-1">Email verificado</p>
-            <p className="text-sm text-gray-700">{user.email_verified ? 'Sí' : 'No'}</p>
+            <p className="text-sm text-gray-700">{user.emailVerified ? 'Sí' : 'No'}</p>
           </div>
         </div>
 
@@ -138,18 +137,18 @@ export default function UserDetailPage() {
           <div>
             <p className="text-sm font-medium text-gray-700">Estado</p>
             <p className="text-xs text-gray-400">
-              <span className={user.is_active ? 'text-success' : 'text-danger'}>
-                {user.is_active ? 'Activo' : 'Inactivo'}
+              <span className={user.isActive ? 'text-success' : 'text-danger'}>
+                {user.isActive ? 'Activo' : 'Inactivo'}
               </span>
             </p>
           </div>
           <Button
-            onClick={() => updateUser({ is_active: !user.is_active })}
-            variant={user.is_active ? 'outline' : 'primary'}
+            onClick={() => updateUser({ is_active: !user.isActive })}
+            variant={user.isActive ? 'outline' : 'primary'}
             fullWidth={false}
             loading={saving}
           >
-            {user.is_active ? 'Desactivar' : 'Activar'}
+            {user.isActive ? 'Desactivar' : 'Activar'}
           </Button>
         </div>
       </div>

@@ -13,11 +13,11 @@ interface DashboardData {
   total_sessions: number;
   by_rarity: Record<string, number>;
   recent_activity: Array<{
-    _id: string;
-    event_type: string;
+    id: string;
+    eventType: string;
     detail: string;
-    created_at: string;
-    user_id: { username: string } | null;
+    createdAt: string;
+    user: { username: string } | null;
   }>;
 }
 
@@ -107,15 +107,15 @@ export default function AdminDashboard() {
           <h2 className="text-lg font-semibold text-gray-800 mb-4">Actividad reciente</h2>
           <div className="space-y-2">
             {data.recent_activity.map((log) => (
-              <div key={log._id} className="flex items-start gap-3 py-2 border-b border-gray-50 last:border-0">
+              <div key={log.id} className="flex items-start gap-3 py-2 border-b border-gray-50 last:border-0">
                 <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center shrink-0 mt-0.5">
                   <Icon name="history" size={14} className="text-gray-500" />
                 </div>
                 <div className="min-w-0">
                   <p className="text-sm text-gray-700 truncate">{log.detail}</p>
                   <p className="text-xs text-gray-400">
-                    {log.user_id && typeof log.user_id === 'object' ? log.user_id.username : '—'} ·{' '}
-                    {new Date(log.created_at).toLocaleString('es-ES', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                    {log.user && typeof log.user === 'object' ? log.user.username : '—'} ·{' '}
+                    {new Date(log.createdAt).toLocaleString('es-ES', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
                   </p>
                 </div>
               </div>

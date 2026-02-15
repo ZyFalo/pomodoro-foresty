@@ -6,14 +6,14 @@ import { useAuthStore } from '@/stores/auth-store';
 import { Icon } from '@/components/ui';
 
 interface UserItem {
-  _id: string;
+  id: string;
   username: string;
   email: string;
   role: string;
-  is_active: boolean;
-  pomodoros_completed: number;
-  total_trees: number;
-  created_at: string;
+  isActive: boolean;
+  pomodorosCompleted: number;
+  totalTrees: number;
+  createdAt: string;
 }
 
 export default function UsersPage() {
@@ -89,7 +89,7 @@ export default function UsersPage() {
                 </td>
               </tr>
             ) : users.map((u) => (
-              <tr key={u._id} className="border-b border-gray-50 hover:bg-gray-50/50">
+              <tr key={u.id} className="border-b border-gray-50 hover:bg-gray-50/50">
                 <td className="px-4 py-3 text-sm font-medium text-gray-800">{u.username}</td>
                 <td className="px-4 py-3 text-sm text-gray-600">{u.email}</td>
                 <td className="px-4 py-3">
@@ -101,19 +101,19 @@ export default function UsersPage() {
                 </td>
                 <td className="px-4 py-3">
                   <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
-                    u.is_active ? 'bg-success/10 text-success' : 'bg-danger/10 text-danger'
+                    u.isActive ? 'bg-success/10 text-success' : 'bg-danger/10 text-danger'
                   }`}>
-                    {u.is_active ? 'Activo' : 'Inactivo'}
+                    {u.isActive ? 'Activo' : 'Inactivo'}
                   </span>
                 </td>
-                <td className="px-4 py-3 text-sm text-gray-600 text-right">{u.pomodoros_completed}</td>
-                <td className="px-4 py-3 text-sm text-gray-600 text-right">{u.total_trees}</td>
+                <td className="px-4 py-3 text-sm text-gray-600 text-right">{u.pomodorosCompleted}</td>
+                <td className="px-4 py-3 text-sm text-gray-600 text-right">{u.totalTrees}</td>
                 <td className="px-4 py-3 text-sm text-gray-400 text-right">
-                  {new Date(u.created_at).toLocaleDateString('es-ES')}
+                  {new Date(u.createdAt).toLocaleDateString('es-ES')}
                 </td>
                 <td className="px-4 py-3 text-right">
                   <Link
-                    href={`/admin/users/${u._id}`}
+                    href={`/admin/users/${u.id}`}
                     className="w-8 h-8 rounded-lg hover:bg-gray-100 flex items-center justify-center inline-flex"
                   >
                     <Icon name="visibility" size={16} className="text-gray-500" />

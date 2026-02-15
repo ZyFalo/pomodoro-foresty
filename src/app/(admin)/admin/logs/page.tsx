@@ -15,12 +15,12 @@ const EVENT_TYPES = [
 ];
 
 interface LogItem {
-  _id: string;
-  event_type: string;
+  id: string;
+  eventType: string;
   detail: string;
-  ip_address: string;
-  created_at: string;
-  user_id: { username: string } | null;
+  ipAddress: string;
+  createdAt: string;
+  user: { username: string } | null;
 }
 
 export default function LogsPage() {
@@ -96,23 +96,23 @@ export default function LogsPage() {
                 </td>
               </tr>
             ) : logs.map((log) => (
-              <tr key={log._id} className="border-b border-gray-50 hover:bg-gray-50/50">
+              <tr key={log.id} className="border-b border-gray-50 hover:bg-gray-50/50">
                 <td className="px-4 py-3 text-xs text-gray-500 whitespace-nowrap">
-                  {new Date(log.created_at).toLocaleString('es-ES', {
+                  {new Date(log.createdAt).toLocaleString('es-ES', {
                     day: '2-digit', month: '2-digit', year: '2-digit',
                     hour: '2-digit', minute: '2-digit',
                   })}
                 </td>
                 <td className="px-4 py-3 text-sm text-gray-700">
-                  {log.user_id && typeof log.user_id === 'object' ? log.user_id.username : '—'}
+                  {log.user && typeof log.user === 'object' ? log.user.username : '—'}
                 </td>
                 <td className="px-4 py-3">
                   <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">
-                    {log.event_type}
+                    {log.eventType}
                   </span>
                 </td>
                 <td className="px-4 py-3 text-sm text-gray-600 max-w-xs truncate">{log.detail}</td>
-                <td className="px-4 py-3 text-xs text-gray-400 font-mono">{log.ip_address || '—'}</td>
+                <td className="px-4 py-3 text-xs text-gray-400 font-mono">{log.ipAddress || '—'}</td>
               </tr>
             ))}
             {!loading && logs.length === 0 && (
