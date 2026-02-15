@@ -8,7 +8,7 @@ export const RARITY_RANGES = [
 ] as const;
 
 // Pomodoro durations (minutes)
-export const POMODORO_DURATIONS = [25, 30, 45, 60] as const;
+export const POMODORO_DURATIONS = [0.17, 25, 30, 45, 60] as const;
 export const DEFAULT_POMODORO_DURATION = 25;
 export const DEFAULT_BREAK_DURATION = 5;
 export const DEFAULT_SESSIONS_PER_CYCLE = 4;

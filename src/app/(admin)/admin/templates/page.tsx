@@ -6,13 +6,13 @@ import { useAuthStore } from '@/stores/auth-store';
 import { Icon, Badge, Button } from '@/components/ui';
 
 interface TemplateItem {
-  _id: string;
+  id: string;
   name: string;
   category: string;
   probability: number;
-  is_active: boolean;
-  image_url: string;
-  created_at: string;
+  isActive: boolean;
+  imageUrl: string;
+  createdAt: string;
 }
 
 export default function TemplatesPage() {
@@ -45,7 +45,7 @@ export default function TemplatesPage() {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
       });
-      setTemplates((prev) => prev.filter((t) => t._id !== id));
+      setTemplates((prev) => prev.filter((t) => t.id !== id));
     } catch (err) {
       console.error(err);
     }
@@ -81,11 +81,11 @@ export default function TemplatesPage() {
             </thead>
             <tbody>
               {templates.map((t) => (
-                <tr key={t._id} className="border-b border-gray-50 hover:bg-gray-50/50">
+                <tr key={t.id} className="border-b border-gray-50 hover:bg-gray-50/50">
                   <td className="px-4 py-3">
-                    {t.image_url ? (
+                    {t.imageUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
-                      <img src={t.image_url} alt={t.name} className="w-10 h-10 object-contain rounded" />
+                      <img src={t.imageUrl} alt={t.name} className="w-10 h-10 object-contain rounded" />
                     ) : (
                       <div className="w-10 h-10 bg-gray-100 rounded flex items-center justify-center">
                         <Icon name="park" size={18} className="text-gray-400" />
@@ -97,21 +97,21 @@ export default function TemplatesPage() {
                   <td className="px-4 py-3"><Badge probability={t.probability} /></td>
                   <td className="px-4 py-3">
                     <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
-                      t.is_active ? 'bg-success/10 text-success' : 'bg-gray-100 text-gray-500'
+                      t.isActive ? 'bg-success/10 text-success' : 'bg-gray-100 text-gray-500'
                     }`}>
-                      {t.is_active ? 'Activo' : 'Inactivo'}
+                      {t.isActive ? 'Activo' : 'Inactivo'}
                     </span>
                   </td>
                   <td className="px-4 py-3 text-right">
                     <div className="flex items-center justify-end gap-1">
                       <Link
-                        href={`/admin/templates/${t._id}`}
+                        href={`/admin/templates/${t.id}`}
                         className="w-8 h-8 rounded-lg hover:bg-gray-100 flex items-center justify-center"
                       >
                         <Icon name="edit" size={16} className="text-gray-500" />
                       </Link>
                       <button
-                        onClick={() => handleDelete(t._id)}
+                        onClick={() => handleDelete(t.id)}
                         className="w-8 h-8 rounded-lg hover:bg-red-50 flex items-center justify-center border-none bg-transparent cursor-pointer"
                       >
                         <Icon name="delete" size={16} className="text-danger" />

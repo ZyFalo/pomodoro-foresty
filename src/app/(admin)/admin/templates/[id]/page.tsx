@@ -35,9 +35,9 @@ export default function EditTemplatePage() {
             name: data.name,
             category: data.category,
             description: data.description,
-            image_url: data.image_url,
+            image_url: data.imageUrl ?? data.image_url ?? '',
             probability: data.probability,
-            is_active: data.is_active,
+            is_active: data.isActive ?? data.is_active ?? true,
           });
         }
       } catch (err) {

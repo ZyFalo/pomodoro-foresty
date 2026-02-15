@@ -16,6 +16,7 @@ export default function NewTemplatePage() {
     description: '',
     image_url: '',
     probability: 15,
+    is_active: true,
   });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
@@ -118,6 +119,21 @@ export default function NewTemplatePage() {
             <span>1 (Legendario)</span>
             <span>25 (Común)</span>
           </div>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <label className="text-sm font-medium text-gray-600">Activo</label>
+          <button
+            type="button"
+            onClick={() => setForm({ ...form, is_active: !form.is_active })}
+            className={`relative w-11 h-6 rounded-full transition-colors cursor-pointer border-none ${
+              form.is_active ? 'bg-primary' : 'bg-gray-300'
+            }`}
+          >
+            <div className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${
+              form.is_active ? 'translate-x-[22px]' : 'translate-x-0.5'
+            }`} />
+          </button>
         </div>
 
         {error && <p className="text-danger text-sm">{error}</p>}

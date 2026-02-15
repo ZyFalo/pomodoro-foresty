@@ -31,7 +31,7 @@ export const resetPasswordSchema = z.object({
 });
 
 export const updateSettingsSchema = z.object({
-  pomodoro_duration: z.number().int().refine(v => [25, 30, 45, 60].includes(v), 'Duración no válida').optional(),
+  pomodoro_duration: z.number().refine(v => [0.17, 25, 30, 45, 60].includes(v), 'Duración no válida').optional(),
   break_duration: z.number().int().min(1).max(30).optional(),
   sessions_per_cycle: z.number().int().min(1).max(10).optional(),
   ambient_sound: z.boolean().optional(),
