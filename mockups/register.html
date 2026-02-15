@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PF - Register</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/auth.css">
+  <link rel="stylesheet" href="css/register.css">
+</head>
+<body>
+  <div class="auth-page">
+    <!-- Background -->
+    <img class="auth-bg" src="https://images.unsplash.com/photo-1634068209251-e8db657fe4ec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDM0ODN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3NzAxMjY0MDN8&ixlib=rb-4.1.0&q=80&w=1080" alt="Forest background">
+    <div class="auth-overlay"></div>
+
+    <!-- Content -->
+    <div class="auth-content">
+      <!-- App Icon -->
+      <div class="auth-app-icon">
+        <span class="material-symbols-rounded">park</span>
+      </div>
+
+      <!-- Title -->
+      <h1 class="auth-app-title">Pomodoro Forest</h1>
+      <p class="auth-app-subtitle">Mejora tu productividad mientras cultivas tu bosque</p>
+
+      <!-- Auth Card -->
+      <div class="auth-card auth-card--compact">
+        <!-- Tabs -->
+        <div class="auth-tabs">
+          <a class="auth-tab" href="login.html">
+            Iniciar Sesion
+          </a>
+          <div class="auth-tab auth-tab--active">
+            Registrarse
+          </div>
+        </div>
+
+        <!-- Form -->
+        <div class="auth-form auth-form--tight">
+          <!-- Username -->
+          <div class="auth-input-group">
+            <label class="auth-input-label">Usuario</label>
+            <input class="auth-input" type="text" placeholder="Ingresa tu usuario">
+          </div>
+
+          <!-- Email -->
+          <div class="auth-input-group">
+            <label class="auth-input-label">Correo electronico</label>
+            <input class="auth-input" type="email" placeholder="tu@email.com">
+          </div>
+
+          <!-- Password -->
+          <div class="auth-input-group">
+            <label class="auth-input-label">Contrasena</label>
+            <input class="auth-input" type="password" placeholder="Crea una contrasena">
+          </div>
+
+          <!-- Password helper -->
+          <span class="auth-helper-text">Minimo 8 caracteres, una mayuscula y un numero</span>
+
+          <!-- Confirm password -->
+          <div class="auth-input-group">
+            <label class="auth-input-label">Confirmar contrasena</label>
+            <input class="auth-input" type="password" placeholder="Repite tu contrasena">
+          </div>
+
+          <!-- Terms -->
+          <div class="auth-terms">
+            <div class="auth-checkbox"></div>
+            <span class="auth-terms-text">Acepto los terminos de servicio y politica de privacidad</span>
+          </div>
+
+          <!-- Register button -->
+          <button class="auth-btn">
+            Crear Cuenta
+          </button>
+        </div>
+
+        <!-- Already have account -->
+        <div class="auth-already">
+          <span class="auth-already-text">¿Ya tienes una cuenta?</span>
+          <a class="auth-already-link" href="login.html">Inicia sesion</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

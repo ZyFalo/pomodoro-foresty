@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PF Admin - Dashboard</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/admin.css">
+  <link rel="stylesheet" href="css/admin-dashboard.css">
+</head>
+<body>
+  <div class="admin-page admin-dashboard">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+      <div class="admin-sidebar-brand">
+        <div class="admin-sidebar-icon">
+          <span class="material-symbols-rounded">park</span>
+        </div>
+        <span class="admin-sidebar-title">PF Admin</span>
+      </div>
+      <div class="admin-sidebar-divider"></div>
+      <nav class="admin-sidebar-nav">
+        <a class="admin-sidebar-item admin-sidebar-item--active">
+          <span class="material-symbols-rounded">dashboard</span>
+          Dashboard
+        </a>
+        <a class="admin-sidebar-item" href="admin-tree-templates.html">
+          <span class="material-symbols-rounded">park</span>
+          Arboles
+        </a>
+        <a class="admin-sidebar-item" href="admin-users.html">
+          <span class="material-symbols-rounded">group</span>
+          Usuarios
+        </a>
+        <a class="admin-sidebar-item" href="admin-activity-logs.html">
+          <span class="material-symbols-rounded">history</span>
+          Actividad
+        </a>
+      </nav>
+      <div class="admin-sidebar-spacer"></div>
+      <a class="admin-sidebar-back" href="pomodoro-timer.html">
+        <span class="material-symbols-rounded">arrow_back</span>
+        Volver a la app
+      </a>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+      <!-- Header -->
+      <div class="admin-header">
+        <h1 class="admin-header-title">Dashboard</h1>
+        <div class="admin-header-user">
+          <div class="admin-header-avatar"></div>
+          <span class="admin-header-name">Administrador</span>
+        </div>
+      </div>
+
+      <!-- Stats Row -->
+      <div class="admin-stats-row">
+        <div class="admin-stat-card">
+          <div class="admin-stat-icon admin-stat-icon--blue">
+            <span class="material-symbols-rounded">group</span>
+          </div>
+          <span class="admin-stat-value">1,247</span>
+          <span class="admin-stat-label">Usuarios totales</span>
+        </div>
+        <div class="admin-stat-card">
+          <div class="admin-stat-icon admin-stat-icon--yellow">
+            <span class="material-symbols-rounded">timer</span>
+          </div>
+          <span class="admin-stat-value">8,432</span>
+          <span class="admin-stat-label">Pomodoros totales</span>
+        </div>
+        <div class="admin-stat-card">
+          <div class="admin-stat-icon admin-stat-icon--green">
+            <span class="material-symbols-rounded">park</span>
+          </div>
+          <span class="admin-stat-value">5,891</span>
+          <span class="admin-stat-label">Arboles otorgados</span>
+        </div>
+        <div class="admin-stat-card">
+          <div class="admin-stat-icon admin-stat-icon--pink">
+            <span class="material-symbols-rounded">trending_up</span>
+          </div>
+          <span class="admin-stat-value">89</span>
+          <span class="admin-stat-label">Activos hoy</span>
+        </div>
+      </div>
+
+      <!-- Mid Row: Chart + Top Trees -->
+      <div class="admin-mid-row">
+        <!-- Chart Card -->
+        <div class="admin-card">
+          <span class="admin-card-title">Actividad semanal</span>
+          <div class="admin-chart-area">
+            <div class="admin-chart-bar" style="height:112px"></div>
+            <div class="admin-chart-bar" style="height:182px"></div>
+            <div class="admin-chart-bar" style="height:224px"></div>
+            <div class="admin-chart-bar" style="height:154px"></div>
+            <div class="admin-chart-bar" style="height:252px"></div>
+            <div class="admin-chart-bar" style="height:196px"></div>
+            <div class="admin-chart-bar admin-chart-bar--light" style="height:126px"></div>
+          </div>
+          <div class="admin-chart-labels">
+            <span class="admin-chart-label">Lun</span>
+            <span class="admin-chart-label">Mar</span>
+            <span class="admin-chart-label">Mie</span>
+            <span class="admin-chart-label">Jue</span>
+            <span class="admin-chart-label">Vie</span>
+            <span class="admin-chart-label">Sab</span>
+            <span class="admin-chart-label">Dom</span>
+          </div>
+        </div>
+
+        <!-- Top Trees Card -->
+        <div class="admin-card">
+          <span class="admin-card-title">Top arboles otorgados</span>
+          <div class="admin-top-item">
+            <span class="admin-top-name">1. Pino Comun</span>
+            <span class="admin-top-value">1,204</span>
+          </div>
+          <div class="admin-top-item">
+            <span class="admin-top-name">2. Roble Fuerte</span>
+            <span class="admin-top-value">987</span>
+          </div>
+          <div class="admin-top-item">
+            <span class="admin-top-name">3. Cerezo Japones</span>
+            <span class="admin-top-value">654</span>
+          </div>
+          <div class="admin-top-item">
+            <span class="admin-top-name">4. Sauce Lloron</span>
+            <span class="admin-top-value">321</span>
+          </div>
+          <div class="admin-top-item">
+            <span class="admin-top-name">5. Sequoia Ancestral</span>
+            <span class="admin-top-value">42</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Activity Card -->
+      <div class="admin-card admin-activity-card">
+        <div class="admin-activity-header">
+          <span class="admin-card-title admin-card-title--bold">Actividad reciente</span>
+          <a class="admin-activity-link" href="admin-activity-logs.html">Ver todos los logs →</a>
+        </div>
+        <div class="admin-activity-divider"></div>
+        <div class="admin-activity-list">
+          <div class="admin-event-row">
+            <div class="admin-event-dot admin-event-dot--green"></div>
+            <span class="admin-event-text">Usuario maria_g completo 5 pomodoros</span>
+            <span class="admin-event-time">Hace 2 min</span>
+          </div>
+          <div class="admin-event-row">
+            <div class="admin-event-dot admin-event-dot--blue"></div>
+            <span class="admin-event-text">Nuevo usuario carlos_dev registrado</span>
+            <span class="admin-event-time">Hace 15 min</span>
+          </div>
+          <div class="admin-event-row">
+            <div class="admin-event-dot admin-event-dot--gold"></div>
+            <span class="admin-event-text">Arbol legendario 'Roble Ancestral' otorgado a ana_m</span>
+            <span class="admin-event-time">Hace 1 hora</span>
+          </div>
+          <div class="admin-event-row">
+            <div class="admin-event-dot admin-event-dot--purple"></div>
+            <span class="admin-event-text">Plantilla 'Sakura Dorada' creada por admin</span>
+            <span class="admin-event-time">Hace 3 horas</span>
+          </div>
+          <div class="admin-event-row">
+            <div class="admin-event-dot admin-event-dot--green"></div>
+            <span class="admin-event-text">Usuario pedro_r alcanzo racha de 7 dias</span>
+            <span class="admin-event-time">Hace 5 horas</span>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

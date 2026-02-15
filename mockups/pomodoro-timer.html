@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PF - Pomodoro Timer</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/pomodoro-timer.css">
+</head>
+<body>
+  <div class="app-page app-page--timer">
+    <!-- Background -->
+    <img class="app-bg" src="https://images.unsplash.com/photo-1760287468990-064a862ffd70?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDM0ODN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3NzAxMjY0NDV8&ixlib=rb-4.1.0&q=80&w=1080" alt="Forest background">
+    <div class="app-overlay"></div>
+
+    <!-- Navbar -->
+    <nav class="app-navbar">
+      <div class="nav-brand">
+        <div class="nav-brand-icon">
+          <span class="material-symbols-rounded">park</span>
+        </div>
+        <span class="nav-brand-text">Pomodoro Forest</span>
+      </div>
+      <div class="nav-links">
+        <a class="nav-link nav-link--active" href="#">Pomodoro</a>
+        <a class="nav-link" href="inventory.html">Mi Bosque</a>
+      </div>
+      <div class="nav-user">
+        <div class="nav-user-pill">
+          <span class="material-symbols-rounded nav-user-icon">person</span>
+          <span class="nav-username">Usuario</span>
+        </div>
+        <div class="nav-logout">
+          <span class="material-symbols-rounded">logout</span>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="app-page-header timer-page-header">
+      <h1 class="app-page-title">Pomodoro Timer</h1>
+      <p class="app-page-subtitle">Mejora tu concentracion y cultiva arboles para tu bosque personal</p>
+    </div>
+
+    <!-- Timer Card -->
+    <div class="timer-card">
+      <!-- Mode Pill -->
+      <div class="timer-mode-pill">
+        <span class="material-symbols-rounded">eco</span>
+        <span class="timer-mode-text">Modo Trabajo</span>
+      </div>
+
+      <!-- Progress Ring -->
+      <div class="timer-ring">
+        <svg viewBox="0 0 260 260">
+          <circle class="timer-ring-bg" cx="130" cy="130" r="120" />
+          <circle class="timer-ring-progress" cx="130" cy="130" r="120" />
+        </svg>
+        <div class="timer-ring-texts">
+          <span class="timer-time">25:00</span>
+          <span class="timer-sub">de 25:00</span>
+        </div>
+      </div>
+
+      <!-- Session Dots -->
+      <div class="timer-session-dots">
+        <div class="timer-dot timer-dot--active"></div>
+        <div class="timer-dot"></div>
+        <div class="timer-dot"></div>
+        <div class="timer-dot"></div>
+        <span class="timer-session-label">Sesion 1 de 4</span>
+      </div>
+
+      <!-- Duration Pill -->
+      <div class="timer-duration-pill">
+        <span class="timer-duration-label">Duracion:</span>
+        <span class="timer-duration-value">25</span>
+        <span class="timer-duration-unit">minutos</span>
+      </div>
+
+      <!-- Buttons -->
+      <button class="timer-btn-start">
+        <span class="material-symbols-rounded">play_arrow</span>
+        Iniciar Pomodoro
+      </button>
+      <button class="timer-btn-stop">
+        <span class="material-symbols-rounded">stop</span>
+        Detener
+      </button>
+    </div>
+
+    <!-- Audio Section -->
+    <div class="timer-audio">
+      <div class="timer-audio-row">
+        <span class="material-symbols-rounded">music_note</span>
+        <span class="timer-audio-text">El audio ambiental del bosque se reproducira en bucle al iniciar el Pomodoro.</span>
+      </div>
+      <div class="timer-volume-row">
+        <span class="material-symbols-rounded">volume_down</span>
+        <div class="timer-volume-track">
+          <div class="timer-volume-fill"></div>
+        </div>
+        <span class="material-symbols-rounded">volume_up</span>
+      </div>
+    </div>
+
+    <!-- Motivational Quote -->
+    <div class="timer-quote">
+      <p class="timer-quote-text">"El exito es la suma de pequenos esfuerzos repetidos dia tras dia."</p>
+      <p class="timer-quote-author">— Robert Collier</p>
+    </div>
+
+    <!-- Footer -->
+    <div class="app-footer timer-footer" style="bottom: 15px; top: auto;">
+      <span class="app-footer-brand">Pomodoro Forest © 2025</span>
+      <span class="app-footer-tagline">Mejora tu productividad mientras cultivas tu bosque virtual</span>
+    </div>
+  </div>
+</body>
+</html>

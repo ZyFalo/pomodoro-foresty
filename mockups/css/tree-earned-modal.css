@@ -1,0 +1,269 @@
+/* tree-earned-modal.css — Tree Earned Modal specific styles */
+
+/* Timer area dimmed behind modal */
+.modal-timer-dimmed {
+  position: absolute;
+  top: 120px;
+  left: 420px;
+  width: 600px;
+  padding: 24px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  opacity: 0.3;
+  z-index: 1;
+}
+
+.modal-timer-dimmed-time {
+  font-size: 80px;
+  font-weight: 700;
+  color: #FFFFFF;
+  text-align: center;
+}
+
+.modal-timer-dimmed-btn {
+  width: 250px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #FF6B6B;
+  border-radius: 30px;
+  color: #FFFFFF;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* Modal overlay */
+.modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #00000088;
+  z-index: 20;
+}
+
+/* Modal dialog */
+.modal-dialog {
+  position: absolute;
+  top: 120px;
+  left: 500px;
+  width: 440px;
+  border-radius: 20px;
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  background: #FFFFFF1A;
+  border: 1px solid #FFFFFF33;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  z-index: 30;
+}
+
+/* Modal header */
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.modal-trophy-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.modal-trophy-row .material-symbols-rounded {
+  font-size: 28px;
+  color: #FFD700;
+}
+
+.modal-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.modal-close {
+  font-size: 24px;
+  color: #FFFFFF99;
+  cursor: pointer;
+}
+
+/* Tree image wrapper */
+.modal-tree-wrapper {
+  position: relative;
+  width: 200px;
+  height: 200px;
+}
+
+.modal-tree-glow {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  border: 3px solid #FFD70066;
+  box-shadow: 0 0 30px 5px #FFD70044;
+}
+
+.modal-tree-image {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 160px;
+  height: 160px;
+  border-radius: 80px;
+  background: #2E8B57;
+  box-shadow: 0 0 20px 5px #FFD70055;
+  overflow: hidden;
+}
+
+.modal-tree-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Tree name */
+.modal-tree-name {
+  font-size: 24px;
+  font-weight: 700;
+  color: #FFFFFF;
+  text-align: center;
+}
+
+/* Stars */
+.modal-stars {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.modal-stars .material-symbols-rounded {
+  font-size: 20px;
+  color: #FFD700;
+}
+
+/* Category badge */
+.modal-category-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 14px;
+  background: linear-gradient(135deg, #FFD700, #F59E0B);
+  border-radius: 30px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #1B1B1B;
+}
+
+/* Description */
+.modal-description {
+  font-size: 14px;
+  color: #FFFFFF99;
+  text-align: center;
+  width: 360px;
+}
+
+/* XP Reward */
+.modal-xp-reward {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: #FFD70022;
+  border: 1px solid #FFD70066;
+  border-radius: 30px;
+}
+
+.modal-xp-reward .material-symbols-rounded {
+  font-size: 16px;
+  color: #FFD700;
+}
+
+.modal-xp-text {
+  font-size: 12px;
+  font-weight: 600;
+  color: #FFD700;
+}
+
+/* Success alert */
+.modal-success-alert {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 12px 16px;
+  background: #2E8B5733;
+  border-radius: 10px;
+}
+
+.modal-success-alert .material-symbols-rounded {
+  font-size: 20px;
+  color: #4CAF50;
+}
+
+.modal-success-text {
+  font-size: 14px;
+  font-weight: 500;
+  color: #FFFFFF;
+}
+
+/* Buttons */
+.modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.modal-btn-forest {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px;
+  background: #2E8B57;
+  border-radius: 30px;
+  color: #FFFFFF;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+}
+
+.modal-btn-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px;
+  background: transparent;
+  border: 1px solid #FFFFFF66;
+  border-radius: 30px;
+  color: #FFFFFF;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* Confetti */
+.confetti {
+  position: absolute;
+  z-index: 25;
+  border-radius: 2px;
+}
+
+.confetti-circle {
+  position: absolute;
+  z-index: 25;
+  border-radius: 50%;
+}

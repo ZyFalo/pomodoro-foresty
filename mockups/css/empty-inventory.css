@@ -1,0 +1,161 @@
+/* empty-inventory.css — Empty Inventory specific styles */
+
+.empty-page-header {
+  top: 74px;
+}
+
+/* Stats Row */
+.empty-stats {
+  position: absolute;
+  top: 210px;
+  left: 220px;
+  width: 1000px;
+  z-index: 2;
+}
+
+/* Empty State Card */
+.empty-state-card {
+  position: absolute;
+  top: 420px;
+  left: 370px;
+  width: 700px;
+  border-radius: 15px;
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
+  background: #FFFFFF1A;
+  border: 1px solid #FFFFFF33;
+  padding: 36px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  z-index: 2;
+}
+
+.empty-icon-circle {
+  width: 100px;
+  height: 100px;
+  border-radius: 50px;
+  background: #FFFFFF26;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty-icon-circle .material-symbols-rounded {
+  font-size: 40px;
+  color: #FFFFFFCC;
+}
+
+.empty-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #FFFFFF;
+  text-align: center;
+}
+
+.empty-description {
+  font-size: 16px;
+  color: #FFFFFFCC;
+  text-align: center;
+  width: 400px;
+}
+
+/* First tree progress pill */
+.empty-progress-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: #2E8B5722;
+  border: 1px solid #2E8B5744;
+  border-radius: 30px;
+}
+
+.empty-progress-pill .material-symbols-rounded {
+  font-size: 18px;
+  color: #4CAF50;
+}
+
+.empty-progress-text {
+  font-size: 13px;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+/* How it works section */
+.empty-how-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #FFFFFF;
+  text-align: center;
+}
+
+.empty-steps {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+}
+
+.empty-step {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 12px;
+  background: #FFFFFF0D;
+  border: 1px solid #FFFFFF1A;
+  border-radius: 12px;
+}
+
+.empty-step-num {
+  width: 36px;
+  height: 36px;
+  border-radius: 18px;
+  background: #2E8B57;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.empty-step .material-symbols-rounded {
+  font-size: 24px;
+  color: #FFFFFF99;
+}
+
+.empty-step-text {
+  font-size: 12px;
+  font-weight: 500;
+  color: #FFFFFFCC;
+  text-align: center;
+}
+
+/* CTA Button */
+.empty-cta-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 28px;
+  background: linear-gradient(135deg, #2E8B57, #1B5E20);
+  border-radius: 30px;
+  color: #FFFFFF;
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+}
+
+.empty-cta-btn .material-symbols-rounded {
+  font-size: 20px;
+}
+
+/* Footer position */
+.empty-footer {
+  top: 1020px;
+}

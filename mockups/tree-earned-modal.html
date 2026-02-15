@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PF - Tree Earned Modal</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/tree-earned-modal.css">
+</head>
+<body>
+  <div class="app-page app-page--modal">
+    <!-- Background -->
+    <img class="app-bg" src="https://images.unsplash.com/photo-1763202368892-44c576515c00?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDM0ODN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3NzAxMjY1MTB8&ixlib=rb-4.1.0&q=80&w=1080" alt="Forest background">
+    <div class="app-overlay"></div>
+
+    <!-- Navbar (simplified) -->
+    <nav class="app-navbar">
+      <div class="nav-brand">
+        <div class="nav-brand-icon">
+          <span class="material-symbols-rounded">park</span>
+        </div>
+        <span class="nav-brand-text">Pomodoro Forest</span>
+      </div>
+    </nav>
+
+    <!-- Timer dimmed behind -->
+    <div class="modal-timer-dimmed">
+      <span class="modal-timer-dimmed-time">00:00</span>
+      <div class="modal-timer-dimmed-btn">Detener</div>
+    </div>
+
+    <!-- Modal overlay -->
+    <div class="modal-overlay"></div>
+
+    <!-- Confetti pieces -->
+    <div class="confetti" style="width:8px;height:8px;background:#FFD700;top:100px;left:460px;transform:rotate(25deg)"></div>
+    <div class="confetti" style="width:6px;height:12px;background:#FF6B6B;top:90px;left:520px;transform:rotate(-15deg)"></div>
+    <div class="confetti" style="width:8px;height:8px;background:#2E8B57;top:110px;left:910px;transform:rotate(40deg)"></div>
+    <div class="confetti" style="width:6px;height:12px;background:#4285F4;top:85px;left:950px;transform:rotate(-30deg)"></div>
+    <div class="confetti" style="width:10px;height:6px;background:#FFD700;top:130px;left:480px;transform:rotate(60deg)"></div>
+    <div class="confetti" style="width:8px;height:8px;background:#9333EA;top:140px;left:935px;transform:rotate(15deg)"></div>
+    <div class="confetti" style="width:6px;height:10px;background:#FF6B6B;top:160px;left:500px;transform:rotate(-45deg)"></div>
+    <div class="confetti" style="width:10px;height:6px;background:#2E8B57;top:170px;left:960px;transform:rotate(70deg)"></div>
+    <div class="confetti-circle" style="width:8px;height:8px;background:#FFD700;top:190px;left:475px"></div>
+    <div class="confetti-circle" style="width:6px;height:6px;background:#FF6B6B;top:200px;left:955px"></div>
+    <div class="confetti-circle" style="width:7px;height:7px;background:#4285F4;top:220px;left:490px"></div>
+    <div class="confetti-circle" style="width:8px;height:8px;background:#9333EA;top:230px;left:940px"></div>
+
+    <!-- Modal Dialog -->
+    <div class="modal-dialog">
+      <!-- Header -->
+      <div class="modal-header">
+        <div class="modal-trophy-row">
+          <span class="material-symbols-rounded">emoji_events</span>
+          <span class="modal-title">Felicidades!</span>
+        </div>
+        <span class="material-symbols-rounded modal-close">close</span>
+      </div>
+
+      <!-- Tree Image -->
+      <div class="modal-tree-wrapper">
+        <div class="modal-tree-glow"></div>
+        <div class="modal-tree-image"></div>
+      </div>
+
+      <!-- Tree Name -->
+      <h2 class="modal-tree-name">Roble Ancestral</h2>
+
+      <!-- Stars -->
+      <div class="modal-stars">
+        <span class="material-symbols-rounded">star</span>
+        <span class="material-symbols-rounded">star</span>
+        <span class="material-symbols-rounded">star</span>
+        <span class="material-symbols-rounded">star</span>
+        <span class="material-symbols-rounded">star</span>
+      </div>
+
+      <!-- Category Badge -->
+      <div class="modal-category-badge">Legendario</div>
+
+      <!-- Description -->
+      <p class="modal-description">Un arbol majestuoso y antiguo, simbolo de fuerza y sabiduria. Solo los mas dedicados logran obtenerlo.</p>
+
+      <!-- XP Reward -->
+      <div class="modal-xp-reward">
+        <span class="material-symbols-rounded">bolt</span>
+        <span class="modal-xp-text">+25 min enfocados</span>
+      </div>
+
+      <!-- Success Alert -->
+      <div class="modal-success-alert">
+        <span class="material-symbols-rounded">check_circle</span>
+        <span class="modal-success-text">Arbol agregado a tu coleccion!</span>
+      </div>
+
+      <!-- Buttons -->
+      <div class="modal-buttons">
+        <button class="modal-btn-forest">Ver mi bosque</button>
+        <button class="modal-btn-close">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

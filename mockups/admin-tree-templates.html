@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PF Admin - Tree Templates</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/admin.css">
+  <link rel="stylesheet" href="css/admin-tree-templates.css">
+</head>
+<body>
+  <div class="admin-page">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+      <div class="admin-sidebar-brand">
+        <div class="admin-sidebar-icon">
+          <span class="material-symbols-rounded">park</span>
+        </div>
+        <span class="admin-sidebar-title">PF Admin</span>
+      </div>
+      <div class="admin-sidebar-divider"></div>
+      <nav class="admin-sidebar-nav">
+        <a class="admin-sidebar-item" href="admin-dashboard.html">
+          <span class="material-symbols-rounded">dashboard</span>
+          Dashboard
+        </a>
+        <a class="admin-sidebar-item admin-sidebar-item--active">
+          <span class="material-symbols-rounded">park</span>
+          Arboles
+        </a>
+        <a class="admin-sidebar-item" href="admin-users.html">
+          <span class="material-symbols-rounded">group</span>
+          Usuarios
+        </a>
+        <a class="admin-sidebar-item" href="admin-activity-logs.html">
+          <span class="material-symbols-rounded">history</span>
+          Actividad
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+      <!-- Header -->
+      <div class="admin-header">
+        <h1 class="admin-header-title">Gestion de Arboles</h1>
+        <button class="admin-btn-green" onclick="location.href='admin-tree-form.html'">
+          <span class="material-symbols-rounded">add</span>
+          Nuevo Arbol
+        </button>
+      </div>
+
+      <!-- Table -->
+      <div class="admin-table">
+        <!-- Header -->
+        <div class="admin-table-header">
+          <span class="admin-th" style="width:50px">Imagen</span>
+          <span class="admin-th" style="flex:1">Nombre</span>
+          <span class="admin-th" style="width:120px">Categoria</span>
+          <span class="admin-th" style="width:100px">Rareza</span>
+          <span class="admin-th" style="width:60px">Prob.</span>
+          <span class="admin-th" style="width:120px">Acciones</span>
+        </div>
+
+        <!-- Row 1 -->
+        <div class="admin-table-row">
+          <div class="admin-tree-img admin-tree-img--green" style="width:50px"></div>
+          <span class="admin-cell-name" style="flex:1">Pino Comun</span>
+          <span class="admin-cell-sub" style="width:120px">Coniferas</span>
+          <div style="width:100px"><span class="admin-badge admin-badge--gray">Comun</span></div>
+          <span class="admin-cell-value" style="width:60px">20</span>
+          <div style="width:120px; display:flex; gap:8px">
+            <span class="admin-action-edit">Editar</span>
+            <span class="admin-action-delete">Eliminar</span>
+          </div>
+        </div>
+
+        <!-- Row 2 -->
+        <div class="admin-table-row">
+          <div class="admin-tree-img admin-tree-img--green" style="width:50px"></div>
+          <span class="admin-cell-name" style="flex:1">Roble Fuerte</span>
+          <span class="admin-cell-sub" style="width:120px">Caducifolios</span>
+          <div style="width:100px"><span class="admin-badge admin-badge--gray">Comun</span></div>
+          <span class="admin-cell-value" style="width:60px">18</span>
+          <div style="width:120px; display:flex; gap:8px">
+            <span class="admin-action-edit">Editar</span>
+            <span class="admin-action-delete">Eliminar</span>
+          </div>
+        </div>
+
+        <!-- Row 3 -->
+        <div class="admin-table-row">
+          <div class="admin-tree-img admin-tree-img--pink" style="width:50px"></div>
+          <span class="admin-cell-name" style="flex:1">Cerezo Japones</span>
+          <span class="admin-cell-sub" style="width:120px">Florales</span>
+          <div style="width:100px"><span class="admin-badge admin-badge--blue">Raro</span></div>
+          <span class="admin-cell-value" style="width:60px">8</span>
+          <div style="width:120px; display:flex; gap:8px">
+            <span class="admin-action-edit">Editar</span>
+            <span class="admin-action-delete">Eliminar</span>
+          </div>
+        </div>
+
+        <!-- Row 4 -->
+        <div class="admin-table-row">
+          <div class="admin-tree-img admin-tree-img--yellow" style="width:50px"></div>
+          <span class="admin-cell-name" style="flex:1">Palmera Tropical</span>
+          <span class="admin-cell-sub" style="width:120px">Tropicales</span>
+          <div style="width:100px"><span class="admin-badge admin-badge--green">Poco comun</span></div>
+          <span class="admin-cell-value" style="width:60px">12</span>
+          <div style="width:120px; display:flex; gap:8px">
+            <span class="admin-action-edit">Editar</span>
+            <span class="admin-action-delete">Eliminar</span>
+          </div>
+        </div>
+
+        <!-- Row 5 -->
+        <div class="admin-table-row">
+          <div class="admin-tree-img admin-tree-img--purple" style="width:50px"></div>
+          <span class="admin-cell-name" style="flex:1">Sequoia Gigante</span>
+          <span class="admin-cell-sub" style="width:120px">Coniferas</span>
+          <div style="width:100px"><span class="admin-badge admin-badge--purple">Epico</span></div>
+          <span class="admin-cell-value" style="width:60px">4</span>
+          <div style="width:120px; display:flex; gap:8px">
+            <span class="admin-action-edit">Editar</span>
+            <span class="admin-action-delete">Eliminar</span>
+          </div>
+        </div>
+
+        <!-- Row 6 -->
+        <div class="admin-table-row">
+          <div class="admin-tree-img admin-tree-img--gold" style="width:50px"></div>
+          <span class="admin-cell-name" style="flex:1">Sauce Milenario</span>
+          <span class="admin-cell-sub" style="width:120px">Caducifolios</span>
+          <div style="width:100px"><span class="admin-badge admin-badge--gold">Legendario</span></div>
+          <span class="admin-cell-value" style="width:60px">2</span>
+          <div style="width:120px; display:flex; gap:8px">
+            <span class="admin-action-edit">Editar</span>
+            <span class="admin-action-delete">Eliminar</span>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PF - Settings</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/settings.css">
+</head>
+<body>
+  <div class="app-page app-page--settings">
+    <!-- Background -->
+    <img class="app-bg" src="https://images.unsplash.com/photo-1766824505433-2d65695ab2a4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDM0ODN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3NzAxMzE3Nzh8&ixlib=rb-4.1.0&q=80&w=1080" alt="Forest background">
+    <div class="app-overlay app-overlay--dark"></div>
+
+    <!-- Navbar (glass dark) -->
+    <nav class="app-navbar app-navbar--glass">
+      <div class="nav-brand">
+        <div class="nav-brand-icon">
+          <span class="material-symbols-rounded">park</span>
+        </div>
+        <span class="nav-brand-text" style="color:#FFFFFF">Pomodoro Forest</span>
+      </div>
+      <div class="nav-links">
+        <a class="nav-link" style="color:#FFFFFF99">Pomodoro</a>
+        <a class="nav-link" style="color:#FFFFFF99">Mi Bosque</a>
+      </div>
+      <div class="nav-user">
+        <div class="nav-user-pill" style="background:#FFFFFF1A">
+          <span class="material-symbols-rounded" style="color:#FFFFFF;font-size:18px">person</span>
+          <span class="nav-username" style="color:#FFFFFF;font-size:13px">Usuario</span>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Dark overlay for dimming -->
+    <div class="app-overlay--modal-dim"></div>
+
+    <!-- Settings Modal -->
+    <div class="settings-modal">
+      <!-- Header -->
+      <div class="settings-header">
+        <span class="settings-header-title">Ajustes</span>
+        <span class="material-symbols-rounded settings-close">close</span>
+      </div>
+
+      <!-- Profile Section -->
+      <div class="settings-section">
+        <span class="settings-section-label">PERFIL</span>
+        <div class="settings-profile-row">
+          <div class="settings-avatar"></div>
+          <div class="settings-profile-info">
+            <span class="settings-profile-name">Usuario</span>
+            <span class="settings-profile-email">usuario@email.com</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Timer Section -->
+      <div class="settings-section">
+        <span class="settings-section-label">TEMPORIZADOR</span>
+        <div class="settings-row">
+          <span class="settings-row-label">Duracion Pomodoro</span>
+          <div class="settings-value-pill">
+            <span class="settings-value-text">25 min</span>
+            <span class="material-symbols-rounded settings-value-chevron">chevron_right</span>
+          </div>
+        </div>
+        <div class="settings-row">
+          <span class="settings-row-label">Duracion Descanso</span>
+          <div class="settings-value-pill">
+            <span class="settings-value-text">5 min</span>
+            <span class="material-symbols-rounded settings-value-chevron">chevron_right</span>
+          </div>
+        </div>
+        <div class="settings-row">
+          <span class="settings-row-label">Sesiones por ciclo</span>
+          <div class="settings-value-pill">
+            <span class="settings-value-text">4</span>
+            <span class="material-symbols-rounded settings-value-chevron">chevron_right</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sound Section -->
+      <div class="settings-section">
+        <span class="settings-section-label">SONIDO</span>
+        <div class="settings-row">
+          <span class="settings-row-label">Sonido ambiental</span>
+          <div class="settings-toggle settings-toggle--on">
+            <div class="settings-toggle-dot"></div>
+          </div>
+        </div>
+        <div class="settings-row">
+          <span class="settings-row-label">Notificaciones</span>
+          <div class="settings-toggle settings-toggle--on">
+            <div class="settings-toggle-dot"></div>
+          </div>
+        </div>
+        <div class="settings-row">
+          <span class="settings-row-label">Auto-iniciar descanso</span>
+          <div class="settings-toggle settings-toggle--off">
+            <div class="settings-toggle-dot"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Account Section -->
+      <div class="settings-section">
+        <span class="settings-section-label">CUENTA</span>
+        <div class="settings-row">
+          <span class="settings-row-label">Cambiar contrasena</span>
+          <span class="material-symbols-rounded settings-row-icon">chevron_right</span>
+        </div>
+        <div class="settings-row">
+          <span class="settings-row-label settings-row-label--danger">Eliminar cuenta</span>
+          <span class="material-symbols-rounded settings-row-icon--danger">delete</span>
+        </div>
+        <div class="settings-row">
+          <span class="settings-row-label settings-row-label--danger">Cerrar sesion</span>
+          <span class="material-symbols-rounded settings-row-icon--danger">logout</span>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="settings-footer">
+        <button class="settings-btn-cancel">Cancelar</button>
+        <button class="settings-btn-save">Guardar cambios</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

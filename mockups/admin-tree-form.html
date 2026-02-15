@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PF Admin - Tree Form</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/admin.css">
+  <link rel="stylesheet" href="css/admin-tree-form.css">
+</head>
+<body>
+  <div class="admin-page">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+      <div class="admin-sidebar-brand">
+        <div class="admin-sidebar-icon">
+          <span class="admin-sidebar-icon-text">PF</span>
+        </div>
+        <span class="admin-sidebar-title">PF Admin</span>
+      </div>
+      <div class="admin-sidebar-divider"></div>
+      <nav class="admin-sidebar-nav">
+        <a class="admin-sidebar-item" href="admin-dashboard.html">Dashboard</a>
+        <a class="admin-sidebar-item admin-sidebar-item--active" href="admin-tree-templates.html">Arboles</a>
+        <a class="admin-sidebar-item" href="admin-users.html">Usuarios</a>
+        <a class="admin-sidebar-item" href="admin-activity-logs.html">Actividad</a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+      <!-- Header -->
+      <div class="admin-header">
+        <h1 class="admin-header-title">Crear Nuevo Arbol</h1>
+      </div>
+
+      <!-- Form Card -->
+      <div class="admin-form-card">
+        <!-- Left Column -->
+        <div class="admin-form-left">
+          <!-- Nombre -->
+          <div class="admin-form-group">
+            <label class="admin-form-label">Nombre del arbol</label>
+            <input class="admin-form-input" type="text" placeholder="Ej: Cerezo Japones">
+          </div>
+
+          <!-- Categoria -->
+          <div class="admin-form-group">
+            <label class="admin-form-label">Categoria</label>
+            <div class="admin-form-select">
+              <span>Seleccionar categoria</span>
+              <span style="font-size:12px; color:#6B7280">v</span>
+            </div>
+          </div>
+
+          <!-- Descripcion -->
+          <div class="admin-form-group">
+            <label class="admin-form-label">Descripcion</label>
+            <textarea class="admin-form-textarea" placeholder="Descripcion del arbol..."></textarea>
+          </div>
+
+          <!-- Probabilidad -->
+          <div class="admin-form-group" style="gap:10px">
+            <div style="display:flex; justify-content:space-between; align-items:center; width:100%">
+              <label class="admin-form-label">Probabilidad</label>
+              <span class="admin-prob-badge">Raro</span>
+            </div>
+            <div class="admin-slider-track">
+              <div class="admin-slider-fill" style="width:192px"></div>
+            </div>
+            <div class="admin-slider-labels">
+              <span class="admin-slider-label">1 (Legendario)</span>
+              <span class="admin-slider-label">25 (Comun)</span>
+            </div>
+          </div>
+
+          <!-- Buttons -->
+          <div class="admin-form-buttons">
+            <button class="admin-btn-outline" onclick="location.href='admin-tree-templates.html'">Cancelar</button>
+            <button class="admin-btn-green">Guardar Arbol</button>
+          </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="admin-form-right">
+          <!-- Upload Zone -->
+          <div class="admin-upload-zone">
+            <span class="admin-upload-icon">&#8593;</span>
+            <span class="admin-upload-text">Arrastra una imagen aqui</span>
+            <span class="admin-upload-hint">PNG, JPG hasta 5MB</span>
+            <button class="admin-upload-btn">Seleccionar archivo</button>
+          </div>
+
+          <!-- Preview -->
+          <span class="admin-form-label">Vista previa</span>
+          <div class="admin-preview-card">
+            <div class="admin-preview-img"></div>
+            <span class="admin-preview-name">Cerezo Japones</span>
+            <span class="admin-preview-badge">Raro</span>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

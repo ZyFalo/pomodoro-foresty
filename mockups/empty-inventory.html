@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PF - Empty Inventory</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/empty-inventory.css">
+</head>
+<body>
+  <div class="app-page app-page--empty">
+    <!-- Background -->
+    <img class="app-bg" src="https://images.unsplash.com/photo-1626244297294-c1aecb88f542?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDM0ODN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3NzAxMjY2ODJ8&ixlib=rb-4.1.0&q=80&w=1080" alt="Forest background">
+    <div class="app-overlay app-overlay--gradient"></div>
+
+    <!-- Navbar -->
+    <nav class="app-navbar">
+      <div class="nav-brand">
+        <div class="nav-brand-icon">
+          <span class="material-symbols-rounded">park</span>
+        </div>
+        <span class="nav-brand-text">Pomodoro Forest</span>
+      </div>
+      <div class="nav-links">
+        <a class="nav-link" href="pomodoro-timer.html">Pomodoro</a>
+        <a class="nav-link nav-link--active" href="#">Mi Bosque</a>
+      </div>
+      <div class="nav-user">
+        <div class="nav-user-pill">
+          <span class="nav-username">Usuario</span>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="app-page-header empty-page-header">
+      <h1 class="app-page-title">Mi Bosque</h1>
+      <p class="app-page-subtitle">Observa como crece tu bosque con cada sesion Pomodoro completada</p>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="stats-row empty-stats">
+      <div class="stat-card">
+        <div class="stat-icon-circle">
+          <span class="material-symbols-rounded">park</span>
+        </div>
+        <span class="stat-value">0</span>
+        <span class="stat-label">Arboles Coleccionados</span>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon-circle">
+          <span class="material-symbols-rounded">check_circle</span>
+        </div>
+        <span class="stat-value">0</span>
+        <span class="stat-label">Pomodoros Completados</span>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon-circle">
+          <span class="material-symbols-rounded">hourglass_top</span>
+        </div>
+        <span class="stat-value">0</span>
+        <span class="stat-label">Minutos Enfocados</span>
+      </div>
+    </div>
+
+    <!-- Empty State Card -->
+    <div class="empty-state-card">
+      <div class="empty-icon-circle">
+        <span class="material-symbols-rounded">park</span>
+      </div>
+
+      <h2 class="empty-title">Tu bosque esta vacio</h2>
+      <p class="empty-description">Completa sesiones Pomodoro para comenzar a plantar arboles!</p>
+
+      <!-- First tree progress -->
+      <div class="empty-progress-pill">
+        <span class="material-symbols-rounded">track_changes</span>
+        <span class="empty-progress-text">0/1 primer arbol</span>
+      </div>
+
+      <!-- How it works -->
+      <div style="width:100%; display:flex; flex-direction:column; gap:16px; padding-top:20px;">
+        <h3 class="empty-how-title">¿Como funciona?</h3>
+        <div class="empty-steps">
+          <div class="empty-step">
+            <div class="empty-step-num">1</div>
+            <span class="material-symbols-rounded">timer</span>
+            <span class="empty-step-text">Configura tu timer y enfocate</span>
+          </div>
+          <div class="empty-step">
+            <div class="empty-step-num">2</div>
+            <span class="material-symbols-rounded">check_circle</span>
+            <span class="empty-step-text">Completa la sesion Pomodoro</span>
+          </div>
+          <div class="empty-step">
+            <div class="empty-step-num">3</div>
+            <span class="material-symbols-rounded">park</span>
+            <span class="empty-step-text">Gana un arbol aleatorio para tu bosque!</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA Button -->
+      <button class="empty-cta-btn">
+        <span class="material-symbols-rounded">schedule</span>
+        Iniciar Pomodoro
+      </button>
+    </div>
+
+    <!-- Footer -->
+    <div class="app-footer empty-footer" style="position:absolute; top:1020px;">
+      <span class="app-footer-brand">Pomodoro Forest © 2025</span>
+      <span class="app-footer-tagline">Mejora tu productividad mientras cultivas tu bosque virtual</span>
+    </div>
+  </div>
+</body>
+</html>

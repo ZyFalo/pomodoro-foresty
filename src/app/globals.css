@@ -1,0 +1,81 @@
+@import "tailwindcss";
+
+@theme {
+  /* Font */
+  --font-sans: "Inter", sans-serif;
+
+  /* Primary */
+  --color-primary: #2E8B57;
+  --color-primary-dark: #1B5E20;
+  --color-primary-light: #4CAF50;
+  --color-accent-green: #81C784;
+
+  /* Neutrals */
+  --color-gray-50: #F9FAFB;
+  --color-gray-100: #F3F4F6;
+  --color-gray-200: #E5E7EB;
+  --color-gray-300: #D1D5DB;
+  --color-gray-400: #9CA3AF;
+  --color-gray-500: #6B7280;
+  --color-gray-600: #64748B;
+  --color-gray-700: #374151;
+  --color-gray-800: #2C3E50;
+  --color-gray-900: #111827;
+
+  /* Semantic */
+  --color-danger: #EF4444;
+  --color-danger-dark: #e74c3c;
+  --color-success: #10B981;
+  --color-blue: #3B82F6;
+  --color-purple: #9333EA;
+  --color-gold: #FFD700;
+
+  /* Rarity colors */
+  --color-rarity-common: #6B7280;
+  --color-rarity-uncommon: #22C55E;
+  --color-rarity-rare: #3B82F6;
+  --color-rarity-epic: #9333EA;
+  --color-rarity-legendary: #FFD700;
+
+  /* White transparencies (glassmorphism) */
+  --color-white-5: #FFFFFF0D;
+  --color-white-8: #FFFFFF15;
+  --color-white-10: #FFFFFF1A;
+  --color-white-15: #FFFFFF26;
+  --color-white-20: #FFFFFF33;
+  --color-white-27: #FFFFFF44;
+  --color-white-40: #FFFFFF66;
+  --color-white-50: #FFFFFF80;
+  --color-white-60: #FFFFFF99;
+  --color-white-73: #FFFFFFBB;
+  --color-white-80: #FFFFFFCC;
+  --color-white-90: #FFFFFFE6;
+
+  /* Badge backgrounds */
+  --color-badge-gray: #F3F4F6;
+  --color-badge-green: #D1FAE5;
+  --color-badge-blue: #DBEAFE;
+  --color-badge-purple: #EDE9FE;
+  --color-badge-gold: #FEF3C7;
+  --color-badge-red: #FEE2E2;
+
+  /* Border radius */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 15px;
+  --radius-2xl: 16px;
+  --radius-3xl: 20px;
+  --radius-pill: 30px;
+  --radius-full: 999px;
+
+  /* Backdrop blur */
+  --backdrop-blur-glass: 7px;
+  --backdrop-blur-glass-strong: 10px;
+}
+
+/* Material Symbols config */
+.material-symbols-rounded {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  vertical-align: middle;
+}

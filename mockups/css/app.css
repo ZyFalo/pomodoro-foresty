@@ -1,0 +1,301 @@
+/* app.css — Shared styles for app screens */
+
+/* Full-screen layout */
+.app-page {
+  position: relative;
+  width: 1440px;
+  overflow: hidden;
+  font-family: 'Inter', sans-serif;
+}
+
+.app-page--timer { height: 1160px; }
+.app-page--modal { height: 960px; }
+.app-page--inventory { height: 1200px; }
+.app-page--empty { height: 1100px; }
+.app-page--settings { height: 960px; }
+
+/* Background */
+.app-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Overlay variants */
+.app-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #00000055;
+}
+
+.app-overlay--dark {
+  background: #00000066;
+}
+
+.app-overlay--gradient {
+  background: linear-gradient(180deg, #1B5E2066, #00000099);
+}
+
+.app-overlay--modal-dim {
+  background: #00000080;
+  z-index: 5;
+}
+
+/* Navbar */
+.app-navbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1440px;
+  height: 64px;
+  padding: 12px 32px;
+  background: #FFFFFFF2;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 10;
+}
+
+/* Navbar — settings variant (glass dark) */
+.app-navbar--glass {
+  background: #FFFFFF1A;
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
+  padding: 0 40px;
+}
+
+.app-navbar--glass .nav-brand-text {
+  color: #FFFFFF;
+}
+
+.app-navbar--glass .nav-link {
+  color: #FFFFFF99;
+}
+
+.app-navbar--glass .nav-user-pill {
+  background: #FFFFFF1A;
+}
+
+.app-navbar--glass .nav-user-icon {
+  color: #FFFFFF;
+}
+
+.app-navbar--glass .nav-username {
+  color: #FFFFFF;
+  font-size: 13px;
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav-brand-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #2E8B57, #1B5E20);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-brand-icon .material-symbols-rounded {
+  font-size: 20px;
+  color: #FFFFFF;
+}
+
+.nav-brand-text {
+  font-size: 18px;
+  font-weight: 600;
+  color: #2E8B57;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.nav-link {
+  font-size: 14px;
+  font-weight: 500;
+  color: #64748B;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.nav-link--active {
+  color: #2E8B57;
+  font-weight: 600;
+}
+
+.nav-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nav-user-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  background: #F1F5F9;
+  border-radius: 30px;
+}
+
+.nav-user-icon {
+  font-size: 18px;
+  color: #2E8B57;
+}
+
+.nav-username {
+  font-size: 14px;
+  font-weight: 500;
+  color: #2C3E50;
+}
+
+.nav-logout {
+  width: 38px;
+  height: 38px;
+  border-radius: 19px;
+  background: #F1F5F9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-logout .material-symbols-rounded {
+  font-size: 18px;
+  color: #64748B;
+}
+
+/* Page Header */
+.app-page-header {
+  position: absolute;
+  width: 800px;
+  left: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 20px 0;
+  z-index: 2;
+}
+
+.app-page-title {
+  font-size: 48px;
+  font-weight: 700;
+  color: #FFFFFF;
+  text-align: center;
+}
+
+.app-page-subtitle {
+  font-size: 16px;
+  color: #FFFFFFCC;
+  text-align: center;
+}
+
+/* Footer */
+.app-footer {
+  position: absolute;
+  left: 0;
+  width: 1440px;
+  height: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  background: #00000033;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 2;
+}
+
+.app-footer-brand {
+  font-size: 14px;
+  font-weight: 500;
+  color: #FFFFFFCC;
+  text-align: center;
+}
+
+.app-footer-tagline {
+  font-size: 12px;
+  color: #FFFFFF80;
+  text-align: center;
+}
+
+/* Glass container base */
+.glass-card {
+  border-radius: 15px;
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
+  background: #FFFFFF1A;
+  border: 1px solid #FFFFFF33;
+}
+
+.glass-card--green {
+  background: #2E8B5733;
+  border-color: #2E8B574D;
+}
+
+/* Stats row */
+.stats-row {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.stat-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 24px 20px;
+  border-radius: 15px;
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
+  background: #FFFFFF26;
+  border: 1px solid #FFFFFF33;
+}
+
+.stat-icon-circle {
+  width: 70px;
+  height: 70px;
+  border-radius: 35px;
+  background: #FFFFFF33;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stat-icon-circle .material-symbols-rounded {
+  font-size: 28px;
+  color: #FFFFFF;
+}
+
+.stat-value {
+  font-size: 40px;
+  font-weight: 700;
+  color: #FFFFFF;
+  text-align: center;
+}
+
+.stat-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #FFFFFFE6;
+  text-align: center;
+}

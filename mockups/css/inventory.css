@@ -1,0 +1,301 @@
+/* inventory.css — Inventory specific styles */
+
+.inventory-page-header {
+  top: 74px;
+}
+
+/* Stats Row */
+.inventory-stats {
+  position: absolute;
+  top: 210px;
+  left: 220px;
+  width: 1000px;
+  z-index: 2;
+}
+
+/* Motivational Alert */
+.inventory-alert {
+  position: absolute;
+  top: 425px;
+  left: 220px;
+  width: 1000px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 24px;
+  border-radius: 15px;
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
+  background: #2E8B5733;
+  border: 1px solid #2E8B574D;
+  z-index: 2;
+}
+
+.inventory-alert-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 25px;
+  background: #FFFFFF33;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.inventory-alert-icon .material-symbols-rounded {
+  font-size: 24px;
+  color: #FFFFFF;
+}
+
+.inventory-alert-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.inventory-alert-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.inventory-alert-desc {
+  font-size: 14px;
+  color: #FFFFFFCC;
+}
+
+/* Collection Progress */
+.inventory-progress {
+  position: absolute;
+  top: 530px;
+  left: 220px;
+  width: 1000px;
+  border-radius: 12px;
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
+  background: #FFFFFF1A;
+  border: 1px solid #FFFFFF33;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 2;
+}
+
+.inventory-progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.inventory-progress-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.inventory-progress-percent {
+  font-size: 12px;
+  font-weight: 500;
+  color: #FFFFFF99;
+}
+
+.inventory-progress-bar {
+  width: 100%;
+  height: 8px;
+  background: #FFFFFF1A;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.inventory-progress-fill {
+  width: 15%;
+  height: 8px;
+  background: linear-gradient(90deg, #2E8B57, #4CAF50);
+  border-radius: 4px;
+}
+
+/* Collection Card */
+.inventory-collection {
+  position: absolute;
+  top: 610px;
+  left: 220px;
+  width: 1000px;
+  border-radius: 15px;
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
+  background: #FFFFFF1A;
+  border: 1px solid #FFFFFF33;
+  display: flex;
+  flex-direction: column;
+  z-index: 2;
+}
+
+/* Collection Header */
+.inventory-collection-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid #FFFFFF1A;
+}
+
+.inventory-collection-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.inventory-count-badge {
+  display: flex;
+  align-items: center;
+  padding: 3px 10px;
+  background: #FFFFFF33;
+  border-radius: 30px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #FFFFFF;
+}
+
+.inventory-add-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: #2E8B57;
+  border-radius: 30px;
+  color: #FFFFFF;
+  font-size: 13px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+}
+
+.inventory-add-btn .material-symbols-rounded {
+  font-size: 16px;
+}
+
+/* Filter Row */
+.inventory-filters {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 24px 8px 24px;
+}
+
+.inventory-filter {
+  display: flex;
+  align-items: center;
+  padding: 6px 14px;
+  border-radius: 30px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #FFFFFF99;
+  border: 1px solid #FFFFFF44;
+  cursor: pointer;
+  background: transparent;
+}
+
+.inventory-filter--active {
+  background: #2E8B57;
+  color: #FFFFFF;
+  font-weight: 600;
+  border-color: #2E8B57;
+}
+
+/* Tree Grid */
+.inventory-grid {
+  display: flex;
+  gap: 20px;
+  padding: 20px 24px;
+}
+
+/* Tree Card */
+.inventory-tree-card {
+  flex: 1;
+  border-radius: 15px;
+  background: #FFFFFF26;
+  border: 1px solid #FFFFFF33;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.inventory-tree-image {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.inventory-tree-image-placeholder {
+  width: 100%;
+  height: 180px;
+  background: #2E8B5744;
+}
+
+.inventory-tree-content {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: #0000001A;
+}
+
+.inventory-tree-badge {
+  display: inline-flex;
+  padding: 4px 12px;
+  border-radius: 30px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #FFFFFF;
+  width: fit-content;
+}
+
+.inventory-tree-badge--common { background: #2E8B57; }
+.inventory-tree-badge--rare { background: #9333EA; }
+.inventory-tree-badge--legendary {
+  background: linear-gradient(135deg, #FFD700, #F59E0B);
+  color: #1B1B1B;
+  font-weight: 700;
+}
+
+.inventory-tree-name {
+  font-size: 20px;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.inventory-tree-desc {
+  font-size: 13px;
+  color: #FFFFFFB3;
+}
+
+.inventory-tree-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.inventory-tree-action {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid #FFFFFF66;
+  font-size: 12px;
+  color: #FFFFFF;
+  background: transparent;
+  cursor: pointer;
+}
+
+.inventory-tree-action--delete {
+  border-color: #FF6B6B66;
+  color: #FF6B6B;
+}
+
+/* Footer position */
+.inventory-footer {
+  top: 1115px;
+}

@@ -1,0 +1,306 @@
+/* pomodoro-timer.css — Pomodoro Timer specific styles */
+
+.timer-page-header {
+  top: 84px;
+}
+
+/* Timer Card */
+.timer-card {
+  position: absolute;
+  top: 220px;
+  left: 420px;
+  width: 600px;
+  border-radius: 20px;
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
+  background: #FFFFFF1A;
+  border: 1px solid #FFFFFF33;
+  padding: 32px 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  z-index: 2;
+}
+
+/* Mode pill */
+.timer-mode-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 16px;
+  background: #2E8B5733;
+  border: 1px solid #2E8B5766;
+  border-radius: 30px;
+}
+
+.timer-mode-pill .material-symbols-rounded {
+  font-size: 16px;
+  color: #4CAF50;
+}
+
+.timer-mode-text {
+  font-size: 12px;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+/* Progress Ring */
+.timer-ring {
+  position: relative;
+  width: 260px;
+  height: 260px;
+}
+
+.timer-ring svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 260px;
+  height: 260px;
+  transform: rotate(-90deg);
+}
+
+.timer-ring-bg {
+  fill: none;
+  stroke: #FFFFFF1A;
+  stroke-width: 8;
+}
+
+.timer-ring-progress {
+  fill: none;
+  stroke: #2E8B57;
+  stroke-width: 8;
+  stroke-linecap: round;
+  stroke-dasharray: 754;
+  stroke-dashoffset: 150;
+}
+
+.timer-ring-texts {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 260px;
+  height: 260px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.timer-time {
+  font-size: 72px;
+  font-weight: 700;
+  color: #FFFFFF;
+  text-align: center;
+  line-height: 1;
+}
+
+.timer-sub {
+  font-size: 14px;
+  color: #FFFFFF80;
+  text-align: center;
+}
+
+/* Session dots */
+.timer-session-dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.timer-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #FFFFFF33;
+}
+
+.timer-dot--active {
+  background: #2E8B57;
+}
+
+.timer-session-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #FFFFFF99;
+}
+
+/* Duration pill */
+.timer-duration-pill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: #FFFFFF;
+  border-radius: 30px;
+}
+
+.timer-duration-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #2E8B57;
+}
+
+.timer-duration-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: #2E8B57;
+}
+
+.timer-duration-unit {
+  font-size: 14px;
+  color: #2E8B57;
+}
+
+/* Buttons */
+.timer-btn-start {
+  width: 300px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #2E8B57, #1B5E20);
+  border-radius: 30px;
+  color: #FFFFFF;
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+}
+
+.timer-btn-start .material-symbols-rounded {
+  font-size: 20px;
+}
+
+.timer-btn-stop {
+  width: 300px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #FF6B6B, #e74c3c);
+  border-radius: 30px;
+  color: #FFFFFF;
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  opacity: 0.35;
+}
+
+.timer-btn-stop .material-symbols-rounded {
+  font-size: 20px;
+}
+
+/* Audio Section */
+.timer-audio {
+  position: absolute;
+  top: 860px;
+  left: 420px;
+  width: 600px;
+  border-radius: 15px;
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
+  background: #2E8B5733;
+  border: 1px solid #2E8B574D;
+  padding: 12px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  z-index: 2;
+}
+
+.timer-audio-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.timer-audio-row .material-symbols-rounded {
+  font-size: 20px;
+  color: #FFFFFF80;
+}
+
+.timer-audio-text {
+  font-size: 14px;
+  color: #FFFFFF;
+  flex: 1;
+}
+
+.timer-volume-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 8px 0;
+}
+
+.timer-volume-row .material-symbols-rounded {
+  font-size: 18px;
+  color: #FFFFFF80;
+}
+
+.timer-volume-track {
+  flex: 1;
+  height: 6px;
+  background: #FFFFFF33;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.timer-volume-fill {
+  width: 60%;
+  height: 6px;
+  background: #2E8B57;
+  border-radius: 3px;
+}
+
+/* Quote Section */
+.timer-quote {
+  position: absolute;
+  top: 940px;
+  left: 420px;
+  width: 600px;
+  border-radius: 15px;
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
+  background: #2E8B5733;
+  border: 1px solid #2E8B574D;
+  padding: 24px 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.timer-quote-text {
+  font-size: 18px;
+  font-weight: 500;
+  font-style: italic;
+  color: #FFFFFF;
+  text-align: center;
+  width: 520px;
+}
+
+.timer-quote-author {
+  font-size: 14px;
+  color: #FFFFFF99;
+  text-align: center;
+  margin-top: 8px;
+}
+
+/* Footer position */
+.timer-footer {
+  bottom: 15px;
+}

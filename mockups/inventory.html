@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PF - Inventory</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/inventory.css">
+</head>
+<body>
+  <div class="app-page app-page--inventory">
+    <!-- Background -->
+    <img class="app-bg" src="https://images.unsplash.com/photo-1570131137364-9082a387d634?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDM0ODN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3NzAxMjY1Njh8&ixlib=rb-4.1.0&q=80&w=1080" alt="Forest background">
+    <div class="app-overlay app-overlay--gradient"></div>
+
+    <!-- Navbar -->
+    <nav class="app-navbar">
+      <div class="nav-brand">
+        <div class="nav-brand-icon">
+          <span class="material-symbols-rounded">park</span>
+        </div>
+        <span class="nav-brand-text">Pomodoro Forest</span>
+      </div>
+      <div class="nav-links">
+        <a class="nav-link" href="pomodoro-timer.html">Pomodoro</a>
+        <a class="nav-link nav-link--active" href="#">Mi Bosque</a>
+      </div>
+      <div class="nav-user">
+        <div class="nav-user-pill">
+          <span class="nav-username">Usuario</span>
+        </div>
+        <div class="nav-logout">
+          <span class="material-symbols-rounded">logout</span>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="app-page-header inventory-page-header">
+      <h1 class="app-page-title">Mi Bosque</h1>
+      <p class="app-page-subtitle">Observa como crece tu bosque con cada sesion Pomodoro completada</p>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="stats-row inventory-stats">
+      <div class="stat-card">
+        <div class="stat-icon-circle">
+          <span class="material-symbols-rounded">park</span>
+        </div>
+        <span class="stat-value">12</span>
+        <span class="stat-label">Arboles Coleccionados</span>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon-circle">
+          <span class="material-symbols-rounded">check_circle</span>
+        </div>
+        <span class="stat-value">8</span>
+        <span class="stat-label">Pomodoros Completados</span>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon-circle">
+          <span class="material-symbols-rounded">hourglass_top</span>
+        </div>
+        <span class="stat-value">200</span>
+        <span class="stat-label">Minutos Enfocados</span>
+      </div>
+    </div>
+
+    <!-- Motivational Alert -->
+    <div class="inventory-alert">
+      <div class="inventory-alert-icon">
+        <span class="material-symbols-rounded">lightbulb</span>
+      </div>
+      <div class="inventory-alert-content">
+        <span class="inventory-alert-title">Cultiva tu bosque!</span>
+        <span class="inventory-alert-desc">Cada sesion Pomodoro completada te acerca mas a desbloquear arboles unicos y raros. Sigue enfocandote!</span>
+      </div>
+    </div>
+
+    <!-- Collection Progress -->
+    <div class="inventory-progress">
+      <div class="inventory-progress-header">
+        <span class="inventory-progress-label">Progreso de coleccion</span>
+        <span class="inventory-progress-percent">3/20 arboles (15%)</span>
+      </div>
+      <div class="inventory-progress-bar">
+        <div class="inventory-progress-fill"></div>
+      </div>
+    </div>
+
+    <!-- Collection Card -->
+    <div class="inventory-collection">
+      <!-- Header -->
+      <div class="inventory-collection-header">
+        <span class="inventory-collection-title">Mi Coleccion</span>
+        <span class="inventory-count-badge">3 arboles</span>
+        <button class="inventory-add-btn">
+          <span class="material-symbols-rounded">add</span>
+          Ganar mas arboles
+        </button>
+      </div>
+
+      <!-- Filters -->
+      <div class="inventory-filters">
+        <button class="inventory-filter inventory-filter--active">Todos</button>
+        <button class="inventory-filter">Comun</button>
+        <button class="inventory-filter">Poco comun</button>
+        <button class="inventory-filter">Raro</button>
+        <button class="inventory-filter">Epico</button>
+        <button class="inventory-filter">Legendario</button>
+      </div>
+
+      <!-- Tree Grid -->
+      <div class="inventory-grid">
+        <!-- Tree Card 1 -->
+        <div class="inventory-tree-card">
+          <img class="inventory-tree-image" src="https://images.unsplash.com/photo-1632604055642-d93bec547fc3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDM0ODN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3NzAxMjY2MTJ8&ixlib=rb-4.1.0&q=80&w=1080" alt="Pino Verde">
+          <div class="inventory-tree-content">
+            <span class="inventory-tree-badge inventory-tree-badge--common">Comun</span>
+            <h3 class="inventory-tree-name">Pino Verde</h3>
+            <p class="inventory-tree-desc">Un arbol comun pero resistente, simbolo de perseverancia.</p>
+            <div class="inventory-tree-actions">
+              <button class="inventory-tree-action">
+                <span class="material-symbols-rounded" style="font-size:14px">edit</span>
+                Editar
+              </button>
+              <button class="inventory-tree-action inventory-tree-action--delete">
+                <span class="material-symbols-rounded" style="font-size:14px">delete</span>
+                Eliminar
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tree Card 2 -->
+        <div class="inventory-tree-card">
+          <img class="inventory-tree-image" src="https://images.unsplash.com/photo-1651570057026-be6e0dad2d0e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDM0ODN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3NzAxMjY2MzN8&ixlib=rb-4.1.0&q=80&w=1080" alt="Cerezo Japones">
+          <div class="inventory-tree-content">
+            <span class="inventory-tree-badge inventory-tree-badge--rare">Raro</span>
+            <h3 class="inventory-tree-name">Cerezo Japones</h3>
+            <p class="inventory-tree-desc">Hermoso arbol de flores rosadas, dificil de encontrar.</p>
+            <div class="inventory-tree-actions">
+              <button class="inventory-tree-action">
+                <span class="material-symbols-rounded" style="font-size:14px">edit</span>
+                Editar
+              </button>
+              <button class="inventory-tree-action inventory-tree-action--delete">
+                <span class="material-symbols-rounded" style="font-size:14px">delete</span>
+                Eliminar
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tree Card 3 -->
+        <div class="inventory-tree-card">
+          <div class="inventory-tree-image-placeholder"></div>
+          <div class="inventory-tree-content">
+            <span class="inventory-tree-badge inventory-tree-badge--legendary">Legendario</span>
+            <h3 class="inventory-tree-name">Roble Ancestral</h3>
+            <p class="inventory-tree-desc">Un arbol milenario, solo los mas dedicados lo obtienen.</p>
+            <div class="inventory-tree-actions">
+              <button class="inventory-tree-action">
+                <span class="material-symbols-rounded" style="font-size:14px">edit</span>
+                Editar
+              </button>
+              <button class="inventory-tree-action inventory-tree-action--delete">
+                <span class="material-symbols-rounded" style="font-size:14px">delete</span>
+                Eliminar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="app-footer inventory-footer" style="position:absolute; top:1115px;">
+      <span class="app-footer-brand">Pomodoro Forest © 2025</span>
+      <span class="app-footer-tagline">Mejora tu productividad mientras cultivas tu bosque virtual</span>
+    </div>
+  </div>
+</body>
+</html>

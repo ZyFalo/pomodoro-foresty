@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PF - Login</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/auth.css">
+  <link rel="stylesheet" href="css/login.css">
+</head>
+<body>
+  <div class="auth-page">
+    <!-- Background -->
+    <img class="auth-bg" src="https://images.unsplash.com/photo-1597146333334-9956865bc7f5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDM0ODN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3NzAxMjYzNDJ8&ixlib=rb-4.1.0&q=80&w=1080" alt="Forest background">
+    <div class="auth-overlay"></div>
+
+    <!-- Content -->
+    <div class="auth-content">
+      <!-- App Icon -->
+      <div class="auth-app-icon">
+        <span class="material-symbols-rounded">park</span>
+      </div>
+
+      <!-- Title -->
+      <h1 class="auth-app-title">Pomodoro Forest</h1>
+      <p class="auth-app-subtitle">Mejora tu productividad mientras cultivas tu bosque</p>
+
+      <!-- Auth Card -->
+      <div class="auth-card">
+        <!-- Tabs -->
+        <div class="auth-tabs">
+          <div class="auth-tab auth-tab--active">
+            <span class="material-symbols-rounded">login</span>
+            Iniciar Sesion
+          </div>
+          <a class="auth-tab" href="register.html">
+            <span class="material-symbols-rounded">person_add</span>
+            Registrarse
+          </a>
+        </div>
+
+        <!-- Form -->
+        <div class="auth-form">
+          <!-- Username -->
+          <div class="auth-input-group">
+            <label class="auth-input-label">Usuario</label>
+            <input class="auth-input" type="text" placeholder="Ingresa tu usuario">
+          </div>
+
+          <!-- Password -->
+          <div class="auth-input-group">
+            <label class="auth-input-label">Contrasena</label>
+            <input class="auth-input" type="password" placeholder="Ingresa tu contrasena">
+          </div>
+
+          <!-- Forgot password -->
+          <a class="auth-link" href="forgot-password.html">¿Olvidaste tu contrasena?</a>
+
+          <!-- Login button -->
+          <button class="auth-btn">
+            <span class="material-symbols-rounded">login</span>
+            Iniciar Sesion
+          </button>
+
+          <!-- Divider -->
+          <div class="auth-divider">
+            <div class="auth-divider-line"></div>
+            <span class="auth-divider-text">o</span>
+            <div class="auth-divider-line"></div>
+          </div>
+
+          <!-- Google button -->
+          <button class="auth-btn-google">
+            <span class="material-symbols-rounded">public</span>
+            Continuar con Google
+          </button>
+        </div>
+      </div>
+
+      <!-- Footer text -->
+      <p class="auth-footer-inline">Cultiva tu bosque y mejora tu productividad</p>
+
+      <!-- Trust badges -->
+      <div class="auth-trust-badges">
+        <div class="auth-trust-badge">
+          <span class="material-symbols-rounded">shield</span>
+          <span>Datos seguros</span>
+        </div>
+        <div class="auth-trust-badge">
+          <span class="material-symbols-rounded">group</span>
+          <span>500+ usuarios</span>
+        </div>
+        <div class="auth-trust-badge">
+          <span class="material-symbols-rounded">star</span>
+          <span>100% gratuito</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

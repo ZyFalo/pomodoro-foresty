@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PF Admin - Users</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/admin.css">
+  <link rel="stylesheet" href="css/admin-users.css">
+</head>
+<body>
+  <div class="admin-page">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+      <div class="admin-sidebar-brand">
+        <div class="admin-sidebar-icon">
+          <span class="admin-sidebar-icon-text">PF</span>
+        </div>
+        <span class="admin-sidebar-title">PF Admin</span>
+      </div>
+      <div class="admin-sidebar-divider"></div>
+      <nav class="admin-sidebar-nav">
+        <a class="admin-sidebar-item" href="admin-dashboard.html">Dashboard</a>
+        <a class="admin-sidebar-item" href="admin-tree-templates.html">Arboles</a>
+        <a class="admin-sidebar-item admin-sidebar-item--active">
+          <span class="material-symbols-rounded">group</span>
+          Usuarios
+        </a>
+        <a class="admin-sidebar-item" href="admin-activity-logs.html">Actividad</a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main" style="gap:20px">
+      <!-- Header -->
+      <div class="admin-header">
+        <div style="display:flex; align-items:center; gap:12px">
+          <h1 class="admin-header-title">Gestion de Usuarios</h1>
+          <span class="admin-count-badge">247 usuarios</span>
+        </div>
+      </div>
+
+      <!-- Filter Row -->
+      <div class="admin-filter-row">
+        <input class="admin-search" type="text" placeholder="Buscar por nombre o email..." style="width:300px">
+        <div class="admin-filter">Activos</div>
+        <div class="admin-filter">Verificados</div>
+        <div class="admin-filter admin-filter--active">Todos</div>
+      </div>
+
+      <!-- Table -->
+      <div class="admin-table">
+        <!-- Header -->
+        <div class="admin-table-header admin-table-header--gap16">
+          <span class="admin-th" style="width:32px"></span>
+          <span class="admin-th" style="width:130px">Usuario</span>
+          <span class="admin-th" style="flex:1">Email</span>
+          <span class="admin-th" style="width:70px">Verificado</span>
+          <span class="admin-th" style="width:60px">Arboles</span>
+          <span class="admin-th" style="width:70px">Pomodoros</span>
+          <span class="admin-th" style="width:80px">Registro</span>
+          <span class="admin-th" style="width:60px">Acciones</span>
+        </div>
+
+        <!-- Row 1 -->
+        <div class="admin-table-row admin-table-row--gap16">
+          <div class="admin-user-avatar admin-user-avatar--blue" style="width:32px">MC</div>
+          <span class="admin-cell-name" style="width:130px">maria_cifuentes</span>
+          <span class="admin-cell-sub" style="flex:1">maria@email.com</span>
+          <span class="admin-verified" style="width:70px">✓</span>
+          <span class="admin-cell-value" style="width:60px">24</span>
+          <span class="admin-cell-value" style="width:70px">156</span>
+          <span class="admin-cell-sub" style="width:80px">15/01/26</span>
+          <span class="admin-action-view" style="width:60px">Ver</span>
+        </div>
+
+        <!-- Row 2 -->
+        <div class="admin-table-row admin-table-row--gap16">
+          <div class="admin-user-avatar admin-user-avatar--red" style="width:32px">JP</div>
+          <span class="admin-cell-name" style="width:130px">juan_perez</span>
+          <span class="admin-cell-sub" style="flex:1">jperez@gmail.com</span>
+          <span class="admin-verified" style="width:70px">✓</span>
+          <span class="admin-cell-value" style="width:60px">18</span>
+          <span class="admin-cell-value" style="width:70px">89</span>
+          <span class="admin-cell-sub" style="width:80px">22/11/25</span>
+          <span class="admin-action-view" style="width:60px">Ver</span>
+        </div>
+
+        <!-- Row 3 -->
+        <div class="admin-table-row admin-table-row--gap16">
+          <div class="admin-user-avatar admin-user-avatar--green" style="width:32px">LR</div>
+          <span class="admin-cell-name" style="width:130px">laura_rios</span>
+          <span class="admin-cell-sub" style="flex:1">laura.rios@outlook.com</span>
+          <span class="admin-unverified" style="width:70px">✗</span>
+          <span class="admin-cell-value" style="width:60px">5</span>
+          <span class="admin-cell-value" style="width:70px">32</span>
+          <span class="admin-cell-sub" style="width:80px">02/02/26</span>
+          <span class="admin-action-view" style="width:60px">Ver</span>
+        </div>
+
+        <!-- Row 4 -->
+        <div class="admin-table-row admin-table-row--gap16">
+          <div class="admin-user-avatar admin-user-avatar--gold" style="width:32px">AG</div>
+          <span class="admin-cell-name" style="width:130px">andres_gomez</span>
+          <span class="admin-cell-sub" style="flex:1">agomez@yahoo.com</span>
+          <span class="admin-verified" style="width:70px">✓</span>
+          <span class="admin-cell-value" style="width:60px">42</span>
+          <span class="admin-cell-value" style="width:70px">278</span>
+          <span class="admin-cell-sub" style="width:80px">08/09/25</span>
+          <span class="admin-action-view" style="width:60px">Ver</span>
+        </div>
+
+        <!-- Row 5 -->
+        <div class="admin-table-row admin-table-row--gap16">
+          <div class="admin-user-avatar admin-user-avatar--purple" style="width:32px">SM</div>
+          <span class="admin-cell-name" style="width:130px">sofia_martinez</span>
+          <span class="admin-cell-sub" style="flex:1">smartinez@hotmail.com</span>
+          <span class="admin-verified" style="width:70px">✓</span>
+          <span class="admin-cell-value" style="width:60px">31</span>
+          <span class="admin-cell-value" style="width:70px">203</span>
+          <span class="admin-cell-sub" style="width:80px">30/10/25</span>
+          <span class="admin-action-view" style="width:60px">Ver</span>
+        </div>
+
+        <!-- Row 6 -->
+        <div class="admin-table-row admin-table-row--gap16">
+          <div class="admin-user-avatar admin-user-avatar--cyan" style="width:32px">DL</div>
+          <span class="admin-cell-name" style="width:130px">diego_lopez</span>
+          <span class="admin-cell-sub" style="flex:1">dlopez@email.com</span>
+          <span class="admin-unverified" style="width:70px">✗</span>
+          <span class="admin-cell-value" style="width:60px">0</span>
+          <span class="admin-cell-value" style="width:70px">3</span>
+          <span class="admin-cell-sub" style="width:80px">01/02/26</span>
+          <span class="admin-action-view" style="width:60px">Ver</span>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
