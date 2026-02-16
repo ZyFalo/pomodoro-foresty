@@ -1,5 +1,6 @@
 'use client';
 
+import { useMemo } from 'react';
 import { Modal, Icon, Button, Badge } from '@/components/ui';
 
 interface TreeEarnedModalProps {
@@ -15,56 +16,61 @@ interface TreeEarnedModalProps {
   onViewForest: () => void;
 }
 
-function getStarsForProbability(probability: number): number {
-  if (probability <= 2) return 5;  // Legendario
-  if (probability <= 5) return 4;  // Épico
-  if (probability <= 10) return 3; // Raro
-  if (probability <= 15) return 2; // Poco común
-  return 1;                        // Común
-}
+const CONFETTI_COLORS = ['#FFD700', '#2E8B57', '#9333EA', '#3B82F6', '#FF6B6B', '#F59E0B', '#22C55E'];
 
-interface ConfettiPiece {
-  color: string;
-  size: number;
-  top?: string;
-  bottom?: string;
-  left?: string;
-  right?: string;
-  delay: string;
-  shape: 'rect' | 'circle';
+function generateConfettiPieces() {
+  return Array.from({ length: 24 }, (_, i) => ({
+    color: CONFETTI_COLORS[i % CONFETTI_COLORS.length],
+    left: Math.random() * 100,
+    delay: Math.random() * 2,
+    duration: 2 + Math.random() * 2,
+    size: 4 + Math.random() * 6,
+    shape: Math.random() > 0.5 ? 'circle' : 'rect' as const,
+    drift: (Math.random() - 0.5) * 60,
+    rotation: Math.random() * 360,
+  }));
 }
-
-const CONFETTI_PIECES: ConfettiPiece[] = [
-  { color: '#FFD700', size: 8, top: '8%', left: '10%', delay: '0s', shape: 'rect' },
-  { color: '#2E8B57', size: 6, top: '12%', right: '12%', delay: '0.2s', shape: 'circle' },
-  { color: '#9333EA', size: 7, bottom: '15%', left: '8%', delay: '0.4s', shape: 'rect' },
-  { color: '#3B82F6', size: 5, top: '20%', left: '85%', delay: '0.1s', shape: 'circle' },
-  { color: '#FF6B6B', size: 6, bottom: '20%', right: '10%', delay: '0.3s', shape: 'rect' },
-  { color: '#FFD700', size: 5, top: '5%', left: '50%', delay: '0.5s', shape: 'circle' },
-  { color: '#22C55E', size: 7, bottom: '8%', left: '40%', delay: '0.15s', shape: 'rect' },
-  { color: '#F59E0B', size: 6, top: '15%', right: '30%', delay: '0.35s', shape: 'circle' },
-];
 
 export function TreeEarnedModal({ open, tree, onClose, onViewForest }: TreeEarnedModalProps) {
+  const confettiPieces = useMemo(() => generateConfettiPieces(), []);
+
   return (
     <Modal open={open} onClose={onClose}>
-      <div className="relative bg-white-10 border border-white-20 rounded-3xl backdrop-blur-[15px] p-8 max-w-sm w-full mx-4">
-        {/* Confetti */}
-        {tree && CONFETTI_PIECES.map((piece, i) => (
+      <div className="relative bg-white-10 border border-white-20 rounded-3xl backdrop-blur-[15px] p-8 max-w-sm w-full mx-4 overflow-hidden">
+        {/* Confetti animation styles */}
+        {tree && (
+          <style>{`
+            @keyframes confettiFall {
+              0% {
+                transform: translateY(-20px) translateX(0px) rotate(0deg);
+                opacity: 1;
+              }
+              25% {
+                opacity: 1;
+              }
+              100% {
+                transform: translateY(500px) translateX(var(--drift)) rotate(var(--rotation));
+                opacity: 0;
+              }
+            }
+          `}</style>
+        )}
+
+        {/* Confetti pieces */}
+        {tree && confettiPieces.map((piece, i) => (
           <div
             key={i}
-            className="absolute animate-pulse"
+            className="absolute pointer-events-none"
             style={{
               width: piece.size,
-              height: piece.size,
+              height: piece.shape === 'rect' ? piece.size * 0.6 : piece.size,
               backgroundColor: piece.color,
               borderRadius: piece.shape === 'circle' ? '50%' : '2px',
-              top: piece.top,
-              bottom: piece.bottom,
-              left: piece.left,
-              right: piece.right,
-              animationDelay: piece.delay,
-              opacity: 0.7,
+              left: `${piece.left}%`,
+              top: -10,
+              ['--drift' as string]: `${piece.drift}px`,
+              ['--rotation' as string]: `${piece.rotation}deg`,
+              animation: `confettiFall ${piece.duration}s ease-in ${piece.delay}s both`,
             }}
           />
         ))}
@@ -72,13 +78,13 @@ export function TreeEarnedModal({ open, tree, onClose, onViewForest }: TreeEarne
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white-15 flex items-center justify-center border-none cursor-pointer hover:bg-white-27 transition-colors"
+          className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white-15 flex items-center justify-center border-none cursor-pointer hover:bg-white-27 transition-colors z-10"
         >
           <Icon name="close" size={18} className="text-white-80" />
         </button>
 
         {tree ? (
-          <div className="flex flex-col items-center gap-4 text-center">
+          <div className="flex flex-col items-center gap-4 text-center relative z-10">
             {/* Header */}
             <div className="flex items-center gap-2">
               <Icon name="emoji_events" size={28} className="text-[#FFD700]" />
@@ -99,7 +105,7 @@ export function TreeEarnedModal({ open, tree, onClose, onViewForest }: TreeEarne
                   <img
                     src={tree.image_url}
                     alt={tree.tree_name}
-                    className="w-32 h-32 object-contain"
+                    className="w-full h-full object-cover rounded-full"
                   />
                 ) : (
                   <Icon name="park" size={64} className="text-primary" />
@@ -109,18 +115,6 @@ export function TreeEarnedModal({ open, tree, onClose, onViewForest }: TreeEarne
 
             {/* Tree name */}
             <h3 className="text-2xl font-bold text-white">{tree.tree_name}</h3>
-
-            {/* Stars */}
-            <div className="flex gap-1">
-              {Array.from({ length: 5 }, (_, i) => (
-                <Icon
-                  key={i}
-                  name="star"
-                  size={20}
-                  className={i < getStarsForProbability(tree.probability) ? 'text-[#FFD700]' : 'text-white-20'}
-                />
-              ))}
-            </div>
 
             {/* Rarity badge */}
             <Badge probability={tree.probability} />

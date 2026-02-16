@@ -56,8 +56,8 @@ export default function PomodoroPage() {
       const data = await timer.completePomodoro();
       if (data?.tree) {
         setEarnedTree({
-          tree_name: data.tree.template?.name || data.tree.custom_name,
-          image_url: data.tree.template?.image_url || '',
+          tree_name: data.tree.template?.name || data.tree.customName,
+          image_url: data.tree.template?.imageUrl || '',
           description: data.tree.template?.description || data.template?.description || '',
           probability: data.template?.probability ?? 25,
           focus_minutes: timer.duration,
@@ -160,7 +160,6 @@ export default function PomodoroPage() {
             className="w-full max-w-[300px] h-12 flex items-center justify-center gap-2 rounded-pill border-none cursor-pointer font-semibold text-white transition-opacity hover:opacity-80"
             style={{
               background: 'linear-gradient(135deg, #FF6B6B, #e74c3c)',
-              opacity: 0.35,
             }}
           >
             <Icon name="stop" size={20} className="text-white" />
