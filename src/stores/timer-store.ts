@@ -19,6 +19,7 @@ interface TimerState {
     phrase: string;
     audioUrl: string;
   }) => void;
+  setDuration: (minutes: number) => void;
   setStatus: (status: TimerStatus) => void;
   tick: () => void;
   setTimeLeft: (seconds: number) => void;
@@ -43,11 +44,14 @@ export const useTimerStore = create<TimerState>()(
         set({
           sessionId: data.sessionId,
           duration: data.duration,
-          timeLeft: data.duration * 60,
+          timeLeft: Math.round(data.duration * 60),
           phrase: data.phrase,
           audioUrl: data.audioUrl,
           status: 'running',
         }),
+
+      setDuration: (minutes) =>
+        set({ duration: minutes, timeLeft: Math.round(minutes * 60) }),
 
       setStatus: (status) => set({ status }),
 
@@ -73,7 +77,7 @@ export const useTimerStore = create<TimerState>()(
         set({
           status: 'idle',
           sessionId: null,
-          timeLeft: get().duration * 60,
+          timeLeft: Math.round(get().duration * 60),
           phrase: '',
           audioUrl: '',
         }),
@@ -89,7 +93,7 @@ export const useTimerStore = create<TimerState>()(
         // Persist running state for offline recovery
         status: state.status === 'running' ? 'running' : 'idle',
         sessionId: state.status === 'running' ? state.sessionId : null,
-        timeLeft: state.status === 'running' ? state.timeLeft : state.duration * 60,
+        timeLeft: state.status === 'running' ? state.timeLeft : Math.round(state.duration * 60),
       }),
     }
   )

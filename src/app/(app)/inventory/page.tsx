@@ -94,14 +94,14 @@ export default function InventoryPage() {
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
             {trees.map((tree) => (
               <TreeCard
-                key={tree._id}
-                id={tree._id}
+                key={tree.id}
+                id={tree.id}
                 name={tree.template.name}
-                customName={tree.custom_name}
-                imageUrl={tree.template.image_url}
+                customName={tree.customName}
+                imageUrl={tree.template.imageUrl}
                 probability={tree.template.probability}
-                isFavorite={tree.is_favorite}
-                earnedAt={tree.earned_at}
+                isFavorite={tree.isFavorite}
+                earnedAt={tree.earnedAt}
                 onToggleFavorite={toggleFavorite}
                 onRename={renameTree}
                 onDelete={deleteTree}

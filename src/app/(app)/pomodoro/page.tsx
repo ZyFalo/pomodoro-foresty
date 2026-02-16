@@ -56,8 +56,10 @@ export default function PomodoroPage() {
           rarity: data.tree.rarity,
           image_url: data.tree.template?.image_url || '',
         });
-        setShowTreeModal(true);
+      } else {
+        setEarnedTree(null);
       }
+      setShowTreeModal(true);
     } catch (err: any) {
       setError(err.message || 'Error al completar el pomodoro');
     }
@@ -107,7 +109,7 @@ export default function PomodoroPage() {
               {POMODORO_DURATIONS.map((d) => (
                 <button
                   key={d}
-                  onClick={() => handleStart(d)}
+                  onClick={() => timer.setDuration(d)}
                   disabled={loading}
                   className={`px-4 py-2 rounded-pill text-sm font-medium border-none cursor-pointer transition-colors ${
                     d === timer.duration
@@ -120,7 +122,7 @@ export default function PomodoroPage() {
               ))}
             </div>
             <Button
-              onClick={() => handleStart()}
+              onClick={() => handleStart(timer.duration)}
               loading={loading}
               size="large"
               className="min-w-[200px]"
@@ -162,10 +164,10 @@ export default function PomodoroPage() {
       {/* Tree earned modal */}
       <Modal open={showTreeModal} onClose={handleCloseModal}>
         <div className="flex flex-col items-center gap-4 p-6 text-center">
-          <span className="text-5xl">🌳</span>
-          <h2 className="text-2xl font-bold text-gray-800">¡Árbol obtenido!</h2>
-          {earnedTree && (
+          {earnedTree ? (
             <>
+              <span className="text-5xl">🌳</span>
+              <h2 className="text-2xl font-bold text-gray-800">¡Árbol obtenido!</h2>
               {earnedTree.image_url && (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
@@ -178,6 +180,15 @@ export default function PomodoroPage() {
               <span className="text-sm font-medium px-3 py-1 rounded-pill bg-primary/10 text-primary">
                 {earnedTree.rarity}
               </span>
+            </>
+          ) : (
+            <>
+              <span className="text-5xl">⚠️</span>
+              <h2 className="text-2xl font-bold text-gray-800">Sin plantillas de árboles</h2>
+              <p className="text-gray-600">
+                No hay plantillas de árboles disponibles en este momento.
+                Tu pomodoro fue completado exitosamente.
+              </p>
             </>
           )}
           <Button onClick={handleCloseModal} className="mt-2">

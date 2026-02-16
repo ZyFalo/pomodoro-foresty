@@ -4,17 +4,17 @@ import { useState, useCallback, useEffect } from 'react';
 import { useAuthStore } from '@/stores/auth-store';
 
 interface TreeItem {
-  _id: string;
+  id: string;
   template: {
-    _id: string;
+    id: string;
     name: string;
-    image_url: string;
+    imageUrl: string;
     probability: number;
     category: string;
   };
-  custom_name?: string;
-  is_favorite: boolean;
-  earned_at: string;
+  customName?: string;
+  isFavorite: boolean;
+  earnedAt: string;
   rarity: string;
 }
 
@@ -94,7 +94,7 @@ export function useTrees() {
       if (!res.ok) throw new Error(data.error);
 
       setTrees((prev) =>
-        prev.map((t) => (t._id === id ? { ...t, is_favorite: data.is_favorite } : t))
+        prev.map((t) => (t.id === id ? { ...t, isFavorite: data.is_favorite } : t))
       );
     } catch (error) {
       console.error('Error toggling favorite:', error);
@@ -111,7 +111,7 @@ export function useTrees() {
       if (!res.ok) throw new Error('Error renaming');
 
       setTrees((prev) =>
-        prev.map((t) => (t._id === id ? { ...t, custom_name } : t))
+        prev.map((t) => (t.id === id ? { ...t, customName: custom_name } : t))
       );
     } catch (error) {
       console.error('Error renaming tree:', error);
@@ -126,7 +126,7 @@ export function useTrees() {
       });
       if (!res.ok) throw new Error('Error deleting');
 
-      setTrees((prev) => prev.filter((t) => t._id !== id));
+      setTrees((prev) => prev.filter((t) => t.id !== id));
       setPagination((prev) => ({ ...prev, total: prev.total - 1 }));
       fetchStats();
     } catch (error) {

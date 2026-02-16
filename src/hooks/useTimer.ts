@@ -80,7 +80,7 @@ export function useTimer() {
 
   // Format time
   const minutes = Math.floor(store.timeLeft / 60);
-  const seconds = store.timeLeft % 60;
+  const seconds = Math.round(store.timeLeft % 60);
   const timeDisplay = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 
   // Progress (0 to 1)

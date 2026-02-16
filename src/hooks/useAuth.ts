@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/auth-store';
+import { useTimerStore } from '@/stores/timer-store';
 import { useCallback } from 'react';
 
 const API_BASE = '/api/auth';
@@ -78,6 +79,7 @@ export function useAuth() {
   }, []);
 
   const logout = useCallback(() => {
+    useTimerStore.getState().reset();
     storeLogout();
     router.push('/login');
   }, [storeLogout, router]);

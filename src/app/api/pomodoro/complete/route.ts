@@ -38,24 +38,17 @@ export const POST = withAuth(async (req: NextRequest, user) => {
       );
     }
 
-    // Earn a tree
+    // Earn a tree (may be null if no templates available)
     const ip = getClientIP(req);
     const result = await earnTree(user.id, ip);
 
-    if (!result) {
-      return Response.json(
-        { error: 'No hay plantillas de árboles disponibles' },
-        { status: 500 }
-      );
-    }
-
-    // Update session
+    // Update session (with or without tree)
     await prisma.pomodoroSession.update({
       where: { id: session.id },
       data: {
         status: 'completed',
         completedAt: new Date(),
-        treeEarnedId: result.userTree.id,
+        ...(result ? { treeEarnedId: result.userTree.id } : {}),
       },
     });
 
@@ -77,8 +70,8 @@ export const POST = withAuth(async (req: NextRequest, user) => {
     });
 
     return Response.json({
-      tree: result.userTree,
-      template: result.template,
+      tree: result?.userTree ?? null,
+      template: result?.template ?? null,
       stats: {
         pomodoros_completed: updatedUser.pomodorosCompleted,
         total_focus_minutes: updatedUser.totalFocusMinutes,
