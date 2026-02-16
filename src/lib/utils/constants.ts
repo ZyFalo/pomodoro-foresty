@@ -8,7 +8,7 @@ export const RARITY_RANGES = [
 ] as const;
 
 // Pomodoro durations (minutes)
-export const POMODORO_DURATIONS = [0.17, 25, 30, 45, 60] as const;
+export const POMODORO_DURATIONS = [5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,105,110,115,120] as const;
 export const DEFAULT_POMODORO_DURATION = 25;
 export const DEFAULT_BREAK_DURATION = 5;
 export const DEFAULT_LONG_BREAK_DURATION = 15;
@@ -18,6 +18,11 @@ export const DEFAULT_SESSIONS_PER_CYCLE = 4;
 export const MIN_BREAK_DURATION = 1;
 export const MIN_LONG_BREAK_DURATION = 4;
 export const MIN_SESSIONS_PER_CYCLE = 3;
+
+// Duration bonus: extra trees for longer pomodoros. Every 20 min above 5 gives +1 tree.
+export function getDurationBonusTrees(durationMinutes: number): number {
+  return Math.floor((durationMinutes - 5) / 20);
+}
 
 // Time validation: allow 90% of duration to account for network latency
 export const TIME_VALIDATION_THRESHOLD = 0.9;

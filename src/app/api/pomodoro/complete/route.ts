@@ -3,7 +3,7 @@ import { withAuth, getClientIP } from '@/lib/auth/middleware';
 import { prisma } from '@/lib/db/prisma';
 import { earnTrees } from '@/lib/services/trees';
 import { logActivity } from '@/lib/services/activity-logger';
-import { TIME_VALIDATION_THRESHOLD } from '@/lib/utils/constants';
+import { TIME_VALIDATION_THRESHOLD, getDurationBonusTrees } from '@/lib/utils/constants';
 
 export const POST = withAuth(async (req: NextRequest, user) => {
   try {
@@ -56,12 +56,14 @@ export const POST = withAuth(async (req: NextRequest, user) => {
       },
     });
 
-    // Determine tree count based on cycle position
+    // Determine tree count based on cycle position + duration bonus
     const isCycleComplete =
       typeof session_number === 'number' &&
       typeof sessions_per_cycle === 'number' &&
       session_number === sessions_per_cycle;
-    const treeCount = isCycleComplete ? sessions_per_cycle - 1 : 1;
+    const baseTrees = isCycleComplete ? sessions_per_cycle - 1 : 1;
+    const durationBonus = getDurationBonusTrees(session.duration);
+    const treeCount = baseTrees + durationBonus;
 
     // Earn trees
     const ip = getClientIP(req);
@@ -76,13 +78,14 @@ export const POST = withAuth(async (req: NextRequest, user) => {
     await logActivity({
       user_id: user.id,
       event_type: 'pomodoro_completado',
-      detail: `Pomodoro de ${session.duration} min completado${isCycleComplete ? ' (ciclo completo, +' + treeCount + ' árboles)' : ''}`,
+      detail: `Pomodoro de ${session.duration} min completado${durationBonus > 0 ? ` (+${durationBonus} bonus duración)` : ''}${isCycleComplete ? ` (ciclo completo, +${baseTrees} árboles)` : ''}`,
       ip_address: ip,
     });
 
     return Response.json({
       trees: earnedResults.map((r) => ({ tree: r.userTree, template: r.template })),
       is_cycle_complete: isCycleComplete,
+      duration_bonus: durationBonus,
       stats: {
         pomodoros_completed: updatedUser.pomodorosCompleted,
         total_focus_minutes: updatedUser.totalFocusMinutes,

@@ -23,11 +23,10 @@ export function useTimer() {
         store.setDuration(pomodoroDurationSetting);
       }
     }
-    const effectiveTarget = store.pendingSessionsPerCycle ?? store.sessionsPerCycle;
-    if (effectiveTarget !== sessionsPerCycleSetting) {
+    if (store.sessionsPerCycle !== sessionsPerCycleSetting || store.pendingSessionsPerCycle !== null) {
       store.configure(sessionsPerCycleSetting);
     }
-  }, [pomodoroDurationSetting, sessionsPerCycleSetting]);
+  }, [pomodoroDurationSetting, sessionsPerCycleSetting, store.sessionsPerCycle, store.pendingSessionsPerCycle]);
 
   // Tick every second when running or on break
   useEffect(() => {

@@ -7,7 +7,7 @@ import { useAudio } from '@/hooks/useAudio';
 import { useAuthStore } from '@/stores/auth-store';
 import { TimerRing, SessionDots, AudioPlayer, MotivationalQuote, TreeEarnedModal } from '@/components/app';
 import { Button, Icon, Modal } from '@/components/ui';
-import { POMODORO_DURATIONS, NOTIFICATION_SOUND_URL } from '@/lib/utils/constants';
+import { POMODORO_DURATIONS, NOTIFICATION_SOUND_URL, getDurationBonusTrees } from '@/lib/utils/constants';
 
 export default function PomodoroPage() {
   const router = useRouter();
@@ -199,22 +199,16 @@ export default function PomodoroPage() {
                 <Icon name="self_improvement" size={16} className="text-primary" />
                 <span className="text-xs font-bold text-white">Modo Trabajo</span>
               </div>
-              <div className="flex items-center gap-2">
+              <select
+                value={timer.duration}
+                onChange={(e) => timer.setDuration(Number(e.target.value))}
+                disabled={loading}
+                className="bg-white-15 text-white border border-white-20 rounded-pill px-4 py-2 text-sm font-medium cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary"
+              >
                 {POMODORO_DURATIONS.map((d) => (
-                  <button
-                    key={d}
-                    onClick={() => timer.setDuration(d)}
-                    disabled={loading}
-                    className={`px-4 py-2 rounded-pill text-sm font-medium border-none cursor-pointer transition-colors ${
-                      d === timer.duration
-                        ? 'bg-primary text-white'
-                        : 'bg-white-15 text-white-80 hover:bg-white-27'
-                    }`}
-                  >
-                    {d} min
-                  </button>
+                  <option key={d} value={d}>{d} min</option>
                 ))}
-              </div>
+              </select>
             </>
           )
         )}
@@ -321,6 +315,41 @@ export default function PomodoroPage() {
           </div>
         )}
       </div>
+
+      {/* Time bonus info (idle only) */}
+      {timer.status === 'idle' && !timer.cycleCompleted && (
+        <div className="bg-white-10 border border-white-20 rounded-2xl backdrop-blur-[7px] py-4 px-6 max-w-md w-full">
+          <div className="flex items-center gap-2 mb-2">
+            <Icon name="park" size={18} className="text-primary" />
+            <span className="text-sm font-semibold text-white">Recompensas por tiempo</span>
+          </div>
+          <p className="text-xs text-white/70 leading-relaxed">
+            {(() => {
+              const bonus = getDurationBonusTrees(timer.duration);
+              const total = 1 + bonus;
+              return bonus > 0
+                ? `Con ${timer.duration} min obtendrás ${total} ${total === 1 ? 'árbol' : 'árboles'}. ¡Sesiones más largas dan más árboles!`
+                : `Con ${timer.duration} min obtendrás 1 árbol. Elige 25 min o más para ganar árboles bonus.`;
+            })()}
+          </p>
+        </div>
+      )}
+
+      {/* Cycle bonus info (idle only) */}
+      {timer.status === 'idle' && !timer.cycleCompleted && (
+        <div className="bg-white-10 border border-white-20 rounded-2xl backdrop-blur-[7px] py-4 px-6 max-w-md w-full">
+          <div className="flex items-center gap-2 mb-2">
+            <Icon name="emoji_events" size={18} className="text-[#FFD700]" />
+            <span className="text-sm font-semibold text-white">Recompensas por sesión</span>
+          </div>
+          <p className="text-xs text-white/70 leading-relaxed">
+            {timer.currentSession === timer.sessionsPerCycle
+              ? `¡Esta es la última sesión! Al completarla obtendrás ${timer.sessionsPerCycle - 1} árboles bonus.`
+              : `Vas en la sesión ${timer.currentSession} de ${timer.sessionsPerCycle}. Al completar la última sesión obtendrás ${timer.sessionsPerCycle - 1} árboles bonus.`
+            }
+          </p>
+        </div>
+      )}
 
       {/* Audio section (running only, not during break) */}
       {timer.status === 'running' && (

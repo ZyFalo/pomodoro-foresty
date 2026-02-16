@@ -81,14 +81,16 @@ export const useTimerStore = create<TimerState>()(
       setTimeLeft: (seconds) => set({ timeLeft: seconds }),
 
       nextSession: () => {
-        const { currentSession, sessionsPerCycle, pendingSessionsPerCycle } = get();
+        const { currentSession, sessionsPerCycle, pendingSessionsPerCycle, duration } = get();
+        const timeLeft = Math.round(duration * 60);
         if (currentSession < sessionsPerCycle) {
-          set({ currentSession: currentSession + 1, status: 'idle', cycleCompleted: false, breakTaken: false });
+          set({ currentSession: currentSession + 1, status: 'idle', timeLeft, cycleCompleted: false, breakTaken: false });
         } else {
           const newSessions = pendingSessionsPerCycle ?? sessionsPerCycle;
           set({
             currentSession: 1,
             status: 'idle',
+            timeLeft,
             cycleCompleted: false,
             breakTaken: false,
             sessionsPerCycle: newSessions,

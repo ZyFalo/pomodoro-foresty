@@ -1,9 +1,10 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/auth-store';
 import { Button, Icon, Toast } from '@/components/ui';
-import { POMODORO_DURATIONS, DEFAULT_USER_SETTINGS, MIN_LONG_BREAK_DURATION, MIN_SESSIONS_PER_CYCLE } from '@/lib/utils/constants';
+import { POMODORO_DURATIONS, DEFAULT_USER_SETTINGS, MIN_LONG_BREAK_DURATION, MIN_SESSIONS_PER_CYCLE, NOTIFICATION_SOUND_URL } from '@/lib/utils/constants';
 import type { IUserSettings } from '@/types';
 
 // Merge user settings with defaults, filtering out undefined values from cache
@@ -16,6 +17,7 @@ function mergeWithDefaults(userSettings?: Partial<IUserSettings>): IUserSettings
 }
 
 export default function SettingsPage() {
+  const router = useRouter();
   const { token, user, updateSettings } = useAuthStore();
   const [settings, setSettings] = useState(() => mergeWithDefaults(user?.settings));
   const [saving, setSaving] = useState(false);
@@ -49,7 +51,7 @@ export default function SettingsPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
       updateSettings(data.settings);
-      setToast({ message: 'Ajustes guardados correctamente', variant: 'success' });
+      router.push('/pomodoro');
     } catch (err: unknown) {
       setToast({ message: err instanceof Error ? err.message : 'Error al guardar', variant: 'error' });
     } finally {
@@ -85,6 +87,13 @@ export default function SettingsPage() {
 
   const toggleSetting = (key: 'ambient_sound' | 'notifications' | 'auto_start_break') => {
     setSettings((prev) => ({ ...prev, [key]: !prev[key] }));
+    if (key === 'notifications') {
+      try {
+        const sound = new Audio(NOTIFICATION_SOUND_URL);
+        sound.volume = 0.7;
+        sound.play().catch(() => {});
+      } catch {}
+    }
   };
 
   return (
@@ -101,27 +110,39 @@ export default function SettingsPage() {
         <div className="space-y-4">
           {/* Pomodoro duration */}
           <div>
-            <label className="text-sm font-medium text-gray-600 mb-2 block">Duración Pomodoro</label>
-            <div className="flex gap-2">
-              {POMODORO_DURATIONS.map((d) => (
-                <button
-                  key={d}
-                  onClick={() => setSettings((s) => ({ ...s, pomodoro_duration: d }))}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium border-none cursor-pointer transition-colors ${
-                    settings.pomodoro_duration === d
-                      ? 'bg-primary text-white'
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                  }`}
-                >
-                  {d} min
-                </button>
-              ))}
+            <div className="flex items-center gap-1.5 mb-2">
+              <label className="text-sm font-medium text-gray-600">Duración Pomodoro</label>
+              <div className="relative group">
+                <Icon name="info" size={16} className="text-gray-400 cursor-help" />
+                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-3 py-2 bg-gray-800 text-white text-xs rounded-lg whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-10">
+                  Tiempo de enfoque por sesión. Sesiones de 25 min o más otorgan árboles bonus.
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800" />
+                </div>
+              </div>
             </div>
+            <select
+              value={settings.pomodoro_duration}
+              onChange={(e) => setSettings((s) => ({ ...s, pomodoro_duration: Number(e.target.value) }))}
+              className="bg-gray-100 text-gray-700 border border-gray-200 rounded-lg px-4 py-2 text-sm font-medium cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary"
+            >
+              {POMODORO_DURATIONS.map((d) => (
+                <option key={d} value={d}>{d} min</option>
+              ))}
+            </select>
           </div>
 
           {/* Break duration */}
           <div>
-            <label className="text-sm font-medium text-gray-600 mb-2 block">Duración Descanso Corto</label>
+            <div className="flex items-center gap-1.5 mb-2">
+              <label className="text-sm font-medium text-gray-600">Duración Descanso Corto</label>
+              <div className="relative group">
+                <Icon name="info" size={16} className="text-gray-400 cursor-help" />
+                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-3 py-2 bg-gray-800 text-white text-xs rounded-lg whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-10">
+                  Pausa entre sesiones para descansar antes de la siguiente.
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800" />
+                </div>
+              </div>
+            </div>
             <div className="flex items-center gap-3">
               <input
                 type="range"
@@ -137,7 +158,16 @@ export default function SettingsPage() {
 
           {/* Long break duration */}
           <div>
-            <label className="text-sm font-medium text-gray-600 mb-2 block">Duración Descanso Largo</label>
+            <div className="flex items-center gap-1.5 mb-2">
+              <label className="text-sm font-medium text-gray-600">Duración Descanso Largo</label>
+              <div className="relative group">
+                <Icon name="info" size={16} className="text-gray-400 cursor-help" />
+                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-3 py-2 bg-gray-800 text-white text-xs rounded-lg whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-10">
+                  Descanso extendido al completar todas las sesiones de un ciclo.
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800" />
+                </div>
+              </div>
+            </div>
             <div className="flex items-center gap-3">
               <input
                 type="range"
@@ -187,13 +217,22 @@ export default function SettingsPage() {
 
         <div className="space-y-3">
           {[
-            { key: 'ambient_sound' as const, label: 'Sonido ambiental', desc: 'Sonidos de bosque durante el pomodoro' },
-            { key: 'notifications' as const, label: 'Notificaciones', desc: 'Avisar cuando termine el pomodoro' },
-            { key: 'auto_start_break' as const, label: 'Auto-iniciar descanso', desc: 'Iniciar descanso automáticamente' },
-          ].map(({ key, label, desc }) => (
+            { key: 'ambient_sound' as const, label: 'Sonido ambiental', desc: 'Sonidos de bosque durante el pomodoro', tooltip: 'Reproduce sonidos relajantes de naturaleza mientras trabajas.' },
+            { key: 'notifications' as const, label: 'Notificaciones', desc: 'Avisar cuando termine el pomodoro', tooltip: 'Emite un sonido al finalizar la sesión o el descanso.' },
+            { key: 'auto_start_break' as const, label: 'Auto-iniciar descanso', desc: 'Iniciar descanso automáticamente', tooltip: 'El descanso comienza sin necesidad de pulsar un botón.' },
+          ].map(({ key, label, desc, tooltip }) => (
             <div key={key} className="flex items-center justify-between py-2">
               <div>
-                <p className="text-sm font-medium text-gray-700">{label}</p>
+                <div className="flex items-center gap-1.5">
+                  <p className="text-sm font-medium text-gray-700">{label}</p>
+                  <div className="relative group">
+                    <Icon name="info" size={16} className="text-gray-400 cursor-help" />
+                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-3 py-2 bg-gray-800 text-white text-xs rounded-lg whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-10">
+                      {tooltip}
+                      <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800" />
+                    </div>
+                  </div>
+                </div>
                 <p className="text-xs text-gray-400">{desc}</p>
               </div>
               <button
