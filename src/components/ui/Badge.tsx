@@ -7,6 +7,14 @@ interface BadgeProps {
   className?: string;
 }
 
+const RARITY_STYLES: Record<string, { bg: string; text: string }> = {
+  'Común': { bg: '#6B7280', text: '#FFFFFF' },
+  'Poco común': { bg: '#22C55E', text: '#FFFFFF' },
+  'Raro': { bg: '#3B82F6', text: '#FFFFFF' },
+  'Épico': { bg: '#9333EA', text: '#FFFFFF' },
+  'Legendario': { bg: 'linear-gradient(135deg, #FFD700, #F59E0B)', text: '#1a1a1a' },
+};
+
 export function Badge({ rarity, probability, className = '' }: BadgeProps) {
   const info = probability !== undefined
     ? getRarityFromProbability(probability)
@@ -16,23 +24,19 @@ export function Badge({ rarity, probability, className = '' }: BadgeProps) {
 
   if (!info) return null;
 
-  const finalInfo = probability !== undefined ? info : (() => {
-    const colorMap: Record<string, { color: string; badgeBg: string }> = {
-      'Comun': { color: '#6B7280', badgeBg: '#F3F4F6' },
-      'Poco comun': { color: '#22C55E', badgeBg: '#D1FAE5' },
-      'Raro': { color: '#3B82F6', badgeBg: '#DBEAFE' },
-      'Epico': { color: '#9333EA', badgeBg: '#EDE9FE' },
-      'Legendario': { color: '#FFD700', badgeBg: '#FEF3C7' },
-    };
-    return { name: rarity!, ...colorMap[rarity!] ?? { color: '#6B7280', badgeBg: '#F3F4F6' } };
-  })();
+  const style = RARITY_STYLES[info.name] ?? RARITY_STYLES['Común'];
+  const isGradient = style.bg.includes('gradient');
 
   return (
     <span
-      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${className}`}
-      style={{ backgroundColor: finalInfo.badgeBg, color: finalInfo.color }}
+      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${className}`}
+      style={{
+        background: style.bg,
+        color: style.text,
+        ...(isGradient ? {} : { backgroundColor: style.bg }),
+      }}
     >
-      {finalInfo.name}
+      {info.name}
     </span>
   );
 }

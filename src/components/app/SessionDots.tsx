@@ -11,17 +11,13 @@ export function SessionDots({ current, total }: SessionDotsProps) {
       {Array.from({ length: total }, (_, i) => (
         <div
           key={i}
-          className={`w-3 h-3 rounded-full transition-colors ${
-            i < current
-              ? 'bg-primary'
-              : i === current
-                ? 'bg-primary/50'
-                : 'bg-white-20'
+          className={`w-2.5 h-2.5 rounded-full transition-colors ${
+            i < current ? 'bg-primary' : 'bg-white-20'
           }`}
         />
       ))}
-      <span className="text-xs text-white-50 ml-1">
-        {current}/{total}
+      <span className="text-xs text-white-60 ml-1">
+        Sesión {current + 1} de {total}
       </span>
     </div>
   );

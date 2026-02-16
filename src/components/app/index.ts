@@ -7,3 +7,4 @@ export { TreeCard } from './TreeCard';
 export { InventoryFilters } from './InventoryFilters';
 export { StatsRow } from './StatsRow';
 export { CollectionProgress } from './CollectionProgress';
+export { TreeEarnedModal } from './TreeEarnedModal';

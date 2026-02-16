@@ -36,10 +36,10 @@ export function InventoryFilters({
           <button
             key={opt.value}
             onClick={() => onRarityChange(opt.value)}
-            className={`px-3 py-1.5 rounded-pill text-xs font-medium border-none cursor-pointer transition-colors ${
+            className={`px-3 py-1.5 rounded-pill text-xs font-medium cursor-pointer transition-colors ${
               rarity === opt.value
-                ? 'bg-primary text-white'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                ? 'bg-primary text-white border border-primary'
+                : 'bg-transparent text-white/80 border border-white/25 hover:bg-white/10 hover:text-white'
             }`}
           >
             {opt.label}
@@ -51,10 +51,10 @@ export function InventoryFilters({
         {/* Favorite toggle */}
         <button
           onClick={() => onFavoriteChange(!favorite)}
-          className={`flex items-center gap-1 px-3 py-1.5 rounded-pill text-xs font-medium border-none cursor-pointer transition-colors ${
+          className={`flex items-center gap-1 px-3 py-1.5 rounded-pill text-xs font-medium cursor-pointer transition-colors ${
             favorite
-              ? 'bg-danger/10 text-danger'
-              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              ? 'bg-danger/20 text-danger border border-danger/30'
+              : 'bg-transparent text-white/80 border border-white/25 hover:bg-white/10 hover:text-white'
           }`}
         >
           <Icon name="favorite" size={14} filled={favorite} />
@@ -63,13 +63,13 @@ export function InventoryFilters({
 
         {/* Search */}
         <div className="relative">
-          <Icon name="search" size={16} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400" />
+          <Icon name="search" size={16} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-white/50" />
           <input
             type="text"
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Buscar..."
-            className="pl-8 pr-3 py-1.5 text-xs border border-gray-200 rounded-pill outline-none focus:border-primary w-36"
+            className="pl-8 pr-3 py-1.5 text-xs bg-white/10 border border-white/25 rounded-pill outline-none focus:border-primary text-white placeholder:text-white/40 w-36"
           />
         </div>
       </div>

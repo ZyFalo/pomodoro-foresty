@@ -48,6 +48,12 @@ export default function AppLayout({
         <main className="flex-1 flex flex-col">
           {children}
         </main>
+        <footer className="bg-black/20 backdrop-blur-md border-t border-white/10 py-4 px-8">
+          <div className="max-w-6xl mx-auto flex items-center justify-between">
+            <span className="text-sm text-white/60">Pomodoro Forest &copy; 2025</span>
+            <span className="text-xs text-white/40">Cultiva tu productividad, un pomodoro a la vez</span>
+          </div>
+        </footer>
       </div>
     </div>
   );

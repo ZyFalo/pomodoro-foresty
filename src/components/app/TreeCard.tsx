@@ -28,7 +28,6 @@ export function TreeCard({
   onRename,
   onDelete,
 }: TreeCardProps) {
-  const [showMenu, setShowMenu] = useState(false);
   const [editing, setEditing] = useState(false);
   const [editName, setEditName] = useState(customName || name);
 
@@ -46,84 +45,77 @@ export function TreeCard({
   };
 
   return (
-    <div className="group relative bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
+    <div className="relative bg-white/15 backdrop-blur-md rounded-2xl border border-white/20 overflow-hidden hover:bg-white/20 transition-colors">
       {/* Image */}
-      <div className="aspect-square bg-gray-50 flex items-center justify-center p-4">
+      <div className="h-[180px] w-full overflow-hidden">
         {imageUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={imageUrl} alt={displayName} className="w-full h-full object-contain" />
+          <img src={imageUrl} alt={displayName} className="w-full h-full object-cover" />
         ) : (
-          <Icon name="park" size={48} className="text-primary/30" />
+          <div className="w-full h-full flex items-center justify-center bg-white/5">
+            <Icon name="park" size={48} className="text-white/30" />
+          </div>
         )}
       </div>
 
       {/* Favorite button */}
       <button
         onClick={() => onToggleFavorite(id)}
-        className="absolute top-2 right-2 w-8 h-8 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center border-none cursor-pointer hover:bg-white transition-colors"
+        className="absolute top-2 right-2 w-8 h-8 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center border-none cursor-pointer hover:bg-black/50 transition-colors"
       >
         <Icon
           name="favorite"
           size={18}
           filled={isFavorite}
-          className={isFavorite ? 'text-danger' : 'text-gray-400'}
+          className={isFavorite ? 'text-danger' : 'text-white/70'}
         />
       </button>
 
-      {/* Info */}
-      <div className="p-3">
+      {/* Content */}
+      <div className="p-4 bg-black/10">
         {editing ? (
-          <div className="flex gap-1">
+          <div className="flex gap-1 mb-2">
             <input
               type="text"
               value={editName}
               onChange={(e) => setEditName(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleRename()}
-              className="flex-1 text-sm px-2 py-1 border border-gray-300 rounded-md outline-none focus:border-primary"
+              className="flex-1 text-sm px-2 py-1 bg-white/10 border border-white/30 rounded-lg outline-none focus:border-primary text-white"
               maxLength={50}
               autoFocus
             />
             <button onClick={handleRename} className="text-primary cursor-pointer border-none bg-transparent">
               <Icon name="check" size={18} />
             </button>
-            <button onClick={() => setEditing(false)} className="text-gray-400 cursor-pointer border-none bg-transparent">
+            <button onClick={() => setEditing(false)} className="text-white/50 cursor-pointer border-none bg-transparent">
               <Icon name="close" size={18} />
             </button>
           </div>
         ) : (
-          <h3 className="text-sm font-semibold text-gray-800 truncate">{displayName}</h3>
+          <h3 className="text-lg font-bold text-white truncate mb-1">{displayName}</h3>
         )}
 
-        <div className="flex items-center justify-between mt-1.5">
+        <div className="flex items-center justify-between mb-3">
           <Badge probability={probability} />
-          <span className="text-xs text-gray-400">{date}</span>
+          <span className="text-xs text-white/50">{date}</span>
         </div>
-      </div>
 
-      {/* More menu */}
-      <div className="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity">
-        <button
-          onClick={() => setShowMenu(!showMenu)}
-          className="w-7 h-7 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center border-none cursor-pointer hover:bg-white"
-        >
-          <Icon name="more_vert" size={16} className="text-gray-600" />
-        </button>
-        {showMenu && (
-          <div className="absolute top-8 left-0 bg-white rounded-lg shadow-lg border border-gray-200 py-1 min-w-[120px] z-10">
-            <button
-              onClick={() => { setEditing(true); setShowMenu(false); }}
-              className="w-full px-3 py-1.5 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2 border-none bg-transparent cursor-pointer"
-            >
-              <Icon name="edit" size={14} /> Renombrar
-            </button>
-            <button
-              onClick={() => { onDelete(id); setShowMenu(false); }}
-              className="w-full px-3 py-1.5 text-left text-sm text-danger hover:bg-red-50 flex items-center gap-2 border-none bg-transparent cursor-pointer"
-            >
-              <Icon name="delete" size={14} /> Eliminar
-            </button>
-          </div>
-        )}
+        {/* Action buttons */}
+        <div className="flex gap-2">
+          <button
+            onClick={() => { setEditing(true); setEditName(customName || name); }}
+            className="flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/10 border border-white/20 text-white/80 text-xs font-medium cursor-pointer hover:bg-white/20 transition-colors"
+          >
+            <Icon name="edit" size={14} />
+            Personalizar
+          </button>
+          <button
+            onClick={() => onDelete(id)}
+            className="flex items-center justify-center px-3 py-1.5 rounded-lg bg-white/10 border border-white/20 text-danger/80 text-xs font-medium cursor-pointer hover:bg-danger/10 hover:border-danger/30 transition-colors"
+          >
+            <Icon name="delete" size={14} />
+          </button>
+        </div>
       </div>
     </div>
   );
