@@ -86,8 +86,9 @@ export default function SettingsPage() {
   };
 
   const toggleSetting = (key: 'ambient_sound' | 'notifications' | 'auto_start_break') => {
+    const wasOff = !settings[key];
     setSettings((prev) => ({ ...prev, [key]: !prev[key] }));
-    if (key === 'notifications') {
+    if (key === 'notifications' && wasOff) {
       try {
         const sound = new Audio(NOTIFICATION_SOUND_URL);
         sound.volume = 0.7;
@@ -99,6 +100,23 @@ export default function SettingsPage() {
   return (
     <div className="flex-1 px-8 py-6 max-w-2xl mx-auto w-full">
       <h1 className="text-2xl font-bold text-white mb-6">Ajustes</h1>
+
+      {/* Profile card */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-4">
+        <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+          <Icon name="person" size={20} className="text-primary" />
+          Perfil
+        </h2>
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white text-lg font-semibold shrink-0">
+            {user?.username?.charAt(0).toUpperCase() ?? 'U'}
+          </div>
+          <div>
+            <p className="text-base font-medium text-gray-900">{user?.username ?? 'Usuario'}</p>
+            <p className="text-sm text-gray-500">{user?.email ?? ''}</p>
+          </div>
+        </div>
+      </div>
 
       {/* Timer settings */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-4">
@@ -253,7 +271,7 @@ export default function SettingsPage() {
       </div>
 
       {/* Save settings */}
-      <div className="mb-6">
+      <div className="mb-6 flex justify-center">
         <Button onClick={handleSaveSettings} loading={saving} fullWidth={false}>
           Guardar ajustes
         </Button>

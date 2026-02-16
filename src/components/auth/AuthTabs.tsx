@@ -22,11 +22,13 @@ export function AuthTabs() {
         </div>
       ) : (
         <Link href="/login" className={`${baseTab} ${inactiveTab} no-underline`}>
+          <Icon name="login" size={18} />
           Iniciar Sesión
         </Link>
       )}
       {isRegister ? (
         <div className={`${baseTab} ${activeTab}`}>
+          <Icon name="person_add" size={18} />
           Registrarse
         </div>
       ) : (
