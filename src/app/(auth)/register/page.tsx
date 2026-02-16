@@ -49,7 +49,7 @@ export default function RegisterPage() {
       <GlassCard variant="dark" compact>
         <AuthTabs />
 
-        <form onSubmit={handleSubmit} className="w-full flex flex-col gap-3.5">
+        <form key="register" onSubmit={handleSubmit} className="w-full flex flex-col gap-3.5 animate-auth-fade-in">
           <Input
             label="Usuario"
             type="text"

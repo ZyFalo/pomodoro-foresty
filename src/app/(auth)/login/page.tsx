@@ -31,7 +31,7 @@ export default function LoginPage() {
       <GlassCard variant="dark">
         <AuthTabs />
 
-        <form onSubmit={handleSubmit} className="w-full flex flex-col gap-4">
+        <form key="login" onSubmit={handleSubmit} className="w-full flex flex-col gap-4 animate-auth-fade-in">
           <Input
             label="Usuario"
             type="text"
