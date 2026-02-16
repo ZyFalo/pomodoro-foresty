@@ -13,6 +13,9 @@ export const DEFAULT_POMODORO_DURATION = 25;
 export const DEFAULT_BREAK_DURATION = 5;
 export const DEFAULT_SESSIONS_PER_CYCLE = 4;
 
+// Cycle bonus: trees earned on final session
+export const CYCLE_BONUS_TREE_COUNT = 3;
+
 // Time validation: allow 90% of duration to account for network latency
 export const TIME_VALIDATION_THRESHOLD = 0.9;
 

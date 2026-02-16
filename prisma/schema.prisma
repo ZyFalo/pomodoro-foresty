@@ -104,15 +104,18 @@ model UserTree {
   isFavorite Boolean  @default(false) @map("is_favorite")
   earnedAt   DateTime @default(now()) @map("earned_at") @db.Timestamp()
 
+  sessionId  String?  @map("session_id") @db.Uuid
+
   // Relaciones
-  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  template Template @relation(fields: [templateId], references: [id], onDelete: Restrict)
-  session  PomodoroSession?
+  user     User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  template Template          @relation(fields: [templateId], references: [id], onDelete: Restrict)
+  session  PomodoroSession?  @relation(fields: [sessionId], references: [id], onDelete: SetNull)
 
   // Índices
   @@index([userId])
   @@index([userId, earnedAt(sort: Desc)])
   @@index([userId, isFavorite])
+  @@index([sessionId])
 
   @@map("user_trees")
 }
@@ -123,12 +126,11 @@ model PomodoroSession {
   duration    Int
   startedAt   DateTime      @default(now()) @map("started_at") @db.Timestamp()
   completedAt DateTime?     @map("completed_at") @db.Timestamp()
-  treeEarnedId String?      @unique @map("tree_earned_id") @db.Uuid
   status      SessionStatus @default(active)
 
   // Relaciones
-  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  treeEarned UserTree? @relation(fields: [treeEarnedId], references: [id], onDelete: SetNull)
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  treesEarned UserTree[]
 
   // Índices
   @@index([userId, status])

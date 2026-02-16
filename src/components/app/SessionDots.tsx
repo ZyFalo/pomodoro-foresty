@@ -17,7 +17,7 @@ export function SessionDots({ current, total }: SessionDotsProps) {
         />
       ))}
       <span className="text-xs text-white-60 ml-1">
-        Sesión {current + 1} de {total}
+        Sesión {current} de {total}
       </span>
     </div>
   );

@@ -15,13 +15,13 @@ export default function PomodoroPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showTreeModal, setShowTreeModal] = useState(false);
-  const [earnedTree, setEarnedTree] = useState<{
+  const [earnedTrees, setEarnedTrees] = useState<Array<{
     tree_name: string;
     image_url: string;
     description: string;
     probability: number;
     focus_minutes: number;
-  } | null>(null);
+  }>>([]);
 
   // Auto-complete when timer hits 0
   useEffect(() => {
@@ -54,16 +54,18 @@ export default function PomodoroPage() {
   const handleComplete = useCallback(async () => {
     try {
       const data = await timer.completePomodoro();
-      if (data?.tree) {
-        setEarnedTree({
-          tree_name: data.tree.template?.name || data.tree.customName,
-          image_url: data.tree.template?.imageUrl || '',
-          description: data.tree.template?.description || data.template?.description || '',
-          probability: data.template?.probability ?? 25,
-          focus_minutes: timer.duration,
-        });
+      if (data?.trees && data.trees.length > 0) {
+        setEarnedTrees(
+          data.trees.map((item: { tree: any; template: any }) => ({
+            tree_name: item.tree.template?.name || item.tree.customName || item.template?.name || '',
+            image_url: item.tree.template?.imageUrl || item.template?.imageUrl || '',
+            description: item.tree.template?.description || item.template?.description || '',
+            probability: item.template?.probability ?? 25,
+            focus_minutes: timer.duration,
+          }))
+        );
       } else {
-        setEarnedTree(null);
+        setEarnedTrees([]);
       }
       setShowTreeModal(true);
     } catch (err: any) {
@@ -79,13 +81,13 @@ export default function PomodoroPage() {
 
   const handleCloseModal = useCallback(() => {
     setShowTreeModal(false);
-    setEarnedTree(null);
+    setEarnedTrees([]);
     timer.nextSession();
   }, [timer]);
 
   const handleViewForest = useCallback(() => {
     setShowTreeModal(false);
-    setEarnedTree(null);
+    setEarnedTrees([]);
     router.push('/inventory');
   }, [router]);
 
@@ -110,7 +112,7 @@ export default function PomodoroPage() {
 
         {/* Session dots */}
         <SessionDots
-          current={timer.currentSession - 1}
+          current={timer.status === 'idle' ? timer.currentSession - 1 : timer.currentSession}
           total={timer.sessionsPerCycle}
         />
 
@@ -201,7 +203,7 @@ export default function PomodoroPage() {
       {/* Tree earned modal */}
       <TreeEarnedModal
         open={showTreeModal}
-        tree={earnedTree}
+        trees={earnedTrees}
         onClose={handleCloseModal}
         onViewForest={handleViewForest}
       />

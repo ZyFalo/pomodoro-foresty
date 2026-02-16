@@ -67,8 +67,8 @@ export interface PomodoroStartResponse {
 
 // Pomodoro complete response
 export interface PomodoroCompleteResponse {
-  tree: UserTree;
-  template: Template;
+  trees: Array<{ tree: UserTree; template: Template }>;
+  is_cycle_complete: boolean;
   stats: {
     pomodoros_completed: number;
     total_focus_minutes: number;

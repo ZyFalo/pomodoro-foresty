@@ -23,32 +23,54 @@ export async function weightedRandomTree(): Promise<Template | null> {
   return templates[templates.length - 1];
 }
 
+export type EarnedTreeResult = { userTree: UserTree & { template: Template }; template: Template };
+
+export async function earnTrees(
+  userId: string,
+  count: number,
+  ip_address: string = '',
+  sessionId?: string
+): Promise<EarnedTreeResult[]> {
+  const results: EarnedTreeResult[] = [];
+
+  for (let i = 0; i < count; i++) {
+    const template = await weightedRandomTree();
+    if (!template) break;
+
+    const userTree = await prisma.userTree.create({
+      data: {
+        userId,
+        templateId: template.id,
+        ...(sessionId ? { sessionId } : {}),
+      },
+      include: { template: true },
+    });
+
+    results.push({ userTree, template });
+
+    await logActivity({
+      user_id: userId,
+      event_type: 'arbol_ganado',
+      detail: `Árbol ganado: ${template.name} (${template.category})`,
+      ip_address,
+    });
+  }
+
+  if (results.length > 0) {
+    await prisma.user.update({
+      where: { id: userId },
+      data: { totalTrees: { increment: results.length } },
+    });
+  }
+
+  return results;
+}
+
 export async function earnTree(
   userId: string,
-  ip_address: string = ''
-): Promise<{ userTree: UserTree & { template: Template }; template: Template } | null> {
-  const template = await weightedRandomTree();
-  if (!template) return null;
-
-  const userTree = await prisma.userTree.create({
-    data: {
-      userId,
-      templateId: template.id,
-    },
-    include: { template: true },
-  });
-
-  await prisma.user.update({
-    where: { id: userId },
-    data: { totalTrees: { increment: 1 } },
-  });
-
-  await logActivity({
-    user_id: userId,
-    event_type: 'arbol_ganado',
-    detail: `Árbol ganado: ${template.name} (${template.category})`,
-    ip_address,
-  });
-
-  return { userTree, template };
+  ip_address: string = '',
+  sessionId?: string
+): Promise<EarnedTreeResult | null> {
+  const results = await earnTrees(userId, 1, ip_address, sessionId);
+  return results[0] ?? null;
 }

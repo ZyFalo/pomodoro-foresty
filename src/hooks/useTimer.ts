@@ -62,7 +62,11 @@ export function useTimer() {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ session_id: store.sessionId }),
+        body: JSON.stringify({
+          session_id: store.sessionId,
+          session_number: store.currentSession,
+          sessions_per_cycle: store.sessionsPerCycle,
+        }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);

@@ -1,14 +1,14 @@
 import { NextRequest } from 'next/server';
 import { withAuth, getClientIP } from '@/lib/auth/middleware';
 import { prisma } from '@/lib/db/prisma';
-import { earnTree } from '@/lib/services/trees';
+import { earnTrees } from '@/lib/services/trees';
 import { logActivity } from '@/lib/services/activity-logger';
-import { TIME_VALIDATION_THRESHOLD } from '@/lib/utils/constants';
+import { TIME_VALIDATION_THRESHOLD, CYCLE_BONUS_TREE_COUNT } from '@/lib/utils/constants';
 
 export const POST = withAuth(async (req: NextRequest, user) => {
   try {
     const body = await req.json().catch(() => ({}));
-    const { session_id } = body;
+    const { session_id, session_number, sessions_per_cycle } = body;
 
     if (!session_id) {
       return Response.json({ error: 'session_id es requerido' }, { status: 400 });
@@ -38,22 +38,17 @@ export const POST = withAuth(async (req: NextRequest, user) => {
       );
     }
 
-    // Earn a tree (may be null if no templates available)
-    const ip = getClientIP(req);
-    const result = await earnTree(user.id, ip);
-
-    // Update session (with or without tree)
+    // Update session status
     await prisma.pomodoroSession.update({
       where: { id: session.id },
       data: {
         status: 'completed',
         completedAt: new Date(),
-        ...(result ? { treeEarnedId: result.userTree.id } : {}),
       },
     });
 
     // Update user stats
-    const updatedUser = await prisma.user.update({
+    await prisma.user.update({
       where: { id: user.id },
       data: {
         pomodorosCompleted: { increment: 1 },
@@ -61,17 +56,33 @@ export const POST = withAuth(async (req: NextRequest, user) => {
       },
     });
 
+    // Determine tree count based on cycle position
+    const isCycleComplete =
+      typeof session_number === 'number' &&
+      typeof sessions_per_cycle === 'number' &&
+      session_number === sessions_per_cycle;
+    const treeCount = isCycleComplete ? CYCLE_BONUS_TREE_COUNT : 1;
+
+    // Earn trees
+    const ip = getClientIP(req);
+    const earnedResults = await earnTrees(user.id, treeCount, ip, session.id);
+
+    // Read final user stats (after earnTrees incremented totalTrees)
+    const updatedUser = await prisma.user.findUniqueOrThrow({
+      where: { id: user.id },
+    });
+
     // Log activity
     await logActivity({
       user_id: user.id,
       event_type: 'pomodoro_completado',
-      detail: `Pomodoro de ${session.duration} min completado`,
+      detail: `Pomodoro de ${session.duration} min completado${isCycleComplete ? ' (ciclo completo, +' + treeCount + ' árboles)' : ''}`,
       ip_address: ip,
     });
 
     return Response.json({
-      tree: result?.userTree ?? null,
-      template: result?.template ?? null,
+      trees: earnedResults.map((r) => ({ tree: r.userTree, template: r.template })),
+      is_cycle_complete: isCycleComplete,
       stats: {
         pomodoros_completed: updatedUser.pomodorosCompleted,
         total_focus_minutes: updatedUser.totalFocusMinutes,
