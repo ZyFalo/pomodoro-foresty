@@ -29,10 +29,10 @@ export default function InventoryPage() {
   } = useTrees();
 
   const formatMinutes = (min: number) => {
-    if (min < 60) return `${min}m`;
+    if (min < 60) return `${min}`;
     const h = Math.floor(min / 60);
     const m = min % 60;
-    return m > 0 ? `${h}h ${m}m` : `${h}h`;
+    return m > 0 ? `${h}h ${m}` : `${h}h`;
   };
 
   return (
