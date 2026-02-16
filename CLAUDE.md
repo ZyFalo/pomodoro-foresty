@@ -4,112 +4,115 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Descripción del Proyecto
 
-Pomodoro Forest combina la técnica Pomodoro con un sistema de colección gamificado. Los usuarios completan sesiones de enfoque cronometradas (25 min por defecto) y al completarlas reciben un árbol aleatorio con rareza basada en probabilidad ponderada. Los árboles se acumulan en un inventario personal ("Mi Bosque"). La interfaz y documentación están en español.
+Pomodoro Forest combina la técnica Pomodoro con un sistema de colección gamificado. Los usuarios completan sesiones de enfoque cronometradas (25 min por defecto) y al completarlas reciben un árbol aleatorio con rareza basada en probabilidad ponderada. Los árboles se acumulan en un inventario personal ("Mi Bosque"). Al completar un ciclo (4 sesiones), se otorgan 3 árboles bonus. La interfaz y documentación están en español.
 
 El documento de especificación completa está en `CONTEXTO_PROYECTO.md` — léelo antes de implementar cualquier funcionalidad.
 
-## Estado del Repositorio
+## Stack Tecnológico
 
-Este repositorio es el espacio de trabajo para una nueva implementación del proyecto. Existe una implementación previa en el directorio hermano `../pomodoro-forest/` que puede servir como referencia, pero este repo debe construirse siguiendo la especificación de `CONTEXTO_PROYECTO.md`.
-
-## Stack Tecnológico (implementación de referencia)
-
-- **Backend**: Python 3.13 / FastAPI 0.104 / MongoDB Atlas / JWT auth (python-jose) / Bcrypt
-- **Frontend**: Vanilla JS / HTML / CSS / Bootstrap 5 (CDN, sin build step)
-- **Scrapers**: BeautifulSoup4 + Requests (frases motivacionales de Shopify, audio de tree.fm)
-- **Tests**: Pytest con TestClient de FastAPI (contra MongoDB real, sin mocking)
-- **Deployment**: Railway (Procfile + railway.json, builder NIXPACKS)
-
-**Nota**: `CONTEXTO_PROYECTO.md` es agnóstico de tecnología — el stack debe justificarse al implementar.
+- **Framework**: Next.js 16 (App Router) / React 19 / TypeScript (strict)
+- **Base de datos**: PostgreSQL con Prisma v7 (adapter `@prisma/adapter-pg`)
+- **Auth**: JWT via `jose` + `bcrypt` para hashing de contraseñas
+- **Email**: Resend (verificación de email y recuperación de contraseña)
+- **Estado (frontend)**: Zustand
+- **Validación**: Zod
+- **Estilos**: Tailwind CSS v4
+- **Scraping**: Cheerio (frases motivacionales de Shopify, audio de tree.fm)
 
 ## Comandos Comunes
 
 ```bash
-# Instalar dependencias (backend)
-pip install -r backend/requirements.txt
+# Desarrollo
+npm run dev          # Next.js dev server (localhost:3000)
+npm run build        # Build de producción
+npm run start        # Servidor de producción
+npm run lint         # ESLint
 
-# Servidor de desarrollo (auto-reload con DEBUG=True)
-cd backend && python main.py
-
-# Servidor de producción (Railway)
-cd backend && python run.py
-
-# Tests
-cd backend && pytest tests/test_api.py
-cd backend && pytest tests/test_api.py::test_nombre_del_test -v
-
-# Docs API auto-generados
-# http://localhost:8000/docs (Swagger) | http://localhost:8000/redoc
+# Prisma
+npx prisma generate  # Regenerar cliente Prisma (necesario tras cambios en schema)
+npx prisma migrate dev --name descripcion  # Crear y aplicar migración
+npx prisma migrate deploy                  # Aplicar migraciones pendientes (producción)
+npx prisma studio    # UI visual para explorar la BD
 ```
-
-Los tests requieren conexión a MongoDB Atlas real y las variables `MONGO_URI` y `SECRET_KEY`.
 
 ## Arquitectura
 
-### Backend (`backend/`)
+### Estructura de directorios
 
-App FastAPI monolítica con routers modulares. El entry point principal es `backend/main.py`, que registra los routers y sirve archivos estáticos del frontend.
+```
+src/
+├── app/
+│   ├── (auth)/          # Rutas públicas: login, register, verify-email, forgot/reset-password
+│   ├── (app)/           # Rutas protegidas: pomodoro, inventory, settings
+│   ├── (admin)/admin/   # Rutas admin: dashboard, users, templates, logs
+│   └── api/             # API routes (ver sección abajo)
+├── components/
+│   ├── ui/              # Componentes genéricos (Button, Input, Modal, Badge, GlassCard)
+│   ├── app/             # Componentes de la app (TreeCard, TimerRing, AudioPlayer, etc.)
+│   ├── auth/            # AuthCard, AuthTabs, OTPInput
+│   └── admin/           # Sidebar admin
+├── hooks/               # useAuth, useTimer, useTrees, useAudio
+├── lib/
+│   ├── auth/            # middleware.ts (withAuth/withAdmin), jwt.ts, password.ts
+│   ├── db/              # prisma.ts (singleton con PrismaPg adapter)
+│   ├── services/        # trees.ts (selección ponderada), email.ts, activity-logger.ts
+│   ├── scrapers/        # phrases.ts, audio.ts
+│   └── utils/           # constants.ts, rarity.ts, validation.ts (esquemas Zod)
+├── types/               # index.ts — re-exports de Prisma + interfaces API
+└── generated/prisma/    # Cliente Prisma auto-generado (no editar)
+```
 
-**Routers** (montados bajo prefijo `/api`):
-- `app/auth.py` — Registro, login, JWT. Exporta `get_current_user()` como dependency de FastAPI para rutas protegidas
-- `app/pomodoro.py` — Iniciar/completar sesiones, frases, listado de tipos de árbol. Contiene `weighted_random_tree()` para selección ponderada
-- `app/trees.py` — CRUD del inventario de árboles del usuario
-- `app/stats.py` — Estadísticas del usuario
-- `app/tree_templates.py` — Endpoints admin para gestión de plantillas
+### API Routes (`src/app/api/`)
 
-**Servicios core**:
-- `app/database.py` — Singleton de conexión MongoDB; exporta objeto `db` usado en todos los módulos
-- `app/scrapers/frases_scraper.py` — Scraping de frases con caché diario en `frases_cache.json`
-- `app/scrapers/audio_scraper.py` — URLs de audio de bosque de tree.fm con fallback a Mixkit
+Todas las rutas usan Next.js Route Handlers. Las rutas protegidas envuelven su handler con `withAuth()` o `withAdmin()` de `@/lib/auth/middleware`.
 
-### Frontend (`frontend/`)
+| Grupo | Rutas | Protección |
+|---|---|---|
+| Auth | `auth/login`, `register`, `verify-email`, `resend-code`, `forgot-password`, `reset-password` | Pública |
+| Pomodoro | `pomodoro/start`, `complete`, `phrase` | `withAuth` |
+| Árboles | `trees/`, `trees/[id]`, `trees/[id]/favorite` | `withAuth` |
+| Usuario | `users/me`, `users/me/settings`, `users/me/password` | `withAuth` |
+| Stats | `stats/` | `withAuth` |
+| Admin | `admin/dashboard`, `users`, `users/[id]`, `templates`, `templates/[id]`, `logs` | `withAdmin` |
 
-SPA sin build system. El backend sirve los archivos estáticos y tiene catch-all que redirige a `index.html`.
+### Base de Datos (Prisma)
 
-- `js/api.js` — Wrapper HTTP; `buildApiPath()` maneja resolución de URL dev/prod; inyecta Bearer token automáticamente
-- `js/auth.js` — Lógica de login/registro, token en localStorage
-- `js/pomodoro.js` — Timer, reproducción de audio, flujo de completar pomodoro
-- `js/inventory.js` — Visualización y gestión del inventario
-- `js/animations.js` — Transiciones UI
+6 modelos en `prisma/schema.prisma`: `User`, `Template`, `UserTree`, `PomodoroSession`, `ActivityLog`, `PhraseCache`. Las columnas usan `@map()` para snake_case en la BD mientras los campos Prisma usan camelCase.
 
-### Base de Datos (MongoDB)
-
-Queries directas con pymongo (sin ORM). Dos colecciones principales:
-- **`users`**: Perfil + array embebido `trees[]` (denormalizado) + estadísticas
-- **`trees`**: Plantillas con `probability` (1-25), donde menor valor = más raro
+El cliente Prisma se genera en `src/generated/prisma/` y se importa como singleton desde `@/lib/db/prisma`. Tras cualquier cambio al schema, ejecutar `npx prisma generate`.
 
 ### Sistema de Rareza
 
-| Rango probability | Rareza | Color |
+Definido en `src/lib/utils/constants.ts` (RARITY_RANGES). La selección ponderada está en `src/lib/services/trees.ts`.
+
+| Probability | Rareza | Color |
 |---|---|---|
-| 1-2 | Legendario | Dorado #FFD700 |
-| 3-5 | Épico | Morado #9333EA |
-| 6-10 | Raro | Azul #3B82F6 |
-| 11-15 | Poco común | Verde #22C55E |
-| 16-25 | Común | Gris #6B7280 |
-
-### Variables de Entorno
-
-Requeridas en `.env` (ver `.env.example`):
-- `MONGO_URI` — Connection string de MongoDB Atlas
-- `SECRET_KEY` — Clave de firma JWT
-- `DEBUG` — Habilita auto-reload (`true`/`false`)
-- `PORT` — Puerto del servidor (default `8000`)
+| 1-2 | Legendario | #FFD700 |
+| 3-5 | Épico | #9333EA |
+| 6-10 | Raro | #3B82F6 |
+| 11-15 | Poco común | #22C55E |
+| 16-25 | Común | #6B7280 |
 
 ## Patrones Clave
 
-- Autenticación usa OAuth2 password flow con `get_current_user()` como FastAPI Depends.
-- Todas las rutas API usan prefijo `/api`. Las rutas del frontend son catch-all SPA.
-- Los scrapers tienen fallback hardcodeado — nunca deben causar fallo del sistema.
-- El algoritmo de selección ponderada acumula probabilidades y usa random uniforme.
-- Las migraciones de BD son scripts standalone en `backend/` (no un framework de migraciones).
+- **Auth middleware**: `withAuth(handler)` extrae Bearer token, verifica JWT, busca usuario en BD y lo pasa al handler. `withAdmin(handler)` extiende `withAuth` verificando `role === 'admin'`.
+- **Path alias**: `@/*` mapea a `./src/*` (configurado en `tsconfig.json`).
+- **Tipos**: Los tipos Prisma se re-exportan desde `@/types` junto con interfaces propias (`IUserSettings`, `JWTPayload`, `LoginResponse`, etc.).
+- **Settings**: Las preferencias del usuario están aplanadas como columnas en la tabla `users` (no en un JSON separado). `extractSettings()` en `@/types` las agrupa para respuestas API.
+- **Scrapers**: Tienen fallback hardcodeado — nunca deben causar fallo del sistema. Las frases se cachean en tabla `PhraseCache`.
+- **Ciclo bonus**: Al completar `sessionsPerCycle` sesiones (default 4), se otorgan `CYCLE_BONUS_TREE_COUNT` (3) árboles adicionales.
+- **Validación temporal**: El backend valida que el tiempo transcurrido del pomodoro sea al menos 90% (`TIME_VALIDATION_THRESHOLD`) de la duración configurada.
+
+## Variables de Entorno
+
+Ver `.env.example`. Requeridas:
+- `DATABASE_URL` — Connection string PostgreSQL
+- `SECRET_KEY` — Clave de firma JWT (min 32 chars)
+- `RESEND_API_KEY` — API key de Resend para envío de emails
+- `EMAIL_FROM` — Dirección verificada en Resend
+- `NEXT_PUBLIC_APP_URL` — URL base de la app (para links en emails)
 
 ## Funcionalidades Pendientes (según CONTEXTO_PROYECTO.md)
 
-La especificación incluye funcionalidades no implementadas en la versión de referencia:
-- Verificación de email obligatoria (código de 6 dígitos)
-- Recuperación de contraseña
-- Ajustes de usuario (duración pomodoro, descanso, sonido)
-- Panel admin completo (dashboard stats, gestión usuarios, logs de actividad)
-- Upload de imágenes a servicio cloud (S3/Cloudinary)
-- Validación backend del tiempo transcurrido del pomodoro
+- Upload de imágenes a Cloudinary (Phase 5, variables en `.env.example` comentadas)
+- Suite de tests automatizados

@@ -2,9 +2,9 @@
 
 import { useRef, useCallback, useState, useEffect } from 'react';
 
-export function useAudio() {
+export function useAudio(initialMuted = false) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [volume, setVolumeState] = useState(0.5);
+  const [volume, setVolumeState] = useState(initialMuted ? 0 : 0.5);
   const [isPlaying, setIsPlaying] = useState(false);
 
   const play = useCallback((url: string) => {

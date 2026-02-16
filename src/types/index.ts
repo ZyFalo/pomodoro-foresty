@@ -12,6 +12,7 @@ export interface IUserSettings {
   ambient_sound: boolean;
   notifications: boolean;
   auto_start_break: boolean;
+  long_break_duration: number;
 }
 
 // Extract settings object from flat User columns
@@ -23,6 +24,7 @@ export function extractSettings(user: User): IUserSettings {
     ambient_sound: user.ambientSound,
     notifications: user.notifications,
     auto_start_break: user.autoStartBreak,
+    long_break_duration: user.longBreakDuration,
   };
 }
 

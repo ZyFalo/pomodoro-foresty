@@ -12,6 +12,7 @@ const settingsFieldMap: Record<string, string> = {
   ambient_sound: 'ambientSound',
   notifications: 'notifications',
   auto_start_break: 'autoStartBreak',
+  long_break_duration: 'longBreakDuration',
 };
 
 // PUT /api/users/me/settings
@@ -42,7 +43,8 @@ export const PUT = withAuth(async (req: NextRequest, user) => {
     });
 
     return Response.json({ settings: extractSettings(updatedUser) });
-  } catch {
+  } catch (err) {
+    console.error('[PUT /api/users/me/settings]', err);
     return Response.json({ error: 'Error interno del servidor' }, { status: 500 });
   }
 });

@@ -47,12 +47,13 @@ model User {
   role                UserRole @default(user)
 
   // Preferencias (settings aplanados)
-  pomodoroDuration    Int      @default(25) @map("pomodoro_duration")
+  pomodoroDuration    Float    @default(25) @map("pomodoro_duration")
   breakDuration       Int      @default(5) @map("break_duration")
   sessionsPerCycle    Int      @default(4) @map("sessions_per_cycle")
   ambientSound        Boolean  @default(true) @map("ambient_sound")
   notifications       Boolean  @default(true)
   autoStartBreak      Boolean  @default(false) @map("auto_start_break")
+  longBreakDuration   Int      @default(15) @map("long_break_duration")
 
   // Estadísticas
   pomodorosCompleted  Int      @default(0) @map("pomodoros_completed")

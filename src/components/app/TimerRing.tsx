@@ -7,6 +7,7 @@ interface TimerRingProps {
   timeDisplay: string;
   totalDisplay: string;
   size?: number;
+  variant?: 'work' | 'break';
 }
 
 export function TimerRing({
@@ -14,6 +15,7 @@ export function TimerRing({
   timeDisplay,
   totalDisplay,
   size = 260,
+  variant = 'work',
 }: TimerRingProps) {
   const gradientId = useId();
   const center = size / 2;
@@ -26,9 +28,9 @@ export function TimerRing({
       <svg viewBox={`0 0 ${size} ${size}`} className="absolute inset-0 -rotate-90" style={{ width: size, height: size }}>
         <defs>
           <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#2E8B57" />
-            <stop offset="60%" stopColor="#1B5E20" />
-            <stop offset="100%" stopColor="#1B5E2000" />
+            <stop offset="0%" stopColor={variant === 'break' ? '#3B82F6' : '#2E8B57'} />
+            <stop offset="60%" stopColor={variant === 'break' ? '#1E40AF' : '#1B5E20'} />
+            <stop offset="100%" stopColor={variant === 'break' ? '#1E40AF00' : '#1B5E2000'} />
           </linearGradient>
         </defs>
         {/* Background circle */}

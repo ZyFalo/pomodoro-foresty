@@ -115,19 +115,66 @@ export default function InventoryPage() {
             <span className="animate-spin h-8 w-8 border-3 border-white border-t-transparent rounded-full" />
           </div>
         ) : trees.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20 text-center">
-            <div className="w-20 h-20 rounded-full bg-white/10 flex items-center justify-center mb-4">
-              <Icon name="park" size={40} className="text-white/40" />
+          search || rarity || favorite ? (
+            <div className="flex flex-col items-center justify-center py-20 text-center">
+              <div className="w-20 h-20 rounded-full bg-white/10 flex items-center justify-center mb-4">
+                <Icon name="park" size={40} className="text-white/40" />
+              </div>
+              <h2 className="text-lg font-semibold text-white mb-1">Sin resultados</h2>
+              <p className="text-sm text-white/50 max-w-xs">Intenta con otros filtros</p>
             </div>
-            <h2 className="text-lg font-semibold text-white mb-1">
-              {search || rarity || favorite ? 'Sin resultados' : 'Tu bosque está vacío'}
-            </h2>
-            <p className="text-sm text-white/50 max-w-xs">
-              {search || rarity || favorite
-                ? 'Intenta con otros filtros'
-                : 'Completa sesiones de Pomodoro para ganar árboles y comenzar tu colección'}
-            </p>
-          </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center py-16 text-center">
+              {/* Icon + Title + Description */}
+              <div className="w-20 h-20 rounded-full bg-white/10 flex items-center justify-center mb-4">
+                <Icon name="park" size={40} className="text-white/40" />
+              </div>
+              <h2 className="text-lg font-semibold text-white mb-1">Tu bosque está vacío</h2>
+              <p className="text-sm text-white/50 max-w-xs mb-6">
+                Completa sesiones de Pomodoro para ganar árboles y comenzar tu colección
+              </p>
+
+              {/* Progress pill */}
+              <div className="bg-[#2E8B5722] border border-[#2E8B5744] rounded-full px-4 py-2 flex items-center gap-2 mb-8">
+                <Icon name="target" size={18} className="text-[#4CAF50]" />
+                <span className="text-white font-bold text-sm">
+                  {stats?.total_trees ?? 0}/1 primer árbol
+                </span>
+              </div>
+
+              {/* How it works section */}
+              <div className="w-full max-w-lg">
+                <h3 className="text-base font-bold text-white mb-4">¿Cómo funciona?</h3>
+                <div className="grid grid-cols-3 gap-3">
+                  {[
+                    { step: 1, icon: 'timer', text: 'Configura tu timer y enfócate' },
+                    { step: 2, icon: 'check_circle', text: 'Completa la sesión Pomodoro' },
+                    { step: 3, icon: 'park', text: 'Gana un árbol aleatorio para tu bosque!' },
+                  ].map(({ step, icon, text }) => (
+                    <div
+                      key={step}
+                      className="bg-white/5 border border-white/10 rounded-xl p-4 flex flex-col items-center gap-2.5"
+                    >
+                      <div className="w-9 h-9 rounded-full bg-primary flex items-center justify-center">
+                        <span className="text-white font-bold text-sm">{step}</span>
+                      </div>
+                      <Icon name={icon} size={24} className="text-white/60" />
+                      <p className="text-xs text-white/80 text-center m-0">{text}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* CTA Button */}
+              <Link
+                href="/pomodoro"
+                className="mt-8 inline-flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-[#2E8B57] to-[#1B5E20] text-white font-semibold rounded-full no-underline hover:opacity-90 transition-opacity"
+              >
+                <Icon name="schedule" size={20} />
+                Iniciar Pomodoro
+              </Link>
+            </div>
+          )
         ) : (
           <>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">

@@ -3,7 +3,7 @@ import { withAuth, getClientIP } from '@/lib/auth/middleware';
 import { prisma } from '@/lib/db/prisma';
 import { earnTrees } from '@/lib/services/trees';
 import { logActivity } from '@/lib/services/activity-logger';
-import { TIME_VALIDATION_THRESHOLD, CYCLE_BONUS_TREE_COUNT } from '@/lib/utils/constants';
+import { TIME_VALIDATION_THRESHOLD } from '@/lib/utils/constants';
 
 export const POST = withAuth(async (req: NextRequest, user) => {
   try {
@@ -61,7 +61,7 @@ export const POST = withAuth(async (req: NextRequest, user) => {
       typeof session_number === 'number' &&
       typeof sessions_per_cycle === 'number' &&
       session_number === sessions_per_cycle;
-    const treeCount = isCycleComplete ? CYCLE_BONUS_TREE_COUNT : 1;
+    const treeCount = isCycleComplete ? sessions_per_cycle - 1 : 1;
 
     // Earn trees
     const ip = getClientIP(req);

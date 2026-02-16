@@ -11,10 +11,13 @@ export const RARITY_RANGES = [
 export const POMODORO_DURATIONS = [0.17, 25, 30, 45, 60] as const;
 export const DEFAULT_POMODORO_DURATION = 25;
 export const DEFAULT_BREAK_DURATION = 5;
+export const DEFAULT_LONG_BREAK_DURATION = 15;
 export const DEFAULT_SESSIONS_PER_CYCLE = 4;
 
-// Cycle bonus: trees earned on final session
-export const CYCLE_BONUS_TREE_COUNT = 3;
+// Minimum values for settings
+export const MIN_BREAK_DURATION = 1;
+export const MIN_LONG_BREAK_DURATION = 4;
+export const MIN_SESSIONS_PER_CYCLE = 3;
 
 // Time validation: allow 90% of duration to account for network latency
 export const TIME_VALIDATION_THRESHOLD = 0.9;
@@ -35,6 +38,7 @@ export const PHRASES_SOURCE_URL = 'https://www.shopify.com/es/blog/frases-de-mot
 // Audio
 export const AUDIO_FALLBACK_URL = 'https://assets.mixkit.co/sfx/preview/mixkit-forest-stream-ambience-loop-542.mp3';
 export const TREE_FM_ID_RANGE = { min: 40, max: 65 } as const;
+export const NOTIFICATION_SOUND_URL = 'https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3';
 
 // Default user settings
 export const DEFAULT_USER_SETTINGS = {
@@ -44,6 +48,7 @@ export const DEFAULT_USER_SETTINGS = {
   ambient_sound: true,
   notifications: true,
   auto_start_break: false,
+  long_break_duration: DEFAULT_LONG_BREAK_DURATION,
 } as const;
 
 // Tree categories

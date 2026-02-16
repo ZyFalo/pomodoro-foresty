@@ -1,23 +1,26 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuthStore } from '@/stores/auth-store';
-import { Button, Icon } from '@/components/ui';
-import { POMODORO_DURATIONS } from '@/lib/utils/constants';
+import { Button, Icon, Toast } from '@/components/ui';
+import { POMODORO_DURATIONS, DEFAULT_USER_SETTINGS, MIN_LONG_BREAK_DURATION, MIN_SESSIONS_PER_CYCLE } from '@/lib/utils/constants';
+import type { IUserSettings } from '@/types';
+
+// Merge user settings with defaults, filtering out undefined values from cache
+function mergeWithDefaults(userSettings?: Partial<IUserSettings>): IUserSettings {
+  if (!userSettings) return { ...DEFAULT_USER_SETTINGS };
+  const defined = Object.fromEntries(
+    Object.entries(userSettings).filter(([, v]) => v !== undefined && v !== null)
+  );
+  return { ...DEFAULT_USER_SETTINGS, ...defined } as IUserSettings;
+}
 
 export default function SettingsPage() {
   const { token, user, updateSettings } = useAuthStore();
-  const [settings, setSettings] = useState(user?.settings ?? {
-    pomodoro_duration: 25,
-    break_duration: 5,
-    sessions_per_cycle: 4,
-    ambient_sound: true,
-    notifications: true,
-    auto_start_break: false,
-  });
+  const [settings, setSettings] = useState(() => mergeWithDefaults(user?.settings));
   const [saving, setSaving] = useState(false);
-  const [success, setSuccess] = useState('');
-  const [error, setError] = useState('');
+  const [toast, setToast] = useState<{ message: string; variant: 'success' | 'error' } | null>(null);
+  const closeToast = useCallback(() => setToast(null), []);
 
   // Password change
   const [currentPassword, setCurrentPassword] = useState('');
@@ -26,7 +29,7 @@ export default function SettingsPage() {
   const [changingPassword, setChangingPassword] = useState(false);
 
   useEffect(() => {
-    if (user?.settings) setSettings(user.settings);
+    if (user?.settings) setSettings(mergeWithDefaults(user.settings));
   }, [user?.settings]);
 
   const headers = {
@@ -36,8 +39,7 @@ export default function SettingsPage() {
 
   const handleSaveSettings = async () => {
     setSaving(true);
-    setError('');
-    setSuccess('');
+    setToast(null);
     try {
       const res = await fetch('/api/users/me/settings', {
         method: 'PUT',
@@ -47,10 +49,9 @@ export default function SettingsPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
       updateSettings(data.settings);
-      setSuccess('Ajustes guardados');
-      setTimeout(() => setSuccess(''), 3000);
+      setToast({ message: 'Ajustes guardados correctamente', variant: 'success' });
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Error al guardar');
+      setToast({ message: err instanceof Error ? err.message : 'Error al guardar', variant: 'error' });
     } finally {
       setSaving(false);
     }
@@ -58,12 +59,11 @@ export default function SettingsPage() {
 
   const handleChangePassword = async () => {
     if (newPassword !== confirmPassword) {
-      setError('Las contraseñas no coinciden');
+      setToast({ message: 'Las contraseñas no coinciden', variant: 'error' });
       return;
     }
     setChangingPassword(true);
-    setError('');
-    setSuccess('');
+    setToast(null);
     try {
       const res = await fetch('/api/users/me/password', {
         method: 'PUT',
@@ -72,13 +72,12 @@ export default function SettingsPage() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
-      setSuccess('Contraseña actualizada');
+      setToast({ message: 'Contraseña actualizada', variant: 'success' });
       setCurrentPassword('');
       setNewPassword('');
       setConfirmPassword('');
-      setTimeout(() => setSuccess(''), 3000);
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Error al cambiar contraseña');
+      setToast({ message: err instanceof Error ? err.message : 'Error al cambiar contraseña', variant: 'error' });
     } finally {
       setChangingPassword(false);
     }
@@ -122,7 +121,7 @@ export default function SettingsPage() {
 
           {/* Break duration */}
           <div>
-            <label className="text-sm font-medium text-gray-600 mb-2 block">Duración Descanso</label>
+            <label className="text-sm font-medium text-gray-600 mb-2 block">Duración Descanso Corto</label>
             <div className="flex items-center gap-3">
               <input
                 type="range"
@@ -136,13 +135,38 @@ export default function SettingsPage() {
             </div>
           </div>
 
-          {/* Sessions per cycle */}
+          {/* Long break duration */}
           <div>
-            <label className="text-sm font-medium text-gray-600 mb-2 block">Sesiones por ciclo</label>
+            <label className="text-sm font-medium text-gray-600 mb-2 block">Duración Descanso Largo</label>
             <div className="flex items-center gap-3">
               <input
                 type="range"
-                min={1}
+                min={MIN_LONG_BREAK_DURATION}
+                max={60}
+                value={settings.long_break_duration}
+                onChange={(e) => setSettings((s) => ({ ...s, long_break_duration: parseInt(e.target.value) }))}
+                className="flex-1 accent-primary"
+              />
+              <span className="text-sm font-medium text-gray-700 w-14 text-right">{settings.long_break_duration} min</span>
+            </div>
+          </div>
+
+          {/* Sessions per cycle */}
+          <div>
+            <div className="flex items-center gap-1.5 mb-2">
+              <label className="text-sm font-medium text-gray-600">Sesiones por ciclo</label>
+              <div className="relative group">
+                <Icon name="info" size={16} className="text-gray-400 cursor-help" />
+                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-3 py-2 bg-gray-800 text-white text-xs rounded-lg whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-10">
+                  Si cambias este valor a mitad de un ciclo, se aplicará en el siguiente.
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800" />
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <input
+                type="range"
+                min={MIN_SESSIONS_PER_CYCLE}
                 max={10}
                 value={settings.sessions_per_cycle}
                 onChange={(e) => setSettings((s) => ({ ...s, sessions_per_cycle: parseInt(e.target.value) }))}
@@ -236,13 +260,12 @@ export default function SettingsPage() {
         </div>
       </div>
 
-      {/* Feedback messages */}
-      {success && (
-        <p className="text-success text-sm bg-success/10 px-4 py-2 rounded-lg mb-4">{success}</p>
-      )}
-      {error && (
-        <p className="text-danger text-sm bg-danger/10 px-4 py-2 rounded-lg mb-4">{error}</p>
-      )}
+      <Toast
+        open={toast !== null}
+        message={toast?.message ?? ''}
+        variant={toast?.variant ?? 'success'}
+        onClose={closeToast}
+      />
     </div>
   );
 }

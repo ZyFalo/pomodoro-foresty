@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Icon, Badge } from '@/components/ui';
+import { Icon, Badge, ConfirmModal } from '@/components/ui';
 
 interface TreeCardProps {
   id: string;
@@ -30,6 +30,7 @@ export function TreeCard({
 }: TreeCardProps) {
   const [editing, setEditing] = useState(false);
   const [editName, setEditName] = useState(customName || name);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const displayName = customName || name;
   const date = new Date(earnedAt).toLocaleDateString('es-ES', {
@@ -110,13 +111,22 @@ export function TreeCard({
             Personalizar
           </button>
           <button
-            onClick={() => onDelete(id)}
+            onClick={() => setShowDeleteConfirm(true)}
             className="flex items-center justify-center px-3 py-1.5 rounded-lg bg-white/10 border border-white/20 text-danger/80 text-xs font-medium cursor-pointer hover:bg-danger/10 hover:border-danger/30 transition-colors"
           >
             <Icon name="delete" size={14} />
           </button>
         </div>
       </div>
+
+      <ConfirmModal
+        open={showDeleteConfirm}
+        onClose={() => setShowDeleteConfirm(false)}
+        onConfirm={() => { onDelete(id); setShowDeleteConfirm(false); }}
+        title="Eliminar árbol"
+        message={`¿Estás seguro de que deseas eliminar **${displayName}**? Esta acción no se puede deshacer.`}
+        confirmLabel="Eliminar"
+      />
     </div>
   );
 }

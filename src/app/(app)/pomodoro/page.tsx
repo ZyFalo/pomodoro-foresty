@@ -1,20 +1,26 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTimer } from '@/hooks/useTimer';
 import { useAudio } from '@/hooks/useAudio';
+import { useAuthStore } from '@/stores/auth-store';
 import { TimerRing, SessionDots, AudioPlayer, MotivationalQuote, TreeEarnedModal } from '@/components/app';
-import { Button, Icon } from '@/components/ui';
-import { POMODORO_DURATIONS } from '@/lib/utils/constants';
+import { Button, Icon, Modal } from '@/components/ui';
+import { POMODORO_DURATIONS, NOTIFICATION_SOUND_URL } from '@/lib/utils/constants';
 
 export default function PomodoroPage() {
   const router = useRouter();
   const timer = useTimer();
-  const audio = useAudio();
+  const { user } = useAuthStore();
+  const ambientSound = user?.settings?.ambient_sound ?? true;
+  const notifications = user?.settings?.notifications ?? true;
+  const audio = useAudio(!ambientSound);
+  const notificationAudioRef = useRef<HTMLAudioElement | null>(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showTreeModal, setShowTreeModal] = useState(false);
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [earnedTrees, setEarnedTrees] = useState<Array<{
     tree_name: string;
     image_url: string;
@@ -23,12 +29,39 @@ export default function PomodoroPage() {
     focus_minutes: number;
   }>>([]);
 
+  // Play notification sound
+  const playNotification = useCallback(() => {
+    if (!notifications) return;
+    try {
+      const sound = new Audio(NOTIFICATION_SOUND_URL);
+      sound.volume = 0.7;
+      sound.play().catch(() => {});
+      notificationAudioRef.current = sound;
+    } catch {}
+  }, [notifications]);
+
   // Auto-complete when timer hits 0
   useEffect(() => {
     if (timer.status === 'running' && timer.timeLeft <= 0) {
+      playNotification();
       handleComplete();
     }
   }, [timer.timeLeft, timer.status]);
+
+  // Auto-complete break when it hits 0
+  useEffect(() => {
+    if (timer.status === 'break' && timer.timeLeft <= 0) {
+      playNotification();
+      timer.skipBreak();
+    }
+  }, [timer.timeLeft, timer.status]);
+
+  // Sync ambient_sound setting with audio volume
+  useEffect(() => {
+    if (!ambientSound && audio.volume > 0) {
+      audio.setVolume(0);
+    }
+  }, [ambientSound]);
 
   // Play audio when session starts
   useEffect(() => {
@@ -82,16 +115,38 @@ export default function PomodoroPage() {
   const handleCloseModal = useCallback(() => {
     setShowTreeModal(false);
     setEarnedTrees([]);
-    timer.nextSession();
+    const isCycleComplete = timer.currentSession >= timer.sessionsPerCycle;
+    if (isCycleComplete) {
+      if (timer.autoStartBreak) {
+        timer.nextSession();
+        timer.startBreak(true);
+      } else {
+        timer.completeCycle();
+      }
+    } else {
+      timer.nextSession();
+      if (timer.autoStartBreak) {
+        timer.startBreak(false);
+      }
+    }
   }, [timer]);
 
   const handleViewForest = useCallback(() => {
     setShowTreeModal(false);
     setEarnedTrees([]);
+    const isCycleComplete = timer.currentSession >= timer.sessionsPerCycle;
+    if (isCycleComplete) {
+      timer.completeCycle();
+    } else {
+      timer.nextSession();
+    }
     router.push('/inventory');
-  }, [router]);
+  }, [router, timer]);
 
-  const totalDisplay = `de ${timer.duration}:00`;
+  const breakMinutes = Math.ceil(timer.breakDuration / 60);
+  const totalDisplay = timer.status === 'break'
+    ? `de ${breakMinutes}:00`
+    : `de ${timer.duration}:00`;
 
   return (
     <div className="flex-1 flex flex-col items-center gap-8 px-4 py-8">
@@ -108,51 +163,138 @@ export default function PomodoroPage() {
           progress={timer.progress}
           timeDisplay={timer.timeDisplay}
           totalDisplay={totalDisplay}
+          variant={timer.status === 'break' ? 'break' : 'work'}
         />
 
         {/* Session dots */}
         <SessionDots
-          current={timer.status === 'idle' ? timer.currentSession - 1 : timer.currentSession}
+          current={
+            (timer.status === 'idle' || timer.status === 'break')
+              ? (timer.cycleCompleted
+                  ? timer.sessionsPerCycle
+                  : timer.currentSession - 1)
+              : timer.currentSession
+          }
           total={timer.sessionsPerCycle}
         />
 
+        {/* Pending sessions per cycle indicator */}
+        {timer.pendingSessionsPerCycle !== null && (
+          <p className="text-xs text-white/60 flex items-center gap-1">
+            <Icon name="schedule" size={14} />
+            Próximo ciclo: {timer.pendingSessionsPerCycle} sesiones
+          </p>
+        )}
+
         {/* Duration display + selector (idle only) */}
         {timer.status === 'idle' && (
+          timer.cycleCompleted ? (
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-pill bg-[#FFD70033] border border-[#FFD70066]">
+              <Icon name="emoji_events" size={16} className="text-[#FFD700]" />
+              <span className="text-xs font-bold text-white">Ciclo Completado</span>
+            </div>
+          ) : (
+            <>
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-pill bg-[#2E8B5733] border border-[#2E8B5766]">
+                <Icon name="self_improvement" size={16} className="text-primary" />
+                <span className="text-xs font-bold text-white">Modo Trabajo</span>
+              </div>
+              <div className="flex items-center gap-2">
+                {POMODORO_DURATIONS.map((d) => (
+                  <button
+                    key={d}
+                    onClick={() => timer.setDuration(d)}
+                    disabled={loading}
+                    className={`px-4 py-2 rounded-pill text-sm font-medium border-none cursor-pointer transition-colors ${
+                      d === timer.duration
+                        ? 'bg-primary text-white'
+                        : 'bg-white-15 text-white-80 hover:bg-white-27'
+                    }`}
+                  >
+                    {d} min
+                  </button>
+                ))}
+              </div>
+            </>
+          )
+        )}
+
+        {/* Break mode pill + info */}
+        {timer.status === 'break' && (
           <>
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-pill bg-[#2E8B5733] border border-[#2E8B5766]">
-              <Icon name="self_improvement" size={16} className="text-primary" />
-              <span className="text-xs font-bold text-white">Modo Trabajo</span>
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-pill bg-[#3B82F633] border border-[#3B82F666]">
+              <Icon name="coffee" size={16} className="text-[#3B82F6]" />
+              <span className="text-xs font-bold text-white">Modo Descanso</span>
             </div>
-            <div className="flex items-center gap-2">
-              {POMODORO_DURATIONS.map((d) => (
-                <button
-                  key={d}
-                  onClick={() => timer.setDuration(d)}
-                  disabled={loading}
-                  className={`px-4 py-2 rounded-pill text-sm font-medium border-none cursor-pointer transition-colors ${
-                    d === timer.duration
-                      ? 'bg-primary text-white'
-                      : 'bg-white-15 text-white-80 hover:bg-white-27'
-                  }`}
-                >
-                  {d} min
-                </button>
-              ))}
-            </div>
+            <p className="text-white-80 text-sm text-center">
+              {timer.isLongBreak ? 'Descanso largo — ¡Ciclo completado!' : 'Descanso corto'}
+            </p>
           </>
         )}
 
         {/* Start button */}
         {timer.status === 'idle' && (
-          <Button
-            icon="play_arrow"
-            onClick={() => handleStart(timer.duration)}
-            loading={loading}
-            size="large"
-            className="max-w-[300px]"
+          <div className="flex flex-col items-center gap-3 w-full">
+            {timer.cycleCompleted ? (
+              <>
+                <Button
+                  icon="coffee"
+                  onClick={() => { timer.nextSession(); timer.startBreak(true); }}
+                  size="large"
+                  className="max-w-[300px]"
+                >
+                  Tomar Descanso Largo
+                </Button>
+                <button
+                  onClick={() => timer.nextSession()}
+                  className="text-sm text-white/60 hover:text-white transition-colors bg-transparent border-none cursor-pointer"
+                >
+                  Comenzar nuevo ciclo
+                </button>
+              </>
+            ) : (
+              <>
+                <Button
+                  icon="play_arrow"
+                  onClick={() => handleStart(timer.duration)}
+                  loading={loading}
+                  size="large"
+                  className="max-w-[300px]"
+                >
+                  Iniciar Pomodoro
+                </Button>
+                {timer.currentSession > 1 && !timer.breakTaken && (
+                  <button
+                    onClick={() => timer.startBreak(false)}
+                    className="flex items-center gap-2 px-5 py-2.5 rounded-pill border border-[#3B82F666] bg-transparent text-[#3B82F6] text-sm font-medium cursor-pointer transition-colors hover:bg-[#3B82F61A]"
+                  >
+                    <Icon name="coffee" size={16} className="text-[#3B82F6]" />
+                    Tomar Descanso
+                  </button>
+                )}
+                {timer.currentSession > 1 && (
+                  <button
+                    onClick={() => setShowResetConfirm(true)}
+                    className="flex items-center gap-1 text-sm text-white/60 hover:text-white transition-colors bg-transparent border-none cursor-pointer"
+                  >
+                    <Icon name="restart_alt" size={16} />
+                    Reiniciar ciclo
+                  </button>
+                )}
+              </>
+            )}
+          </div>
+        )}
+
+        {/* Skip break button */}
+        {timer.status === 'break' && (
+          <button
+            onClick={() => timer.skipBreak()}
+            className="flex items-center gap-2 px-5 py-2.5 rounded-pill border border-white-20 bg-transparent text-white-80 text-sm font-medium cursor-pointer transition-colors hover:bg-white-10"
           >
-            Iniciar Pomodoro
-          </Button>
+            <Icon name="skip_next" size={16} className="text-white-80" />
+            Saltar descanso
+          </button>
         )}
 
         {/* Stop button */}
@@ -180,7 +322,7 @@ export default function PomodoroPage() {
         )}
       </div>
 
-      {/* Audio section (running) */}
+      {/* Audio section (running only, not during break) */}
       {timer.status === 'running' && (
         <AudioPlayer
           isPlaying={audio.isPlaying}
@@ -190,7 +332,7 @@ export default function PomodoroPage() {
         />
       )}
 
-      {/* Motivational quote (running) */}
+      {/* Motivational quote (running only, not during break) */}
       {timer.status === 'running' && timer.phrase && (
         <MotivationalQuote phrase={timer.phrase} />
       )}
@@ -199,6 +341,33 @@ export default function PomodoroPage() {
       {error && (
         <p className="text-danger text-sm bg-danger/10 px-4 py-2 rounded-lg">{error}</p>
       )}
+
+      {/* Reset cycle confirmation modal */}
+      <Modal open={showResetConfirm} onClose={() => setShowResetConfirm(false)}>
+        <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-6 max-w-sm mx-4 text-center">
+          <Icon name="restart_alt" size={40} className="text-white/80 mx-auto mb-3" />
+          <h3 className="text-lg font-semibold text-white mb-2">Reiniciar ciclo</h3>
+          <p className="text-sm text-white/70 mb-5">
+            Volverás a la sesión 1{timer.pendingSessionsPerCycle !== null
+              ? ` y se aplicarán ${timer.pendingSessionsPerCycle} sesiones por ciclo`
+              : ''}. El progreso del ciclo actual se perderá.
+          </p>
+          <div className="flex gap-3">
+            <button
+              onClick={() => setShowResetConfirm(false)}
+              className="flex-1 py-2.5 rounded-xl border border-white/20 bg-transparent text-white/80 text-sm font-medium cursor-pointer hover:bg-white/10 transition-colors"
+            >
+              Cancelar
+            </button>
+            <button
+              onClick={() => { timer.resetCycle(); setShowResetConfirm(false); }}
+              className="flex-1 py-2.5 rounded-xl border-none bg-primary text-white text-sm font-semibold cursor-pointer hover:opacity-90 transition-opacity"
+            >
+              Reiniciar
+            </button>
+          </div>
+        </div>
+      </Modal>
 
       {/* Tree earned modal */}
       <TreeEarnedModal
