@@ -27,6 +27,30 @@ export function getDurationBonusTrees(durationMinutes: number): number {
 // Time validation: allow 90% of duration to account for network latency
 export const TIME_VALIDATION_THRESHOLD = 0.9;
 
+// Minimum elapsed milliseconds required to complete a pomodoro of the given duration.
+export function getRequiredElapsedMs(durationMinutes: number): number {
+  return durationMinutes * 60 * 1000 * TIME_VALIDATION_THRESHOLD;
+}
+
+// Trees awarded for completing a session: 1 base tree (or sessionsPerCycle - 1 when the
+// session closes a cycle) plus the duration bonus.
+export function getSessionReward(
+  sessionNumber: number | undefined,
+  sessionsPerCycle: number | undefined,
+  durationMinutes: number
+): { isCycleComplete: boolean; baseTrees: number; durationBonus: number; treeCount: number } {
+  const durationBonus = getDurationBonusTrees(durationMinutes);
+  if (
+    typeof sessionNumber === 'number' &&
+    typeof sessionsPerCycle === 'number' &&
+    sessionNumber === sessionsPerCycle
+  ) {
+    const baseTrees = sessionsPerCycle - 1;
+    return { isCycleComplete: true, baseTrees, durationBonus, treeCount: baseTrees + durationBonus };
+  }
+  return { isCycleComplete: false, baseTrees: 1, durationBonus, treeCount: 1 + durationBonus };
+}
+
 // Verification code
 export const VERIFICATION_CODE_LENGTH = 6;
 export const VERIFICATION_CODE_EXPIRY_MINUTES = 15;

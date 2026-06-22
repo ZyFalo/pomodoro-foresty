@@ -3,7 +3,7 @@ import { withAuth, getClientIP } from '@/lib/auth/middleware';
 import { prisma } from '@/lib/db/prisma';
 import { earnTrees } from '@/lib/services/trees';
 import { logActivity } from '@/lib/services/activity-logger';
-import { TIME_VALIDATION_THRESHOLD, getDurationBonusTrees } from '@/lib/utils/constants';
+import { getRequiredElapsedMs, getSessionReward } from '@/lib/utils/constants';
 
 export const POST = withAuth(async (req: NextRequest, user) => {
   try {
@@ -28,7 +28,7 @@ export const POST = withAuth(async (req: NextRequest, user) => {
 
     // Validate elapsed time (90% of duration)
     const elapsedMs = Date.now() - session.startedAt.getTime();
-    const requiredMs = session.duration * 60 * 1000 * TIME_VALIDATION_THRESHOLD;
+    const requiredMs = getRequiredElapsedMs(session.duration);
 
     if (elapsedMs < requiredMs) {
       const remainingSeconds = Math.ceil((requiredMs - elapsedMs) / 1000);
@@ -57,13 +57,11 @@ export const POST = withAuth(async (req: NextRequest, user) => {
     });
 
     // Determine tree count based on cycle position + duration bonus
-    const isCycleComplete =
-      typeof session_number === 'number' &&
-      typeof sessions_per_cycle === 'number' &&
-      session_number === sessions_per_cycle;
-    const baseTrees = isCycleComplete ? sessions_per_cycle - 1 : 1;
-    const durationBonus = getDurationBonusTrees(session.duration);
-    const treeCount = baseTrees + durationBonus;
+    const { isCycleComplete, baseTrees, durationBonus, treeCount } = getSessionReward(
+      session_number,
+      sessions_per_cycle,
+      session.duration
+    );
 
     // Earn trees
     const ip = getClientIP(req);
