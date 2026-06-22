@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/auth-store';
 import { Button, Icon } from '@/components/ui';
+import { ImageUpload } from '@/components/admin';
 import { TREE_CATEGORIES } from '@/lib/utils/constants';
 import { getRarityFromProbability } from '@/lib/utils/rarity';
 
@@ -92,16 +93,11 @@ export default function NewTemplatePage() {
           />
         </div>
 
-        <div>
-          <label className="text-sm font-medium text-gray-600 mb-1 block">URL de imagen</label>
-          <input
-            type="url"
-            value={form.image_url}
-            onChange={(e) => setForm({ ...form, image_url: e.target.value })}
-            className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm outline-none focus:border-primary"
-            required
-          />
-        </div>
+        <ImageUpload
+          value={form.image_url}
+          onChange={(url) => setForm({ ...form, image_url: url })}
+          token={token}
+        />
 
         <div>
           <label className="text-sm font-medium text-gray-600 mb-1 block">
