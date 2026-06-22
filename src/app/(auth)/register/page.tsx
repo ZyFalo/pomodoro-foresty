@@ -34,7 +34,7 @@ export default function RegisterPage() {
 
     setLoading(true);
     try {
-      const data = await register(username, email, password);
+      await register(username, email, password);
       // Redirect to verify email with the email in search params
       router.push(`/verify-email?email=${encodeURIComponent(email)}`);
     } catch (err) {

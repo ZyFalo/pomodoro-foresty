@@ -1,4 +1,4 @@
-import type { User, Template, UserTree, PomodoroSession, ActivityLog, EventType as PrismaEventType } from '@/generated/prisma/client';
+import type { User, Template, UserTree, EventType as PrismaEventType } from '@/generated/prisma/client';
 
 // Re-export Prisma types for convenience
 export type { User, Template, UserTree, PomodoroSession, ActivityLog, PhraseCache } from '@/generated/prisma/client';

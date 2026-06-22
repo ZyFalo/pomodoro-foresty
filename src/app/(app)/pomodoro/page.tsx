@@ -8,6 +8,7 @@ import { useAuthStore } from '@/stores/auth-store';
 import { TimerRing, SessionDots, AudioPlayer, MotivationalQuote, TreeEarnedModal } from '@/components/app';
 import { Button, Icon, Modal } from '@/components/ui';
 import { POMODORO_DURATIONS, NOTIFICATION_SOUND_URL, getDurationBonusTrees } from '@/lib/utils/constants';
+import type { UserTree, Template } from '@/types';
 
 export default function PomodoroPage() {
   const router = useRouter();
@@ -46,6 +47,8 @@ export default function PomodoroPage() {
       playNotification();
       handleComplete();
     }
+    // Must fire only when the timer reaches 0; handlers are intentionally excluded.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timer.timeLeft, timer.status]);
 
   // Auto-complete break when it hits 0
@@ -54,6 +57,8 @@ export default function PomodoroPage() {
       playNotification();
       timer.skipBreak();
     }
+    // Must fire only when the break reaches 0; timer object is intentionally excluded.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timer.timeLeft, timer.status]);
 
   // Sync ambient_sound setting with audio volume
@@ -61,6 +66,8 @@ export default function PomodoroPage() {
     if (!ambientSound && audio.volume > 0) {
       audio.setVolume(0);
     }
+    // React only to the ambientSound setting; audio object is intentionally excluded.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ambientSound]);
 
   // Play audio when session starts
@@ -70,6 +77,8 @@ export default function PomodoroPage() {
     } else if (timer.status !== 'running') {
       audio.stop();
     }
+    // React only to session status/audioUrl; audio object is intentionally excluded.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timer.status, timer.audioUrl]);
 
   const handleStart = useCallback(async (duration?: number) => {
@@ -77,8 +86,8 @@ export default function PomodoroPage() {
     setLoading(true);
     try {
       await timer.startPomodoro(duration);
-    } catch (err: any) {
-      setError(err.message || 'Error al iniciar el pomodoro');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error al iniciar el pomodoro');
     } finally {
       setLoading(false);
     }
@@ -89,7 +98,7 @@ export default function PomodoroPage() {
       const data = await timer.completePomodoro();
       if (data?.trees && data.trees.length > 0) {
         setEarnedTrees(
-          data.trees.map((item: { tree: any; template: any }) => ({
+          data.trees.map((item: { tree: UserTree & { template: Template }; template: Template }) => ({
             tree_name: item.tree.template?.name || item.tree.customName || item.template?.name || '',
             image_url: item.tree.template?.imageUrl || item.template?.imageUrl || '',
             description: item.tree.template?.description || item.template?.description || '',
@@ -101,8 +110,8 @@ export default function PomodoroPage() {
         setEarnedTrees([]);
       }
       setShowTreeModal(true);
-    } catch (err: any) {
-      setError(err.message || 'Error al completar el pomodoro');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error al completar el pomodoro');
     }
   }, [timer]);
 

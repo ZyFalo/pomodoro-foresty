@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { AuthCard } from '@/components/auth';
 import { OTPInput } from '@/components/auth';
-import { Button, GlassCard, Icon } from '@/components/ui';
+import { Button, GlassCard } from '@/components/ui';
 import { useAuth } from '@/hooks/useAuth';
 
 function VerifyEmailContent() {

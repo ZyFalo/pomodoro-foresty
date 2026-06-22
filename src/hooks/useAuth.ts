@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/auth-store';
 import { useTimerStore } from '@/stores/timer-store';
 import { useCallback } from 'react';
+import type { LoginResponse } from '@/types';
 
 const API_BASE = '/api/auth';
 
@@ -22,7 +23,7 @@ export function useAuth() {
   const { setAuth, logout: storeLogout, token, user, isAuthenticated } = useAuthStore();
 
   const login = useCallback(async (username: string, password: string) => {
-    const data = await fetchAPI<{ token: string; user: any }>(`${API_BASE}/login`, {
+    const data = await fetchAPI<LoginResponse>(`${API_BASE}/login`, {
       method: 'POST',
       body: JSON.stringify({ username, password }),
     });

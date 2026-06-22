@@ -47,7 +47,7 @@ export default function UsersPage() {
 
   useEffect(() => {
     if (token) fetchUsers();
-  }, [token, search]);
+  }, [token, fetchUsers]);
 
   return (
     <div className="p-8">

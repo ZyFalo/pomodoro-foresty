@@ -1,3 +1,7 @@
+/* eslint-disable @next/next/no-page-custom-font --
+   Inter and the Material Symbols icon font are loaded from the Google Fonts CDN
+   by design. next/font does not support the Material Symbols variable-axis icon
+   font, so both are kept as <link> tags in the root layout. */
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 

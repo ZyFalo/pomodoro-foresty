@@ -26,6 +26,8 @@ export function useTimer() {
     if (store.sessionsPerCycle !== sessionsPerCycleSetting || store.pendingSessionsPerCycle !== null) {
       store.configure(sessionsPerCycleSetting);
     }
+    // Sync settings → store; the zustand store object is a new ref each render and is excluded on purpose.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pomodoroDurationSetting, sessionsPerCycleSetting, store.sessionsPerCycle, store.pendingSessionsPerCycle]);
 
   // Tick every second when running or on break
@@ -43,6 +45,8 @@ export function useTimer() {
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
+    // Restart the interval only when run/break status changes; store ref excluded on purpose.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [store.status]);
 
   const startPomodoro = useCallback(async (duration?: number) => {

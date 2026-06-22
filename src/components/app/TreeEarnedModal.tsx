@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { Modal, Icon, Button, Badge } from '@/components/ui';
 
 interface TreeData {
@@ -37,17 +37,24 @@ export function TreeEarnedModal({ open, trees, onClose, onViewForest }: TreeEarn
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [confettiKey, setConfettiKey] = useState(0);
+  const [prevOpen, setPrevOpen] = useState(open);
 
-  const confettiPieces = useMemo(() => generateConfettiPieces(), [confettiKey]);
-
-  // Reset index when modal opens
-  useEffect(() => {
+  // Reset state when the modal transitions to open. Adjusting state during
+  // render (React's recommended pattern) avoids the cascading re-render of
+  // doing it inside an effect.
+  if (open !== prevOpen) {
+    setPrevOpen(open);
     if (open) {
       setCurrentIndex(0);
       setIsTransitioning(false);
       setConfettiKey((k) => k + 1);
     }
-  }, [open]);
+  }
+
+  // confettiKey is an explicit regeneration trigger, not a value read inside the
+  // factory, so the "unnecessary dependency" hint does not apply here.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const confettiPieces = useMemo(() => generateConfettiPieces(), [confettiKey]);
 
   const isMultiple = trees.length > 1;
   const isLastTree = currentIndex >= trees.length - 1;

@@ -54,7 +54,7 @@ export default function LogsPage() {
 
   useEffect(() => {
     if (token) fetchLogs();
-  }, [token, eventType]);
+  }, [token, fetchLogs]);
 
   return (
     <div className="p-8">

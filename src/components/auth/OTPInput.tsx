@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useEffect } from 'react';
 
 interface OTPInputProps {
   length?: number;
@@ -11,7 +11,6 @@ interface OTPInputProps {
 
 export function OTPInput({ length = 6, value, onChange, small = false }: OTPInputProps) {
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
-  const [focused, setFocused] = useState(0);
 
   useEffect(() => {
     inputRefs.current[0]?.focus();
@@ -27,14 +26,12 @@ export function OTPInput({ length = 6, value, onChange, small = false }: OTPInpu
 
     if (char && index < length - 1) {
       inputRefs.current[index + 1]?.focus();
-      setFocused(index + 1);
     }
   };
 
   const handleKeyDown = (index: number, e: React.KeyboardEvent) => {
     if (e.key === 'Backspace' && !value[index] && index > 0) {
       inputRefs.current[index - 1]?.focus();
-      setFocused(index - 1);
     }
   };
 
@@ -44,7 +41,6 @@ export function OTPInput({ length = 6, value, onChange, small = false }: OTPInpu
     onChange(pasted);
     const nextIndex = Math.min(pasted.length, length - 1);
     inputRefs.current[nextIndex]?.focus();
-    setFocused(nextIndex);
   };
 
   const boxSize = small ? 'w-11 h-[50px] rounded-[10px] text-[22px]' : 'w-12 h-14 rounded-xl text-2xl';
@@ -61,7 +57,6 @@ export function OTPInput({ length = 6, value, onChange, small = false }: OTPInpu
           value={value[i] ?? ''}
           onChange={(e) => handleChange(i, e.target.value)}
           onKeyDown={(e) => handleKeyDown(i, e)}
-          onFocus={() => setFocused(i)}
           onPaste={i === 0 ? handlePaste : undefined}
           className={`${boxSize} bg-white-10 border border-white-20 text-white font-sans text-center outline-none focus:border-accent-green transition-colors`}
         />

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useMemo } from 'react';
 import { useAuthStore } from '@/stores/auth-store';
 
 interface TreeItem {
@@ -47,10 +47,13 @@ export function useTrees() {
   const [favorite, setFavorite] = useState(false);
   const [search, setSearch] = useState('');
 
-  const headers = {
-    'Content-Type': 'application/json',
-    Authorization: `Bearer ${token}`,
-  };
+  const headers = useMemo(
+    () => ({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    }),
+    [token]
+  );
 
   const fetchTrees = useCallback(async (page = 1) => {
     setLoading(true);
@@ -71,7 +74,7 @@ export function useTrees() {
     } finally {
       setLoading(false);
     }
-  }, [token, rarity, favorite, search]);
+  }, [headers, rarity, favorite, search]);
 
   const fetchStats = useCallback(async () => {
     try {
@@ -82,7 +85,7 @@ export function useTrees() {
     } catch (error) {
       console.error('Error fetching stats:', error);
     }
-  }, [token]);
+  }, [headers]);
 
   const toggleFavorite = useCallback(async (id: string) => {
     try {
@@ -99,7 +102,7 @@ export function useTrees() {
     } catch (error) {
       console.error('Error toggling favorite:', error);
     }
-  }, [token]);
+  }, [headers]);
 
   const renameTree = useCallback(async (id: string, custom_name: string) => {
     try {
@@ -116,7 +119,7 @@ export function useTrees() {
     } catch (error) {
       console.error('Error renaming tree:', error);
     }
-  }, [token]);
+  }, [headers]);
 
   const deleteTree = useCallback(async (id: string) => {
     try {
@@ -132,21 +135,21 @@ export function useTrees() {
     } catch (error) {
       console.error('Error deleting tree:', error);
     }
-  }, [token, fetchStats]);
+  }, [headers, fetchStats]);
 
   // Auto-fetch when filters change
   useEffect(() => {
     if (token) {
       fetchTrees(1);
     }
-  }, [rarity, favorite, search, token]);
+  }, [token, fetchTrees]);
 
   // Fetch stats on mount
   useEffect(() => {
     if (token) {
       fetchStats();
     }
-  }, [token]);
+  }, [token, fetchStats]);
 
   return {
     trees,
