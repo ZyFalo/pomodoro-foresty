@@ -21,7 +21,11 @@ RUN apk add --no-cache libc6-compat openssl
 WORKDIR /app
 
 ENV NODE_ENV=production
+# Railway inyecta PORT en runtime y sobrescribe este valor por defecto.
 ENV PORT=3000
+# Escuchar en todas las interfaces: imprescindible para que Railway/Docker
+# puedan rutear el tráfico (Next standalone usa localhost por defecto).
+ENV HOSTNAME=0.0.0.0
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
