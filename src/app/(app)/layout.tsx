@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/auth-store';
-import { Navbar } from '@/components/app';
+import { Dock } from '@/components/app';
 
 export default function AppLayout({
   children,
@@ -36,19 +36,15 @@ export default function AppLayout({
       <div className="fixed -top-40 -left-40 w-[34rem] h-[34rem] rounded-full bg-primary/12 blur-[150px] animate-float pointer-events-none" />
       <div className="fixed -bottom-52 -right-32 w-[40rem] h-[40rem] rounded-full bg-accent-green/8 blur-[160px] animate-float [animation-delay:3s] pointer-events-none" />
 
-      {/* Content */}
+      {/* Content (a pantalla completa; el dock flota encima) */}
       <div className="relative z-10 min-h-screen flex flex-col">
-        <Navbar />
-        <main className="flex-1 flex flex-col">
+        <main className="flex-1 flex flex-col pb-28">
           {children}
         </main>
-        <footer className="bg-[#0C1610]/40 backdrop-blur-md border-t border-white-10 py-4 px-6 sm:px-8">
-          <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-1">
-            <span className="text-sm text-white-60">Pomodoro Forest © 2025</span>
-            <span className="text-xs text-white-40">Cultiva tu productividad, un pomodoro a la vez</span>
-          </div>
-        </footer>
       </div>
+
+      {/* Dock flotante de navegación */}
+      <Dock />
     </div>
   );
 }

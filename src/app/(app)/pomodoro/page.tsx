@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useTimer } from '@/hooks/useTimer';
 import { useAudio } from '@/hooks/useAudio';
 import { useAuthStore } from '@/stores/auth-store';
-import { TimerRing, SessionDots, AudioPlayer, MotivationalQuote, TreeEarnedModal } from '@/components/app';
+import { TimerRing, GrowingTree, SessionDots, AudioPlayer, MotivationalQuote, TreeEarnedModal } from '@/components/app';
 import { Button, Icon, Modal } from '@/components/ui';
 import { POMODORO_DURATIONS, NOTIFICATION_SOUND_URL, getDurationBonusTrees } from '@/lib/utils/constants';
 import type { UserTree, Template } from '@/types';
@@ -157,25 +157,25 @@ export default function PomodoroPage() {
     ? `de ${breakMinutes}:00`
     : `de ${timer.duration}:00`;
 
-  return (
-    <div className="flex-1 flex flex-col items-center gap-8 px-4 py-10">
-      {/* Page header */}
-      <div className="text-center animate-fade-up">
-        <h1 className="font-display text-5xl font-semibold text-white mb-2 tracking-tight">Pomodoro Timer</h1>
-        <p className="text-base text-white-60">Mejora tu concentración, cultiva tu bosque</p>
-      </div>
+  // Crecimiento del árbol: semilla en reposo, crece con la sesión, adulto al completar
+  const growth = timer.status === 'completed' ? 1 : timer.status === 'idle' ? 0 : timer.progress;
+  const treeVariant = timer.status === 'break' ? 'break' : 'work';
+  const bonusTrees = getDurationBonusTrees(timer.duration);
 
-      {/* Timer card glass */}
-      <div className="bg-[#0E1A12]/70 border border-white-15 rounded-[28px] backdrop-blur-[20px] py-9 px-10 max-w-md w-full flex flex-col items-center gap-6 shadow-[0_24px_60px_rgba(0,0,0,0.45),inset_0_1px_0_rgba(255,255,255,0.06)] animate-fade-up [animation-delay:80ms]">
-        {/* Timer ring */}
+  return (
+    <div className="flex-1 flex flex-col items-center justify-center gap-6 px-4 py-10">
+      {/* Anillo + árbol que crece (protagonista) */}
+      <div className="flex flex-col items-center gap-5 animate-scale-in">
         <TimerRing
           progress={timer.progress}
           timeDisplay={timer.timeDisplay}
           totalDisplay={totalDisplay}
-          variant={timer.status === 'break' ? 'break' : 'work'}
-        />
+          variant={treeVariant}
+        >
+          <GrowingTree progress={growth} size={76} variant={treeVariant} />
+        </TimerRing>
 
-        {/* Session dots */}
+        {/* Indicador de ciclo (sutil) */}
         <SessionDots
           current={
             (timer.status === 'idle' || timer.status === 'break')
@@ -187,182 +187,140 @@ export default function PomodoroPage() {
           total={timer.sessionsPerCycle}
         />
 
-        {/* Pending sessions per cycle indicator */}
         {timer.pendingSessionsPerCycle !== null && (
           <p className="text-xs text-white-50 flex items-center gap-1.5">
             <Icon name="schedule" size={14} />
             Próximo ciclo: {timer.pendingSessionsPerCycle} sesiones
           </p>
         )}
+      </div>
 
-        {/* Duration display + selector (idle only) */}
-        {timer.status === 'idle' && (
-          timer.cycleCompleted ? (
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-pill bg-gold/15 border border-gold/40 shadow-[0_0_18px_rgba(255,215,0,0.2)]">
-              <Icon name="emoji_events" size={16} className="text-gold" />
-              <span className="text-xs font-semibold text-white tracking-wide">Ciclo Completado</span>
-            </div>
+      {/* Frase motivacional durante la sesión (sobre el árbol) */}
+      {timer.status === 'running' && timer.phrase && (
+        <MotivationalQuote phrase={timer.phrase} />
+      )}
+
+      {/* Estado de descanso */}
+      {timer.status === 'break' && (
+        <div className="flex flex-col items-center gap-1.5 animate-fade-up">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-pill bg-blue/15 border border-blue/40">
+            <Icon name="coffee" size={16} className="text-blue" />
+            <span className="text-xs font-semibold text-white tracking-wide">Descanso</span>
+          </div>
+          <p className="text-white-60 text-sm text-center">
+            {timer.isLongBreak ? 'Descanso largo — ¡buen trabajo!' : 'Respira un momento'}
+          </p>
+        </div>
+      )}
+
+      {/* Selector de tiempo (idle, no ciclo completo) */}
+      {timer.status === 'idle' && !timer.cycleCompleted && (
+        <div className="flex flex-col items-center gap-3 animate-fade-up">
+          <p className="text-white-60 text-[15px] text-center">
+            Planta un árbol y concéntrate. Tu bosque crece contigo. 🌱
+          </p>
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-white-40">Duración</span>
+            <select
+              value={timer.duration}
+              onChange={(e) => timer.setDuration(Number(e.target.value))}
+              disabled={loading}
+              className="bg-white-8 text-white border border-white-15 rounded-pill px-4 py-2 text-sm font-medium cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/40 hover:bg-white-10 transition-colors disabled:opacity-50 [&>option]:bg-forest-900 [&>option]:text-white"
+            >
+              {POMODORO_DURATIONS.map((d) => (
+                <option key={d} value={d}>{d} min</option>
+              ))}
+            </select>
+          </div>
+        </div>
+      )}
+
+      {/* Ciclo completado */}
+      {timer.status === 'idle' && timer.cycleCompleted && (
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-pill bg-gold/15 border border-gold/40 shadow-[0_0_18px_rgba(255,215,0,0.2)] animate-fade-up">
+          <Icon name="emoji_events" size={16} className="text-gold" />
+          <span className="text-xs font-semibold text-white tracking-wide">¡Ciclo completado!</span>
+        </div>
+      )}
+
+      {/* Acción primaria + secundarias */}
+      {timer.status === 'idle' && (
+        <div className="flex flex-col items-center gap-3 w-full max-w-[300px]">
+          {timer.cycleCompleted ? (
+            <>
+              <Button icon="coffee" onClick={() => { timer.nextSession(); timer.startBreak(true); }} size="large">
+                Tomar descanso largo
+              </Button>
+              <button
+                onClick={() => timer.nextSession()}
+                className="text-sm text-white-50 hover:text-white transition-colors bg-transparent border-none cursor-pointer"
+              >
+                Comenzar nuevo ciclo
+              </button>
+            </>
           ) : (
             <>
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-pill bg-primary/15 border border-primary/40">
-                <Icon name="self_improvement" size={16} className="text-accent-green" />
-                <span className="text-xs font-semibold text-white tracking-wide">Modo Trabajo</span>
-              </div>
-              <select
-                value={timer.duration}
-                onChange={(e) => timer.setDuration(Number(e.target.value))}
-                disabled={loading}
-                className="bg-white-8 text-white border border-white-15 rounded-pill px-4 py-2 text-sm font-medium cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/40 hover:bg-white-10 transition-colors disabled:opacity-50"
-              >
-                {POMODORO_DURATIONS.map((d) => (
-                  <option key={d} value={d}>{d} min</option>
-                ))}
-              </select>
-            </>
-          )
-        )}
-
-        {/* Break mode pill + info */}
-        {timer.status === 'break' && (
-          <>
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-pill bg-blue/15 border border-blue/40">
-              <Icon name="coffee" size={16} className="text-blue" />
-              <span className="text-xs font-semibold text-white tracking-wide">Modo Descanso</span>
-            </div>
-            <p className="text-white-60 text-sm text-center">
-              {timer.isLongBreak ? 'Descanso largo — ¡Ciclo completado!' : 'Descanso corto'}
-            </p>
-          </>
-        )}
-
-        {/* Start button */}
-        {timer.status === 'idle' && (
-          <div className="flex flex-col items-center gap-3 w-full">
-            {timer.cycleCompleted ? (
-              <>
-                <Button
-                  icon="coffee"
-                  onClick={() => { timer.nextSession(); timer.startBreak(true); }}
-                  size="large"
-                  className="max-w-[300px]"
-                >
-                  Tomar Descanso Largo
-                </Button>
-                <button
-                  onClick={() => timer.nextSession()}
-                  className="text-sm text-white-50 hover:text-white transition-colors bg-transparent border-none cursor-pointer"
-                >
-                  Comenzar nuevo ciclo
-                </button>
-              </>
-            ) : (
-              <>
-                <Button
-                  icon="play_arrow"
-                  onClick={() => handleStart(timer.duration)}
-                  loading={loading}
-                  size="large"
-                  className="max-w-[300px]"
-                >
-                  Iniciar Pomodoro
-                </Button>
+              <Button icon="park" onClick={() => handleStart(timer.duration)} loading={loading} size="large">
+                Plantar
+              </Button>
+              <div className="flex items-center gap-4">
                 {timer.currentSession > 1 && !timer.breakTaken && (
                   <button
                     onClick={() => timer.startBreak(false)}
-                    className="flex items-center gap-2 px-5 py-2.5 rounded-pill border border-blue/40 bg-blue/5 text-blue text-sm font-medium cursor-pointer transition-all duration-200 hover:bg-blue/15 hover:-translate-y-0.5"
+                    className="flex items-center gap-1.5 text-sm text-blue hover:text-blue/80 transition-colors bg-transparent border-none cursor-pointer"
                   >
-                    <Icon name="coffee" size={16} className="text-blue" />
-                    Tomar Descanso
+                    <Icon name="coffee" size={16} />
+                    Descanso
                   </button>
                 )}
                 {timer.currentSession > 1 && (
                   <button
                     onClick={() => setShowResetConfirm(true)}
-                    className="flex items-center gap-1.5 text-sm text-white-50 hover:text-white transition-colors bg-transparent border-none cursor-pointer"
+                    className="flex items-center gap-1.5 text-sm text-white-40 hover:text-white transition-colors bg-transparent border-none cursor-pointer"
                   >
                     <Icon name="restart_alt" size={16} />
-                    Reiniciar ciclo
+                    Reiniciar
                   </button>
                 )}
-              </>
-            )}
-          </div>
-        )}
-
-        {/* Skip break button */}
-        {timer.status === 'break' && (
-          <button
-            onClick={() => timer.skipBreak()}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-pill border border-white-15 bg-white-5 text-white-80 text-sm font-medium cursor-pointer transition-all duration-200 hover:bg-white-10 hover:text-white hover:-translate-y-0.5"
-          >
-            <Icon name="skip_next" size={16} className="text-white-80" />
-            Saltar descanso
-          </button>
-        )}
-
-        {/* Stop button */}
-        {timer.status === 'running' && (
-          <button
-            onClick={handleStop}
-            className="group w-full max-w-[300px] h-12 flex items-center justify-center gap-2 rounded-pill border border-danger/40 bg-danger/15 text-danger cursor-pointer font-semibold transition-all duration-200 hover:bg-danger/25 hover:-translate-y-0.5"
-          >
-            <Icon name="stop" size={20} className="transition-transform duration-200 group-hover:scale-110" />
-            Detener
-          </button>
-        )}
-
-        {/* Completed (no modal) */}
-        {timer.status === 'completed' && !showTreeModal && (
-          <div className="flex flex-col items-center gap-3">
-            <p className="font-display text-white text-lg font-medium">Pomodoro completado</p>
-            <Button onClick={() => timer.nextSession()}>
-              Siguiente sesión
-            </Button>
-          </div>
-        )}
-      </div>
-
-      {/* Reward info cards (idle only) */}
-      {timer.status === 'idle' && !timer.cycleCompleted && (
-        <div className="grid sm:grid-cols-2 gap-4 max-w-md w-full stagger">
-          {/* Time bonus */}
-          <div className="group bg-white-8 border border-white-15 rounded-2xl backdrop-blur-[14px] py-4 px-5 transition-all duration-200 hover:border-white-20 hover:bg-white-10">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="w-7 h-7 rounded-lg bg-primary/15 border border-primary/25 flex items-center justify-center shrink-0">
-                <Icon name="park" size={16} className="text-accent-green" />
-              </span>
-              <span className="text-sm font-semibold text-white">Recompensas por tiempo</span>
-            </div>
-            <p className="text-xs text-white-50 leading-relaxed">
-              {(() => {
-                const bonus = getDurationBonusTrees(timer.duration);
-                const total = 1 + bonus;
-                return bonus > 0
-                  ? `Con ${timer.duration} min obtendrás ${total} ${total === 1 ? 'árbol' : 'árboles'}. ¡Sesiones más largas dan más árboles!`
-                  : `Con ${timer.duration} min obtendrás 1 árbol. Elige 25 min o más para ganar árboles bonus.`;
-              })()}
-            </p>
-          </div>
-
-          {/* Cycle bonus */}
-          <div className="group bg-white-8 border border-white-15 rounded-2xl backdrop-blur-[14px] py-4 px-5 transition-all duration-200 hover:border-white-20 hover:bg-white-10">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="w-7 h-7 rounded-lg bg-gold/15 border border-gold/25 flex items-center justify-center shrink-0">
-                <Icon name="emoji_events" size={16} className="text-gold" />
-              </span>
-              <span className="text-sm font-semibold text-white">Recompensas por sesión</span>
-            </div>
-            <p className="text-xs text-white-50 leading-relaxed">
-              {timer.currentSession === timer.sessionsPerCycle
-                ? `¡Esta es la última sesión! Al completarla obtendrás ${timer.sessionsPerCycle - 1} árboles bonus.`
-                : `Vas en la sesión ${timer.currentSession} de ${timer.sessionsPerCycle}. Al completar la última sesión obtendrás ${timer.sessionsPerCycle - 1} árboles bonus.`
-              }
-            </p>
-          </div>
+              </div>
+            </>
+          )}
         </div>
       )}
 
-      {/* Audio section (running only, not during break) */}
+      {/* Saltar descanso */}
+      {timer.status === 'break' && (
+        <button
+          onClick={() => timer.skipBreak()}
+          className="flex items-center gap-2 px-5 py-2.5 rounded-pill border border-white-15 bg-white-5 text-white-80 text-sm font-medium cursor-pointer transition-all duration-200 hover:bg-white-10 hover:text-white hover:-translate-y-0.5"
+        >
+          <Icon name="skip_next" size={16} className="text-white-80" />
+          Saltar descanso
+        </button>
+      )}
+
+      {/* Detener (sesión activa) */}
+      {timer.status === 'running' && (
+        <button
+          onClick={handleStop}
+          className="group flex items-center justify-center gap-2 px-7 h-12 rounded-pill border border-danger/40 bg-danger/15 text-danger cursor-pointer font-semibold transition-all duration-200 hover:bg-danger/25 hover:-translate-y-0.5"
+        >
+          <Icon name="stop" size={20} className="transition-transform duration-200 group-hover:scale-110" />
+          Detener
+        </button>
+      )}
+
+      {/* Completado (sin modal) */}
+      {timer.status === 'completed' && !showTreeModal && (
+        <div className="flex flex-col items-center gap-3 animate-fade-up">
+          <p className="font-display text-white text-lg font-medium">¡Pomodoro completado!</p>
+          <Button onClick={() => timer.nextSession()} fullWidth={false}>
+            Siguiente sesión
+          </Button>
+        </div>
+      )}
+
+      {/* Audio ambiental (sesión activa) */}
       {timer.status === 'running' && (
         <AudioPlayer
           isPlaying={audio.isPlaying}
@@ -372,12 +330,15 @@ export default function PomodoroPage() {
         />
       )}
 
-      {/* Motivational quote (running only, not during break) */}
-      {timer.status === 'running' && timer.phrase && (
-        <MotivationalQuote phrase={timer.phrase} />
+      {/* Recompensa: una sola línea discreta (idle) */}
+      {timer.status === 'idle' && !timer.cycleCompleted && (
+        <p className="text-xs text-white-40 text-center max-w-sm leading-relaxed">
+          {timer.duration} min → {1 + bonusTrees} {1 + bonusTrees === 1 ? 'árbol' : 'árboles'}
+          {' · '}completa el ciclo ({timer.sessionsPerCycle}) para +{timer.sessionsPerCycle - 1} bonus
+        </p>
       )}
 
-      {/* Error message */}
+      {/* Error */}
       {error && (
         <p className="flex items-center gap-2 text-danger text-sm bg-danger/10 border border-danger/30 px-4 py-2.5 rounded-xl animate-fade-up">
           <Icon name="error" size={16} />
@@ -387,7 +348,7 @@ export default function PomodoroPage() {
 
       {/* Reset cycle confirmation modal */}
       <Modal open={showResetConfirm} onClose={() => setShowResetConfirm(false)}>
-        <div className="bg-[#0E1A12]/85 backdrop-blur-[20px] border border-white-15 rounded-[28px] p-7 max-w-sm mx-4 text-center shadow-[0_24px_60px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.07)] animate-scale-in">
+        <div className="bg-[#0E1A12]/90 backdrop-blur-[20px] border border-white-15 rounded-[28px] p-7 max-w-sm mx-4 text-center shadow-[0_24px_60px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.07)]">
           <div className="w-14 h-14 rounded-2xl bg-white-8 border border-white-15 flex items-center justify-center mx-auto mb-4">
             <Icon name="restart_alt" size={28} className="text-white-80" />
           </div>

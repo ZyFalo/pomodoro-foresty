@@ -8,6 +8,8 @@ interface TimerRingProps {
   totalDisplay: string;
   size?: number;
   variant?: 'work' | 'break';
+  /** Contenido central sobre el número (p. ej. el árbol que crece) */
+  children?: React.ReactNode;
 }
 
 export function TimerRing({
@@ -16,6 +18,7 @@ export function TimerRing({
   totalDisplay,
   size = 260,
   variant = 'work',
+  children,
 }: TimerRingProps) {
   const gradientId = useId();
   const center = size / 2;
@@ -75,12 +78,15 @@ export function TimerRing({
           className="transition-all duration-1000 ease-linear"
         />
       </svg>
-      {/* Center text */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center gap-1.5">
-        <span className="font-display text-[5.5rem] font-semibold text-white leading-none tracking-tight tabular-nums drop-shadow-[0_2px_12px_rgba(0,0,0,0.4)]">
+      {/* Center: árbol (opcional) + tiempo */}
+      <div className="absolute inset-0 flex flex-col items-center justify-center">
+        {children && <div className="flex items-end justify-center -mb-1">{children}</div>}
+        <span
+          className={`font-display ${children ? 'text-[3.5rem]' : 'text-[5.5rem]'} font-semibold text-white leading-none tracking-tight tabular-nums drop-shadow-[0_2px_12px_rgba(0,0,0,0.4)]`}
+        >
           {timeDisplay}
         </span>
-        <span className="text-sm font-medium text-white-50 tracking-wide tabular-nums">
+        <span className="text-xs font-medium text-white-50 tracking-wide tabular-nums mt-1.5">
           {totalDisplay}
         </span>
       </div>

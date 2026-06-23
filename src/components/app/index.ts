@@ -1,5 +1,7 @@
 export { Navbar } from './Navbar';
+export { Dock } from './Dock';
 export { TimerRing } from './TimerRing';
+export { GrowingTree } from './GrowingTree';
 export { SessionDots } from './SessionDots';
 export { AudioPlayer } from './AudioPlayer';
 export { MotivationalQuote } from './MotivationalQuote';
