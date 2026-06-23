@@ -18,29 +18,56 @@ export function TimerRing({
   variant = 'work',
 }: TimerRingProps) {
   const gradientId = useId();
+  const glowId = useId();
   const center = size / 2;
-  const radius = center - 10;
+  const radius = center - 12;
   const circumference = 2 * Math.PI * radius;
   const dashOffset = circumference * (1 - progress);
 
+  const isBreak = variant === 'break';
+  const accentSoft = isBreak ? 'rgba(59,130,246,0.30)' : 'rgba(46,139,87,0.30)';
+
   return (
-    <div className="relative" style={{ width: size, height: size }}>
-      <svg viewBox={`0 0 ${size} ${size}`} className="absolute inset-0 -rotate-90" style={{ width: size, height: size }}>
+    <div
+      className="relative animate-scale-in"
+      style={{ width: size, height: size }}
+    >
+      {/* Ambient glow halo behind the ring */}
+      <div
+        className="absolute inset-0 rounded-full blur-2xl animate-glow"
+        style={{
+          background: `radial-gradient(circle at 50% 50%, ${accentSoft}, transparent 70%)`,
+        }}
+        aria-hidden
+      />
+
+      <svg
+        viewBox={`0 0 ${size} ${size}`}
+        className="absolute inset-0 -rotate-90"
+        style={{ width: size, height: size }}
+      >
         <defs>
           <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor={variant === 'break' ? '#3B82F6' : '#2E8B57'} />
-            <stop offset="60%" stopColor={variant === 'break' ? '#1E40AF' : '#1B5E20'} />
-            <stop offset="100%" stopColor={variant === 'break' ? '#1E40AF00' : '#1B5E2000'} />
+            <stop offset="0%" stopColor={isBreak ? '#60A5FA' : '#4CAF50'} />
+            <stop offset="55%" stopColor={isBreak ? '#3B82F6' : '#2E8B57'} />
+            <stop offset="100%" stopColor={isBreak ? '#1E40AF' : '#1B5E20'} />
           </linearGradient>
+          <filter id={glowId} x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="4" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
         </defs>
-        {/* Background circle */}
+        {/* Background track */}
         <circle
           cx={center}
           cy={center}
           r={radius}
           fill="none"
-          stroke="#FFFFFF1A"
-          strokeWidth={8}
+          stroke="rgba(255,255,255,0.08)"
+          strokeWidth={10}
         />
         {/* Progress circle */}
         <circle
@@ -49,17 +76,22 @@ export function TimerRing({
           r={radius}
           fill="none"
           stroke={`url(#${gradientId})`}
-          strokeWidth={8}
+          strokeWidth={10}
           strokeLinecap="round"
           strokeDasharray={circumference}
           strokeDashoffset={dashOffset}
+          filter={`url(#${glowId})`}
           className="transition-all duration-1000 ease-linear"
         />
       </svg>
       {/* Center text */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center gap-1">
-        <span className="text-7xl font-bold text-white leading-none">{timeDisplay}</span>
-        <span className="text-sm text-white-80">{totalDisplay}</span>
+      <div className="absolute inset-0 flex flex-col items-center justify-center gap-1.5">
+        <span className="font-display text-[5.5rem] font-semibold text-white leading-none tracking-tight tabular-nums drop-shadow-[0_2px_12px_rgba(0,0,0,0.4)]">
+          {timeDisplay}
+        </span>
+        <span className="text-sm font-medium text-white-50 tracking-wide tabular-nums">
+          {totalDisplay}
+        </span>
       </div>
     </div>
   );

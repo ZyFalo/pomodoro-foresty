@@ -36,18 +36,18 @@ export default function InventoryPage() {
   };
 
   return (
-    <div className="flex-1 px-8 py-8 max-w-6xl mx-auto w-full">
+    <div className="flex-1 px-4 sm:px-8 py-10 max-w-6xl mx-auto w-full">
       {/* Header */}
-      <div className="text-center mb-8">
-        <h1 className="text-4xl font-bold text-white mb-2">Mi Bosque</h1>
-        <p className="text-base text-white/70">
+      <div className="text-center mb-8 animate-fade-up">
+        <h1 className="font-display text-4xl font-semibold text-white mb-2 tracking-tight">Mi Bosque</h1>
+        <p className="text-base text-white-60">
           Observa cómo crece tu bosque con cada sesión Pomodoro completada
         </p>
       </div>
 
       {/* Stats */}
       {stats && (
-        <div className="space-y-4 mb-6">
+        <div className="space-y-4 mb-6 animate-fade-up [animation-delay:80ms]">
           <StatsRow
             stats={[
               { icon: 'park', label: 'Árboles Coleccionados', value: stats.total_trees },
@@ -64,35 +64,35 @@ export default function InventoryPage() {
       )}
 
       {/* Motivational Banner */}
-      <div className="bg-primary/20 backdrop-blur-md rounded-2xl border border-primary/30 px-6 py-5 mb-6 flex items-center gap-4">
-        <div className="w-12 h-12 rounded-full bg-primary/30 flex items-center justify-center shrink-0">
-          <Icon name="lightbulb" size={24} className="text-yellow-300" />
+      <div className="relative overflow-hidden bg-gradient-to-br from-primary/20 to-primary-dark/10 backdrop-blur-[14px] rounded-2xl border border-primary/30 px-6 py-5 mb-6 flex items-center gap-4 shadow-[0_8px_32px_rgba(0,0,0,0.2)] animate-fade-up [animation-delay:160ms]">
+        <div className="w-12 h-12 rounded-2xl bg-amber/15 border border-amber/30 flex items-center justify-center shrink-0">
+          <Icon name="lightbulb" size={24} className="text-amber-soft" filled />
         </div>
         <div>
-          <h3 className="text-base font-semibold text-white mb-0.5">Cultiva tu bosque!</h3>
-          <p className="text-sm text-white/70">
+          <h3 className="font-display text-base font-semibold text-white mb-0.5">¡Cultiva tu bosque!</h3>
+          <p className="text-sm text-white-60 leading-relaxed">
             Cada sesión Pomodoro completada te acerca a descubrir especies únicas. Mantén tu racha para desbloquear árboles legendarios.
           </p>
         </div>
       </div>
 
       {/* Collection Section */}
-      <div className="bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 p-6">
+      <div className="bg-white-8 backdrop-blur-[14px] rounded-[20px] border border-white-15 p-6 shadow-[0_8px_32px_rgba(0,0,0,0.24)] animate-fade-up [animation-delay:240ms]">
         {/* Collection Header */}
-        <div className="flex items-center justify-between mb-5">
+        <div className="flex items-center justify-between gap-3 mb-5 flex-wrap">
           <div className="flex items-center gap-3">
-            <h2 className="text-xl font-bold text-white">Mi Colección</h2>
+            <h2 className="font-display text-xl font-semibold text-white">Mi Colección</h2>
             {stats && (
-              <span className="bg-white/15 text-white/80 text-xs font-medium px-2.5 py-1 rounded-full">
+              <span className="bg-white-10 border border-white-15 text-white-80 text-xs font-semibold px-2.5 py-1 rounded-full tabular-nums">
                 {stats.total_trees}
               </span>
             )}
           </div>
           <Link
             href="/pomodoro"
-            className="flex items-center gap-1.5 px-4 py-2 bg-primary hover:bg-primary-dark text-white text-sm font-medium rounded-xl transition-colors no-underline"
+            className="group flex items-center gap-1.5 px-4 py-2.5 bg-gradient-to-br from-primary to-primary-dark text-white text-sm font-semibold rounded-pill shadow-[0_4px_16px_rgba(46,139,87,0.35)] hover:shadow-[0_8px_28px_rgba(46,139,87,0.5)] hover:-translate-y-0.5 transition-all duration-200 no-underline"
           >
-            <Icon name="add" size={18} />
+            <Icon name="add" size={18} className="transition-transform duration-200 group-hover:scale-110" />
             Ganar más árboles
           </Link>
         </div>

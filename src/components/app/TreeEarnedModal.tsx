@@ -83,7 +83,7 @@ export function TreeEarnedModal({ open, trees, onClose, onViewForest }: TreeEarn
 
   return (
     <Modal open={open} onClose={handleBackdropClick}>
-      <div className="relative bg-white-10 border border-white-20 rounded-3xl backdrop-blur-[15px] p-8 max-w-sm w-full mx-4 overflow-hidden">
+      <div className="relative bg-[#0E1A12]/85 border border-white-15 rounded-[28px] backdrop-blur-[20px] p-8 max-w-sm w-full mx-4 overflow-hidden shadow-[0_24px_60px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.07)] animate-scale-in">
         {/* Confetti animation styles */}
         {currentTree && (
           <style>{`
@@ -127,7 +127,7 @@ export function TreeEarnedModal({ open, trees, onClose, onViewForest }: TreeEarn
         {(!isMultiple || isLastTree) && (
           <button
             onClick={handleClose}
-            className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white-15 flex items-center justify-center border-none cursor-pointer hover:bg-white-27 transition-colors z-10"
+            className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white-10 border border-white-15 flex items-center justify-center cursor-pointer hover:bg-white-20 hover:rotate-90 transition-all duration-200 z-10"
           >
             <Icon name="close" size={18} className="text-white-80" />
           </button>
@@ -140,8 +140,8 @@ export function TreeEarnedModal({ open, trees, onClose, onViewForest }: TreeEarn
           >
             {/* Header */}
             <div className="flex items-center gap-2">
-              <Icon name="emoji_events" size={28} className="text-[#FFD700]" />
-              <h2 className="text-2xl font-bold text-white">
+              <Icon name="emoji_events" size={28} className="text-gold drop-shadow-[0_0_10px_rgba(255,215,0,0.5)]" />
+              <h2 className="font-display text-2xl font-semibold text-white">
                 {isMultiple ? '¡Ciclo Completo!' : '¡Felicidades!'}
               </h2>
             </div>
@@ -165,13 +165,16 @@ export function TreeEarnedModal({ open, trees, onClose, onViewForest }: TreeEarn
             )}
 
             {/* Tree image with glow */}
-            <div className="w-[200px] h-[200px] flex items-center justify-center">
+            <div className="relative w-[200px] h-[200px] flex items-center justify-center">
+              {/* Pulsing halo */}
               <div
-                className="w-40 h-40 rounded-full flex items-center justify-center"
-                style={{
-                  border: '3px solid #FFD70066',
-                  boxShadow: '0 0 30px #FFD70044',
-                }}
+                className="absolute w-44 h-44 rounded-full blur-2xl animate-glow"
+                style={{ background: 'radial-gradient(circle, rgba(255,215,0,0.30), transparent 70%)' }}
+                aria-hidden
+              />
+              <div
+                className="relative w-40 h-40 rounded-full flex items-center justify-center animate-float bg-forest-800 border-[3px] border-gold/40"
+                style={{ boxShadow: '0 0 36px rgba(255,215,0,0.3), inset 0 0 24px rgba(0,0,0,0.4)' }}
               >
                 {currentTree.image_url ? (
                   // eslint-disable-next-line @next/next/no-img-element
@@ -181,13 +184,13 @@ export function TreeEarnedModal({ open, trees, onClose, onViewForest }: TreeEarn
                     className="w-full h-full object-cover rounded-full"
                   />
                 ) : (
-                  <Icon name="park" size={64} className="text-primary" />
+                  <Icon name="park" size={64} className="text-accent-green" />
                 )}
               </div>
             </div>
 
             {/* Tree name */}
-            <h3 className="text-2xl font-bold text-white">{currentTree.tree_name}</h3>
+            <h3 className="font-display text-2xl font-semibold text-white">{currentTree.tree_name}</h3>
 
             {/* Rarity badge */}
             <Badge probability={currentTree.probability} />
@@ -200,17 +203,17 @@ export function TreeEarnedModal({ open, trees, onClose, onViewForest }: TreeEarn
             )}
 
             {/* XP Reward pill */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-pill bg-[#FFD70022] border border-[#FFD70066]">
-              <Icon name="timer" size={16} className="text-[#FFD700]" />
-              <span className="text-sm font-medium text-[#FFD700]">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-pill bg-gold/15 border border-gold/40">
+              <Icon name="timer" size={16} className="text-gold" />
+              <span className="text-sm font-semibold text-gold">
                 +{currentTree.focus_minutes} min enfocados
               </span>
             </div>
 
             {/* Success alert */}
-            <div className="w-full flex items-center gap-2 px-4 py-3 rounded-xl bg-[#2E8B5733]">
-              <Icon name="check_circle" size={20} className="text-primary shrink-0" />
-              <span className="text-sm text-white-80">Árbol agregado a tu colección!</span>
+            <div className="w-full flex items-center gap-2.5 px-4 py-3 rounded-xl bg-primary/15 border border-primary/30">
+              <Icon name="check_circle" size={20} className="text-accent-green shrink-0" />
+              <span className="text-sm font-medium text-white-80">¡Árbol agregado a tu colección!</span>
             </div>
 
             {/* Buttons */}
@@ -233,8 +236,8 @@ export function TreeEarnedModal({ open, trees, onClose, onViewForest }: TreeEarn
           </div>
         ) : (
           <div className="flex flex-col items-center gap-4 text-center pt-4">
-            <Icon name="warning" size={48} className="text-[#F59E0B]" />
-            <h2 className="text-2xl font-bold text-white">Sin plantillas de árboles</h2>
+            <Icon name="warning" size={48} className="text-amber" />
+            <h2 className="font-display text-2xl font-semibold text-white">Sin plantillas de árboles</h2>
             <p className="text-sm text-white-60">
               No hay plantillas de árboles disponibles en este momento. Tu pomodoro fue completado
               exitosamente.

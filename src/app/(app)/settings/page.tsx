@@ -99,13 +99,13 @@ export default function SettingsPage() {
 
   // Estilos glass reutilizados (consistentes con el resto de cards de la app)
   const card = 'bg-white-10 border border-white-20 rounded-2xl backdrop-blur-[7px] p-6 mb-4';
-  const cardTitle = 'text-lg font-semibold text-white mb-4 flex items-center gap-2';
+  const cardTitle = 'font-display text-xl font-semibold text-white mb-4 flex items-center gap-2';
   const label = 'text-sm font-medium text-white/80';
   const tooltipBox = 'absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-10';
 
   return (
-    <div className="flex-1 px-8 py-6 max-w-2xl mx-auto w-full">
-      <h1 className="text-2xl font-bold text-white mb-6">Ajustes</h1>
+    <div className="flex-1 px-4 sm:px-8 py-6 max-w-2xl mx-auto w-full stagger">
+      <h1 className="font-display text-3xl font-semibold text-white mb-6">Ajustes</h1>
 
       {/* Profile card */}
       <div className={card}>
