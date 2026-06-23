@@ -58,7 +58,7 @@ export function useTrees() {
   const fetchTrees = useCallback(async (page = 1) => {
     setLoading(true);
     try {
-      const params = new URLSearchParams({ page: String(page), limit: '12' });
+      const params = new URLSearchParams({ page: String(page), limit: '48' });
       if (rarity) params.set('rarity', rarity);
       if (favorite) params.set('favorite', 'true');
       if (search) params.set('search', search);

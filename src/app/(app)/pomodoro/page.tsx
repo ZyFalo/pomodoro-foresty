@@ -171,6 +171,16 @@ export default function PomodoroPage() {
           timeDisplay={timer.timeDisplay}
           totalDisplay={totalDisplay}
           variant={treeVariant}
+          dial={
+            timer.status === 'idle' && !timer.cycleCompleted
+              ? {
+                  value: timer.duration,
+                  durations: POMODORO_DURATIONS,
+                  onChange: (v) => timer.setDuration(v),
+                  disabled: loading,
+                }
+              : undefined
+          }
         >
           <GrowingTree progress={growth} size={76} variant={treeVariant} />
         </TimerRing>
@@ -213,25 +223,16 @@ export default function PomodoroPage() {
         </div>
       )}
 
-      {/* Selector de tiempo (idle, no ciclo completo) */}
+      {/* Mensaje + affordance del dial (idle, no ciclo completo) */}
       {timer.status === 'idle' && !timer.cycleCompleted && (
-        <div className="flex flex-col items-center gap-3 animate-fade-up">
+        <div className="flex flex-col items-center gap-2 animate-fade-up">
           <p className="text-white-60 text-[15px] text-center">
             Planta un árbol y concéntrate. Tu bosque crece contigo. 🌱
           </p>
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-white-40">Duración</span>
-            <select
-              value={timer.duration}
-              onChange={(e) => timer.setDuration(Number(e.target.value))}
-              disabled={loading}
-              className="bg-white-8 text-white border border-white-15 rounded-pill px-4 py-2 text-sm font-medium cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/40 hover:bg-white-10 transition-colors disabled:opacity-50 [&>option]:bg-forest-900 [&>option]:text-white"
-            >
-              {POMODORO_DURATIONS.map((d) => (
-                <option key={d} value={d}>{d} min</option>
-              ))}
-            </select>
-          </div>
+          <p className="flex items-center gap-1.5 text-xs text-white-40">
+            <Icon name="open_with" size={14} className="text-amber" />
+            Arrastra el punto dorado para ajustar el tiempo
+          </p>
         </div>
       )}
 

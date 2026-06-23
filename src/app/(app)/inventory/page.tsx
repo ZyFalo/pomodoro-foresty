@@ -10,6 +10,19 @@ import {
 } from '@/components/app';
 import { Icon } from '@/components/ui';
 
+// Etiqueta amable para una fecha de cosecha (estilo Forest: Hoy / Ayer / fecha)
+function dayLabel(iso: string): string {
+  const d = new Date(iso);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const that = new Date(d);
+  that.setHours(0, 0, 0, 0);
+  const diff = Math.round((today.getTime() - that.getTime()) / 86400000);
+  if (diff <= 0) return 'Hoy';
+  if (diff === 1) return 'Ayer';
+  return d.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
+}
+
 export default function InventoryPage() {
   const {
     trees,
@@ -34,6 +47,15 @@ export default function InventoryPage() {
     const m = min % 60;
     return m > 0 ? `${h}h ${m}` : `${h}h`;
   };
+
+  // Agrupar por día (parcelas); trees ya viene ordenado por earnedAt desc
+  const dayEntries = Object.entries(
+    trees.reduce((acc, t) => {
+      const key = new Date(t.earnedAt).toDateString();
+      (acc[key] ??= []).push(t);
+      return acc;
+    }, {} as Record<string, typeof trees>)
+  );
 
   return (
     <div className="flex-1 px-4 sm:px-8 py-10 max-w-6xl mx-auto w-full">
@@ -177,21 +199,43 @@ export default function InventoryPage() {
           )
         ) : (
           <>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-              {trees.map((tree) => (
-                <TreeCard
-                  key={tree.id}
-                  id={tree.id}
-                  name={tree.template.name}
-                  customName={tree.customName}
-                  imageUrl={tree.template.imageUrl}
-                  probability={tree.template.probability}
-                  isFavorite={tree.isFavorite}
-                  earnedAt={tree.earnedAt}
-                  onToggleFavorite={toggleFavorite}
-                  onRename={renameTree}
-                  onDelete={deleteTree}
-                />
+            <div className="space-y-7">
+              {dayEntries.map(([dateStr, dayTrees]) => (
+                <section key={dateStr}>
+                  {/* Cabecera del día */}
+                  <div className="flex items-center gap-2.5 mb-3">
+                    <Icon name="eco" size={16} className="text-accent-green" filled />
+                    <h3 className="font-display text-base font-semibold text-white capitalize">
+                      {dayLabel(dayTrees[0].earnedAt)}
+                    </h3>
+                    <span className="text-xs text-white-40 tabular-nums">
+                      · {dayTrees.length} {dayTrees.length === 1 ? 'árbol' : 'árboles'}
+                    </span>
+                    <div className="flex-1 h-px bg-gradient-to-r from-white-15 to-transparent ml-1" />
+                  </div>
+                  {/* Parcela: los árboles plantados ese día */}
+                  <div className="relative rounded-2xl bg-gradient-to-b from-white-5 to-primary/5 border border-white-8 px-4 pt-4 pb-5">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                      {dayTrees.map((tree) => (
+                        <TreeCard
+                          key={tree.id}
+                          id={tree.id}
+                          name={tree.template.name}
+                          customName={tree.customName}
+                          imageUrl={tree.template.imageUrl}
+                          probability={tree.template.probability}
+                          isFavorite={tree.isFavorite}
+                          earnedAt={tree.earnedAt}
+                          onToggleFavorite={toggleFavorite}
+                          onRename={renameTree}
+                          onDelete={deleteTree}
+                        />
+                      ))}
+                    </div>
+                    {/* Línea de suelo */}
+                    <div className="mt-4 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
+                  </div>
+                </section>
               ))}
             </div>
 
