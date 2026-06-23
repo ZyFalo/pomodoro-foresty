@@ -81,13 +81,6 @@
   --radius-pill: 30px;
   --radius-full: 999px;
 
-  /* ── Sombras ─────────────────────────────────────────────── */
-  --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.28);
-  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.20);
-  --shadow-elevate: 0 16px 48px rgba(0, 0, 0, 0.38);
-  --shadow-glow: 0 0 28px rgba(46, 139, 87, 0.40);
-  --shadow-glow-amber: 0 0 28px rgba(232, 176, 75, 0.38);
-
   /* ── Backdrop blur ───────────────────────────────────────── */
   --backdrop-blur-glass: 14px;
   --backdrop-blur-glass-strong: 20px;

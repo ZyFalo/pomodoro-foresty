@@ -18,7 +18,6 @@ export function TimerRing({
   variant = 'work',
 }: TimerRingProps) {
   const gradientId = useId();
-  const glowId = useId();
   const center = size / 2;
   const radius = center - 12;
   const circumference = 2 * Math.PI * radius;
@@ -52,13 +51,6 @@ export function TimerRing({
             <stop offset="55%" stopColor={isBreak ? '#3B82F6' : '#2E8B57'} />
             <stop offset="100%" stopColor={isBreak ? '#1E40AF' : '#1B5E20'} />
           </linearGradient>
-          <filter id={glowId} x="-30%" y="-30%" width="160%" height="160%">
-            <feGaussianBlur stdDeviation="4" result="blur" />
-            <feMerge>
-              <feMergeNode in="blur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
         </defs>
         {/* Background track */}
         <circle
@@ -80,7 +72,6 @@ export function TimerRing({
           strokeLinecap="round"
           strokeDasharray={circumference}
           strokeDashoffset={dashOffset}
-          filter={`url(#${glowId})`}
           className="transition-all duration-1000 ease-linear"
         />
       </svg>

@@ -40,10 +40,10 @@ export function ConfirmModal({
         />
 
         <div className="flex gap-3">
-          <Button variant="outline" onClick={onClose} disabled={loading}>
+          <Button variant="outline" onClick={onClose} disabled={loading} fullWidth={false} className="flex-1">
             Cancelar
           </Button>
-          <Button variant="danger" onClick={onConfirm} loading={loading}>
+          <Button variant="danger" onClick={onConfirm} loading={loading} fullWidth={false} className="flex-1">
             {confirmLabel}
           </Button>
         </div>
