@@ -60,8 +60,8 @@ function VerifyEmailContent() {
 
   return (
     <AuthCard subtitle="Verifica tu cuenta para continuar" small>
-      <GlassCard variant="light" width="420px">
-        <h2 className="text-xl text-white text-center">Código de Verificación</h2>
+      <GlassCard variant="dark" width="420px" compact>
+        <h2 className="font-display text-2xl font-semibold text-white text-center">Código de Verificación</h2>
         <p className="text-sm text-white-60 text-center">
           Ingresa el código de 6 dígitos enviado a tu correo electrónico
         </p>

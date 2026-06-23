@@ -32,7 +32,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           <input
             ref={ref}
             type={inputType}
-            className={`w-full h-11 px-4 bg-white-8 border border-white-20 rounded-2xl font-sans text-sm text-white placeholder:text-white-40 outline-none transition-all duration-200 hover:border-white-27 focus:border-primary focus:bg-white-10 focus:shadow-[0_0_0_3px_rgba(46,139,87,0.16)] ${icon ? 'pl-11' : ''} ${isPassword ? 'pr-11' : ''} ${error ? 'border-danger focus:border-danger focus:shadow-[0_0_0_3px_rgba(239,68,68,0.16)]' : ''} ${className}`}
+            className={`glass-input w-full h-11 px-4 bg-white-8 border border-white-20 rounded-2xl font-sans text-sm text-white placeholder:text-white-40 outline-none transition-all duration-200 hover:border-white-27 focus:border-primary focus:bg-white-10 focus:shadow-[0_0_0_3px_rgba(46,139,87,0.16)] ${icon ? 'pl-11' : ''} ${isPassword ? 'pr-11' : ''} ${error ? 'border-danger focus:border-danger focus:shadow-[0_0_0_3px_rgba(239,68,68,0.16)]' : ''} ${className}`}
             {...props}
           />
           {isPassword && (

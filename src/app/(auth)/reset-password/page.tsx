@@ -52,8 +52,8 @@ function ResetPasswordContent() {
 
   return (
     <AuthCard subtitle="Restablece tu contraseña" small>
-      <GlassCard variant="light" width="440px" compact>
-        <h2 className="text-lg text-white text-center">Restablecer Contraseña</h2>
+      <GlassCard variant="dark" width="440px" compact>
+        <h2 className="font-display text-2xl font-semibold text-white text-center">Restablecer Contraseña</h2>
         <p className="text-[13px] text-white-60 text-center">
           Ingresa el código enviado a tu email y tu nueva contraseña
         </p>

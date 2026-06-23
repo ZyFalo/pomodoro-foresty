@@ -253,6 +253,16 @@
   }
 }
 
+/* Autofill: conservar el aspecto glass en inputs de tema oscuro */
+.glass-input:-webkit-autofill,
+.glass-input:-webkit-autofill:hover,
+.glass-input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #ffffff;
+  -webkit-box-shadow: 0 0 0 1000px rgba(20, 32, 25, 0.65) inset;
+  caret-color: #ffffff;
+  transition: background-color 9999s ease-in-out 0s;
+}
+
 /* ═══════════════════════════════════════════════════════════
    Material Symbols
    ═══════════════════════════════════════════════════════════ */

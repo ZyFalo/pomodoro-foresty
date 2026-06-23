@@ -34,8 +34,8 @@ export default function ForgotPasswordPage() {
 
   return (
     <AuthCard subtitle="Recupera el acceso a tu cuenta" small>
-      <GlassCard variant="light" width="460px">
-        <h2 className="text-xl text-white text-center">Recuperar Contraseña</h2>
+      <GlassCard variant="dark" width="440px" compact>
+        <h2 className="font-display text-2xl font-semibold text-white text-center">Recuperar Contraseña</h2>
         <p className="text-sm text-white-60 text-center">
           Ingresa tu email y te enviaremos un código para restablecer tu contraseña
         </p>

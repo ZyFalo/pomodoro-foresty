@@ -21,8 +21,8 @@ export default function AppLayout({
 
   if (!_hasHydrated) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-green-500 border-t-transparent" />
+      <div className="flex items-center justify-center min-h-screen bg-forest">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
       </div>
     );
   }
@@ -31,16 +31,10 @@ export default function AppLayout({
 
   return (
     <div className="relative min-h-screen w-full font-sans">
-      {/* Background image */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        className="fixed inset-0 w-full h-full object-cover"
-        src="https://images.unsplash.com/photo-1597146333334-9956865bc7f5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDM0ODN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3NzAxMjYzNDJ8&ixlib=rb-4.1.0&q=80&w=1920"
-        alt="Forest background"
-      />
-
-      {/* Dark overlay */}
-      <div className="fixed inset-0 bg-black/50" />
+      {/* Fondo atmosférico de bosque (fijo) */}
+      <div className="fixed inset-0 bg-forest grain pointer-events-none" />
+      <div className="fixed -top-40 -left-40 w-[34rem] h-[34rem] rounded-full bg-primary/12 blur-[150px] animate-float pointer-events-none" />
+      <div className="fixed -bottom-52 -right-32 w-[40rem] h-[40rem] rounded-full bg-accent-green/8 blur-[160px] animate-float [animation-delay:3s] pointer-events-none" />
 
       {/* Content */}
       <div className="relative z-10 min-h-screen flex flex-col">
@@ -48,10 +42,10 @@ export default function AppLayout({
         <main className="flex-1 flex flex-col">
           {children}
         </main>
-        <footer className="bg-black/20 backdrop-blur-md border-t border-white/10 py-4 px-8">
-          <div className="max-w-6xl mx-auto flex items-center justify-between">
-            <span className="text-sm text-white/60">Pomodoro Forest &copy; 2025</span>
-            <span className="text-xs text-white/40">Cultiva tu productividad, un pomodoro a la vez</span>
+        <footer className="bg-[#0C1610]/40 backdrop-blur-md border-t border-white-10 py-4 px-6 sm:px-8">
+          <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-1">
+            <span className="text-sm text-white-60">Pomodoro Forest © 2025</span>
+            <span className="text-xs text-white-40">Cultiva tu productividad, un pomodoro a la vez</span>
           </div>
         </footer>
       </div>
