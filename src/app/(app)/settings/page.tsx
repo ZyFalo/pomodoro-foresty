@@ -97,13 +97,19 @@ export default function SettingsPage() {
     }
   };
 
+  // Estilos glass reutilizados (consistentes con el resto de cards de la app)
+  const card = 'bg-white-10 border border-white-20 rounded-2xl backdrop-blur-[7px] p-6 mb-4';
+  const cardTitle = 'text-lg font-semibold text-white mb-4 flex items-center gap-2';
+  const label = 'text-sm font-medium text-white/80';
+  const tooltipBox = 'absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-10';
+
   return (
     <div className="flex-1 px-8 py-6 max-w-2xl mx-auto w-full">
       <h1 className="text-2xl font-bold text-white mb-6">Ajustes</h1>
 
       {/* Profile card */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-4">
-        <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+      <div className={card}>
+        <h2 className={cardTitle}>
           <Icon name="person" size={20} className="text-primary" />
           Perfil
         </h2>
@@ -112,15 +118,15 @@ export default function SettingsPage() {
             {user?.username?.charAt(0).toUpperCase() ?? 'U'}
           </div>
           <div>
-            <p className="text-base font-medium text-gray-900">{user?.username ?? 'Usuario'}</p>
-            <p className="text-sm text-gray-500">{user?.email ?? ''}</p>
+            <p className="text-base font-medium text-white">{user?.username ?? 'Usuario'}</p>
+            <p className="text-sm text-white/60">{user?.email ?? ''}</p>
           </div>
         </div>
       </div>
 
       {/* Timer settings */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-4">
-        <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+      <div className={card}>
+        <h2 className={cardTitle}>
           <Icon name="timer" size={20} className="text-primary" />
           Temporizador
         </h2>
@@ -129,22 +135,22 @@ export default function SettingsPage() {
           {/* Pomodoro duration */}
           <div>
             <div className="flex items-center gap-1.5 mb-2">
-              <label className="text-sm font-medium text-gray-600">Duración Pomodoro</label>
+              <label className={label}>Duración Pomodoro</label>
               <div className="relative group">
-                <Icon name="info" size={16} className="text-gray-400 cursor-help" />
-                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-3 py-2 bg-gray-800 text-white text-xs rounded-lg whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-10">
+                <Icon name="info" size={16} className="text-white/50 cursor-help" />
+                <div className={tooltipBox}>
                   Tiempo de enfoque por sesión. Sesiones de 25 min o más otorgan árboles bonus.
-                  <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800" />
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900" />
                 </div>
               </div>
             </div>
             <select
               value={settings.pomodoro_duration}
               onChange={(e) => setSettings((s) => ({ ...s, pomodoro_duration: Number(e.target.value) }))}
-              className="bg-gray-100 text-gray-700 border border-gray-200 rounded-lg px-4 py-2 text-sm font-medium cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary"
+              className="bg-white-15 text-white border border-white-20 rounded-lg px-4 py-2 text-sm font-medium cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary"
             >
               {POMODORO_DURATIONS.map((d) => (
-                <option key={d} value={d}>{d} min</option>
+                <option key={d} value={d} className="text-gray-800">{d} min</option>
               ))}
             </select>
           </div>
@@ -152,12 +158,12 @@ export default function SettingsPage() {
           {/* Break duration */}
           <div>
             <div className="flex items-center gap-1.5 mb-2">
-              <label className="text-sm font-medium text-gray-600">Duración Descanso Corto</label>
+              <label className={label}>Duración Descanso Corto</label>
               <div className="relative group">
-                <Icon name="info" size={16} className="text-gray-400 cursor-help" />
-                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-3 py-2 bg-gray-800 text-white text-xs rounded-lg whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-10">
+                <Icon name="info" size={16} className="text-white/50 cursor-help" />
+                <div className={tooltipBox}>
                   Pausa entre sesiones para descansar antes de la siguiente.
-                  <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800" />
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900" />
                 </div>
               </div>
             </div>
@@ -170,19 +176,19 @@ export default function SettingsPage() {
                 onChange={(e) => setSettings((s) => ({ ...s, break_duration: parseInt(e.target.value) }))}
                 className="flex-1 accent-primary"
               />
-              <span className="text-sm font-medium text-gray-700 w-14 text-right">{settings.break_duration} min</span>
+              <span className="text-sm font-medium text-white w-14 text-right">{settings.break_duration} min</span>
             </div>
           </div>
 
           {/* Long break duration */}
           <div>
             <div className="flex items-center gap-1.5 mb-2">
-              <label className="text-sm font-medium text-gray-600">Duración Descanso Largo</label>
+              <label className={label}>Duración Descanso Largo</label>
               <div className="relative group">
-                <Icon name="info" size={16} className="text-gray-400 cursor-help" />
-                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-3 py-2 bg-gray-800 text-white text-xs rounded-lg whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-10">
+                <Icon name="info" size={16} className="text-white/50 cursor-help" />
+                <div className={tooltipBox}>
                   Descanso extendido al completar todas las sesiones de un ciclo.
-                  <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800" />
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900" />
                 </div>
               </div>
             </div>
@@ -195,19 +201,19 @@ export default function SettingsPage() {
                 onChange={(e) => setSettings((s) => ({ ...s, long_break_duration: parseInt(e.target.value) }))}
                 className="flex-1 accent-primary"
               />
-              <span className="text-sm font-medium text-gray-700 w-14 text-right">{settings.long_break_duration} min</span>
+              <span className="text-sm font-medium text-white w-14 text-right">{settings.long_break_duration} min</span>
             </div>
           </div>
 
           {/* Sessions per cycle */}
           <div>
             <div className="flex items-center gap-1.5 mb-2">
-              <label className="text-sm font-medium text-gray-600">Sesiones por ciclo</label>
+              <label className={label}>Sesiones por ciclo</label>
               <div className="relative group">
-                <Icon name="info" size={16} className="text-gray-400 cursor-help" />
-                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-3 py-2 bg-gray-800 text-white text-xs rounded-lg whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-10">
+                <Icon name="info" size={16} className="text-white/50 cursor-help" />
+                <div className={tooltipBox}>
                   Si cambias este valor a mitad de un ciclo, se aplicará en el siguiente.
-                  <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800" />
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900" />
                 </div>
               </div>
             </div>
@@ -220,15 +226,15 @@ export default function SettingsPage() {
                 onChange={(e) => setSettings((s) => ({ ...s, sessions_per_cycle: parseInt(e.target.value) }))}
                 className="flex-1 accent-primary"
               />
-              <span className="text-sm font-medium text-gray-700 w-14 text-right">{settings.sessions_per_cycle}</span>
+              <span className="text-sm font-medium text-white w-14 text-right">{settings.sessions_per_cycle}</span>
             </div>
           </div>
         </div>
       </div>
 
       {/* Preferences */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-4">
-        <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+      <div className={card}>
+        <h2 className={cardTitle}>
           <Icon name="tune" size={20} className="text-primary" />
           Preferencias
         </h2>
@@ -238,25 +244,25 @@ export default function SettingsPage() {
             { key: 'ambient_sound' as const, label: 'Sonido ambiental', desc: 'Sonidos de bosque durante el pomodoro', tooltip: 'Reproduce sonidos relajantes de naturaleza mientras trabajas.' },
             { key: 'notifications' as const, label: 'Notificaciones', desc: 'Avisar cuando termine el pomodoro', tooltip: 'Emite un sonido al finalizar la sesión o el descanso.' },
             { key: 'auto_start_break' as const, label: 'Auto-iniciar descanso', desc: 'Iniciar descanso automáticamente', tooltip: 'El descanso comienza sin necesidad de pulsar un botón.' },
-          ].map(({ key, label, desc, tooltip }) => (
+          ].map(({ key, label: itemLabel, desc, tooltip }) => (
             <div key={key} className="flex items-center justify-between py-2">
               <div>
                 <div className="flex items-center gap-1.5">
-                  <p className="text-sm font-medium text-gray-700">{label}</p>
+                  <p className="text-sm font-medium text-white/90">{itemLabel}</p>
                   <div className="relative group">
-                    <Icon name="info" size={16} className="text-gray-400 cursor-help" />
-                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-3 py-2 bg-gray-800 text-white text-xs rounded-lg whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-10">
+                    <Icon name="info" size={16} className="text-white/50 cursor-help" />
+                    <div className={tooltipBox}>
                       {tooltip}
-                      <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800" />
+                      <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900" />
                     </div>
                   </div>
                 </div>
-                <p className="text-xs text-gray-400">{desc}</p>
+                <p className="text-xs text-white/50">{desc}</p>
               </div>
               <button
                 onClick={() => toggleSetting(key)}
                 className={`relative w-11 h-6 rounded-full transition-colors cursor-pointer border-none ${
-                  settings[key] ? 'bg-primary' : 'bg-gray-300'
+                  settings[key] ? 'bg-primary' : 'bg-white-20'
                 }`}
               >
                 <div
@@ -278,8 +284,8 @@ export default function SettingsPage() {
       </div>
 
       {/* Change password */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-4">
-        <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+      <div className={card}>
+        <h2 className={cardTitle}>
           <Icon name="lock" size={20} className="text-primary" />
           Cambiar contraseña
         </h2>
@@ -290,21 +296,21 @@ export default function SettingsPage() {
             placeholder="Contraseña actual"
             value={currentPassword}
             onChange={(e) => setCurrentPassword(e.target.value)}
-            className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm outline-none focus:border-primary"
+            className="w-full px-4 py-2.5 bg-white-10 border border-white-20 rounded-lg text-sm text-white placeholder:text-white/40 outline-none focus:border-primary"
           />
           <input
             type="password"
             placeholder="Nueva contraseña"
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
-            className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm outline-none focus:border-primary"
+            className="w-full px-4 py-2.5 bg-white-10 border border-white-20 rounded-lg text-sm text-white placeholder:text-white/40 outline-none focus:border-primary"
           />
           <input
             type="password"
             placeholder="Confirmar nueva contraseña"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-            className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm outline-none focus:border-primary"
+            className="w-full px-4 py-2.5 bg-white-10 border border-white-20 rounded-lg text-sm text-white placeholder:text-white/40 outline-none focus:border-primary"
           />
           <Button
             onClick={handleChangePassword}
