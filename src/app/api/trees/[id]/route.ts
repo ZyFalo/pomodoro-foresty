@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server';
 import { withAuth } from '@/lib/auth/middleware';
 import { prisma } from '@/lib/db/prisma';
-import { getRarityFromProbability } from '@/lib/utils/rarity';
+import { getRarityInfo } from '@/lib/utils/rarity';
 
 function getTreeIdFromUrl(url: string): string {
   return url.split('/trees/')[1]?.split('?')[0]?.split('/')[0] ?? '';
@@ -22,7 +22,7 @@ export const GET = withAuth(async (req: NextRequest, user) => {
 
   return Response.json({
     ...tree,
-    rarity: getRarityFromProbability(tree.template.probability).name,
+    rarity: getRarityInfo(tree.template.rarity).name,
   });
 });
 

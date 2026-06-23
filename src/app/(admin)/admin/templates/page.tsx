@@ -4,12 +4,13 @@ import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { useAuthStore } from '@/stores/auth-store';
 import { Icon, Badge, Button } from '@/components/ui';
+import { getRarityInfo } from '@/lib/utils/rarity';
 
 interface TemplateItem {
   id: string;
   name: string;
   category: string;
-  probability: number;
+  rarity: string;
   isActive: boolean;
   imageUrl: string;
   createdAt: string;
@@ -98,7 +99,7 @@ export default function TemplatesPage() {
                   </td>
                   <td className="px-4 py-3.5 text-sm font-medium text-white whitespace-nowrap">{t.name}</td>
                   <td className="px-4 py-3.5 text-sm text-white-60">{t.category}</td>
-                  <td className="px-4 py-3.5"><Badge probability={t.probability} /></td>
+                  <td className="px-4 py-3.5"><Badge rarity={getRarityInfo(t.rarity).name} /></td>
                   <td className="px-4 py-3.5">
                     <span className={`inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-pill border ${
                       t.isActive ? 'bg-success/15 text-success border-success/30' : 'bg-white-8 text-white-60 border-white-15'

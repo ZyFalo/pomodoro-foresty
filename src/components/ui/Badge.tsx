@@ -1,9 +1,7 @@
 import type { Rarity } from '@/types';
-import { getRarityFromProbability } from '@/lib/utils/rarity';
 
 interface BadgeProps {
-  rarity?: Rarity;
-  probability?: number;
+  rarity: Rarity;
   className?: string;
 }
 
@@ -15,16 +13,8 @@ const RARITY_STYLES: Record<string, { bg: string; text: string }> = {
   'Legendario': { bg: 'linear-gradient(135deg, #FFD700, #F59E0B)', text: '#1a1a1a' },
 };
 
-export function Badge({ rarity, probability, className = '' }: BadgeProps) {
-  const info = probability !== undefined
-    ? getRarityFromProbability(probability)
-    : rarity
-      ? { name: rarity, color: '', badgeBg: '' }
-      : null;
-
-  if (!info) return null;
-
-  const style = RARITY_STYLES[info.name] ?? RARITY_STYLES['Común'];
+export function Badge({ rarity, className = '' }: BadgeProps) {
+  const style = RARITY_STYLES[rarity] ?? RARITY_STYLES['Común'];
   const isGradient = style.bg.includes('gradient');
 
   return (
@@ -36,7 +26,7 @@ export function Badge({ rarity, probability, className = '' }: BadgeProps) {
         ...(isGradient ? {} : { backgroundColor: style.bg }),
       }}
     >
-      {info.name}
+      {rarity}
     </span>
   );
 }

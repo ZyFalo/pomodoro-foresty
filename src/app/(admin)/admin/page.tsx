@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useAuthStore } from '@/stores/auth-store';
 import { Icon } from '@/components/ui';
-import { RARITY_RANGES } from '@/lib/utils/constants';
+import { RARITY_CONFIG } from '@/lib/utils/constants';
 
 interface DashboardData {
   total_users: number;
@@ -94,7 +94,7 @@ export default function AdminDashboard() {
         <div className="rounded-2xl bg-[#0E1A12]/80 border border-white-10 p-6 backdrop-blur-[20px] shadow-[0_16px_40px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.06)] animate-fade-up [animation-delay:120ms]">
           <h2 className="font-display text-lg font-semibold text-white mb-5">Distribución por rareza</h2>
           <div className="space-y-3.5">
-            {RARITY_RANGES.map((r) => {
+            {RARITY_CONFIG.map((r) => {
               const count = data.by_rarity[r.name] || 0;
               const maxCount = Math.max(...Object.values(data.by_rarity), 1);
               const width = (count / maxCount) * 100;

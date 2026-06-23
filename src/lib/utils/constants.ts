@@ -1,11 +1,15 @@
-// Rarity ranges based on probability value
-export const RARITY_RANGES = [
-  { min: 1, max: 2, name: 'Legendario' as const, color: '#FFD700', badgeBg: '#FEF3C7' },
-  { min: 3, max: 5, name: 'Épico' as const, color: '#9333EA', badgeBg: '#EDE9FE' },
-  { min: 6, max: 10, name: 'Raro' as const, color: '#3B82F6', badgeBg: '#DBEAFE' },
-  { min: 11, max: 15, name: 'Poco común' as const, color: '#22C55E', badgeBg: '#D1FAE5' },
-  { min: 16, max: 25, name: 'Común' as const, color: '#6B7280', badgeBg: '#F3F4F6' },
+// Configuración de rareza: clave (enum BD), nombre visible, colores y PESO de
+// sorteo (%). Los pesos definen la probabilidad FIJA de cada rareza (suman 100),
+// independiente de cuántas plantillas existan por rareza (sorteo en dos niveles).
+export const RARITY_CONFIG = [
+  { key: 'legendario', name: 'Legendario' as const, color: '#FFD700', badgeBg: '#FEF3C7', weight: 2 },
+  { key: 'epico',      name: 'Épico' as const,      color: '#9333EA', badgeBg: '#EDE9FE', weight: 6 },
+  { key: 'raro',       name: 'Raro' as const,       color: '#3B82F6', badgeBg: '#DBEAFE', weight: 12 },
+  { key: 'poco_comun', name: 'Poco común' as const, color: '#22C55E', badgeBg: '#D1FAE5', weight: 30 },
+  { key: 'comun',      name: 'Común' as const,      color: '#6B7280', badgeBg: '#F3F4F6', weight: 50 },
 ] as const;
+
+export type RarityKey = (typeof RARITY_CONFIG)[number]['key'];
 
 // Pomodoro durations (minutes)
 export const POMODORO_DURATIONS = [5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,105,110,115,120] as const;

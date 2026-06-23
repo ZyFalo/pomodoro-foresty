@@ -1,7 +1,7 @@
 import { withAuth } from '@/lib/auth/middleware';
 import { prisma } from '@/lib/db/prisma';
-import { RARITY_RANGES } from '@/lib/utils/constants';
-import { getRarityFromProbability } from '@/lib/utils/rarity';
+import { RARITY_CONFIG } from '@/lib/utils/constants';
+import { getRarityInfo } from '@/lib/utils/rarity';
 
 export const GET = withAuth(async (_req, user) => {
   // Get total active templates for collection progress
@@ -17,19 +17,19 @@ export const GET = withAuth(async (_req, user) => {
   });
   const uniqueCount = uniqueResult.length;
 
-  // Get trees grouped by template probability for rarity stats
-  const treesWithProb = await prisma.userTree.findMany({
+  // Get trees grouped by template rarity for rarity stats
+  const treesWithRarity = await prisma.userTree.findMany({
     where: { userId: user.id },
-    select: { template: { select: { probability: true } } },
+    select: { template: { select: { rarity: true } } },
   });
 
   // Group by rarity name
   const byRarity: Record<string, number> = {};
-  for (const range of RARITY_RANGES) {
-    byRarity[range.name] = 0;
+  for (const r of RARITY_CONFIG) {
+    byRarity[r.name] = 0;
   }
-  for (const item of treesWithProb) {
-    const { name } = getRarityFromProbability(item.template.probability);
+  for (const item of treesWithRarity) {
+    const { name } = getRarityInfo(item.template.rarity);
     byRarity[name] = (byRarity[name] || 0) + 1;
   }
 

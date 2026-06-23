@@ -34,6 +34,14 @@ enum EventType {
   contrasena_cambiada
 }
 
+enum TreeRarity {
+  comun
+  poco_comun
+  raro
+  epico
+  legendario
+}
+
 // ─── MODELS ──────────────────────────────────────────────
 
 model User {
@@ -80,8 +88,8 @@ model Template {
   name        String   @db.VarChar(100)
   category    String   @db.VarChar(50)
   description String   @db.Text
-  imageUrl    String   @map("image_url") @db.VarChar(500)
-  probability Int
+  imageUrl    String     @map("image_url") @db.VarChar(500)
+  rarity      TreeRarity
 
   isActive    Boolean  @default(true) @map("is_active")
   createdById String   @map("created_by") @db.Uuid

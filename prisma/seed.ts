@@ -1,20 +1,20 @@
 import 'dotenv/config';
 import { PrismaPg } from '@prisma/adapter-pg';
-import { PrismaClient } from '../src/generated/prisma/client';
+import { PrismaClient, type TreeRarity } from '../src/generated/prisma/client';
 import { hashPassword } from '../src/lib/auth/password';
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL ?? '' });
 const prisma = new PrismaClient({ adapter });
 
-// Plantillas de prueba: una por cada rareza (probabilidad 1-25, menor = más raro).
+// Plantillas de prueba: una por cada rareza.
 // Las imágenes usan placehold.co coloreado por rareza para que siempre carguen.
-const TEMPLATES = [
-  { name: 'Secuoya Milenaria', category: 'Conífero', probability: 1, color: 'FFD700', description: 'Un gigante ancestral que ha visto pasar siglos.' },
-  { name: 'Cerezo Sakura', category: 'Frutal', probability: 4, color: '9333EA', description: 'Sus flores rosadas anuncian la primavera.' },
-  { name: 'Roble Ancestral', category: 'Templado', probability: 8, color: '3B82F6', description: 'Símbolo de fuerza y longevidad.' },
-  { name: 'Pino Nórdico', category: 'Conífero', probability: 13, color: '22C55E', description: 'Resistente al frío de los bosques boreales.' },
-  { name: 'Palmera Tropical', category: 'Tropical', probability: 20, color: '6B7280', description: 'Crece junto a playas de aguas cristalinas.' },
-  { name: 'Arce Rojo', category: 'Templado', probability: 23, color: '6B7280', description: 'Sus hojas tiñen de rojo el otoño.' },
+const TEMPLATES: { name: string; category: string; rarity: TreeRarity; color: string; description: string }[] = [
+  { name: 'Secuoya Milenaria', category: 'Conífero', rarity: 'legendario', color: 'FFD700', description: 'Un gigante ancestral que ha visto pasar siglos.' },
+  { name: 'Cerezo Sakura', category: 'Frutal', rarity: 'epico', color: '9333EA', description: 'Sus flores rosadas anuncian la primavera.' },
+  { name: 'Roble Ancestral', category: 'Templado', rarity: 'raro', color: '3B82F6', description: 'Símbolo de fuerza y longevidad.' },
+  { name: 'Pino Nórdico', category: 'Conífero', rarity: 'poco_comun', color: '22C55E', description: 'Resistente al frío de los bosques boreales.' },
+  { name: 'Palmera Tropical', category: 'Tropical', rarity: 'comun', color: '6B7280', description: 'Crece junto a playas de aguas cristalinas.' },
+  { name: 'Arce Rojo', category: 'Templado', rarity: 'comun', color: '6B7280', description: 'Sus hojas tiñen de rojo el otoño.' },
 ];
 
 async function main() {
@@ -57,7 +57,7 @@ async function main() {
         category: t.category,
         description: t.description,
         imageUrl: `https://placehold.co/500x500/${t.color}/FFFFFF/png?text=${encodeURIComponent(t.name)}`,
-        probability: t.probability,
+        rarity: t.rarity,
         createdById: admin.id,
       },
     });

@@ -9,7 +9,7 @@ interface TreeItem {
     id: string;
     name: string;
     imageUrl: string;
-    probability: number;
+    rarity: string;
     category: string;
   };
   customName?: string;

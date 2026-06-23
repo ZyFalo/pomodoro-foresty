@@ -9,6 +9,7 @@ import {
   CollectionProgress,
 } from '@/components/app';
 import { Icon } from '@/components/ui';
+import type { Rarity } from '@/types';
 
 // Etiqueta amable para una fecha de cosecha (estilo Forest: Hoy / Ayer / fecha)
 function dayLabel(iso: string): string {
@@ -223,7 +224,7 @@ export default function InventoryPage() {
                           name={tree.template.name}
                           customName={tree.customName}
                           imageUrl={tree.template.imageUrl}
-                          probability={tree.template.probability}
+                          rarity={tree.rarity as Rarity}
                           isFavorite={tree.isFavorite}
                           earnedAt={tree.earnedAt}
                           onToggleFavorite={toggleFavorite}

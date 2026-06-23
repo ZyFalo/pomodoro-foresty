@@ -1,8 +1,8 @@
 import { NextRequest } from 'next/server';
 import { withAuth } from '@/lib/auth/middleware';
 import { prisma } from '@/lib/db/prisma';
-import { getRarityFromProbability } from '@/lib/utils/rarity';
-import { Prisma } from '@/generated/prisma/client';
+import { getRarityInfo, rarityNameToKey } from '@/lib/utils/rarity';
+import { Prisma, type TreeRarity } from '@/generated/prisma/client';
 
 export const GET = withAuth(async (req: NextRequest, user) => {
   const { searchParams } = new URL(req.url);
@@ -19,20 +19,11 @@ export const GET = withAuth(async (req: NextRequest, user) => {
     where.isFavorite = true;
   }
 
-  // Filter by rarity (via template probability range)
+  // Filter by rarity
   if (rarity) {
-    const rarityRanges: Record<string, { min: number; max: number }> = {
-      'Legendario': { min: 1, max: 2 },
-      'Épico': { min: 3, max: 5 },
-      'Raro': { min: 6, max: 10 },
-      'Poco común': { min: 11, max: 15 },
-      'Común': { min: 16, max: 25 },
-    };
-    const range = rarityRanges[rarity];
-    if (range) {
-      where.template = {
-        probability: { gte: range.min, lte: range.max },
-      };
+    const key = rarityNameToKey(rarity);
+    if (key) {
+      where.template = { rarity: key as TreeRarity };
     }
   }
 
@@ -57,7 +48,7 @@ export const GET = withAuth(async (req: NextRequest, user) => {
 
   const treesWithRarity = trees.map((tree) => ({
     ...tree,
-    rarity: getRarityFromProbability(tree.template.probability).name,
+    rarity: getRarityInfo(tree.template.rarity).name,
   }));
 
   return Response.json({

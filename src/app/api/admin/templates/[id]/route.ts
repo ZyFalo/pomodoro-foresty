@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server';
 import { withAdmin, getClientIP } from '@/lib/auth/middleware';
 import { prisma } from '@/lib/db/prisma';
 import { logActivity } from '@/lib/services/activity-logger';
+import { RARITY_CONFIG } from '@/lib/utils/constants';
 
 function getIdFromUrl(url: string): string {
   return url.split('/templates/')[1]?.split('?')[0]?.split('/')[0] ?? '';
@@ -22,18 +23,18 @@ export const PUT = withAdmin(async (req: NextRequest, admin) => {
   try {
     const id = getIdFromUrl(req.url);
     const body = await req.json();
-    const { name, category, description, image_url, probability, is_active } = body;
+    const { name, category, description, image_url, rarity, is_active } = body;
 
     const update: Record<string, unknown> = {};
     if (name !== undefined) update.name = name;
     if (category !== undefined) update.category = category;
     if (description !== undefined) update.description = description;
     if (image_url !== undefined) update.imageUrl = image_url;
-    if (probability !== undefined) {
-      if (probability < 1 || probability > 25) {
-        return Response.json({ error: 'La probabilidad debe estar entre 1 y 25' }, { status: 400 });
+    if (rarity !== undefined) {
+      if (!RARITY_CONFIG.some((r) => r.key === rarity)) {
+        return Response.json({ error: 'Rareza no válida' }, { status: 400 });
       }
-      update.probability = probability;
+      update.rarity = rarity;
     }
     if (is_active !== undefined) update.isActive = is_active;
 

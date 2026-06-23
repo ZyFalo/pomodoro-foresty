@@ -2,13 +2,14 @@
 
 import { useState } from 'react';
 import { Icon, Badge, ConfirmModal } from '@/components/ui';
+import type { Rarity } from '@/types';
 
 interface TreeCardProps {
   id: string;
   name: string;
   customName?: string;
   imageUrl: string;
-  probability: number;
+  rarity: Rarity;
   isFavorite: boolean;
   earnedAt: string;
   onToggleFavorite: (id: string) => void;
@@ -21,7 +22,7 @@ export function TreeCard({
   name,
   customName,
   imageUrl,
-  probability,
+  rarity,
   isFavorite,
   earnedAt,
   onToggleFavorite,
@@ -108,7 +109,7 @@ export function TreeCard({
         )}
 
         <div className="flex items-center justify-between mb-3.5">
-          <Badge probability={probability} />
+          <Badge rarity={rarity} />
           <span className="flex items-center gap-1 text-xs text-white-40">
             <Icon name="schedule" size={12} />
             {date}

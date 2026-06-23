@@ -8,7 +8,8 @@ import { useAuthStore } from '@/stores/auth-store';
 import { TimerRing, GrowingTree, SessionDots, AudioPlayer, MotivationalQuote, TreeEarnedModal } from '@/components/app';
 import { Button, Icon, Modal } from '@/components/ui';
 import { POMODORO_DURATIONS, NOTIFICATION_SOUND_URL, getDurationBonusTrees } from '@/lib/utils/constants';
-import type { UserTree, Template } from '@/types';
+import { getRarityInfo } from '@/lib/utils/rarity';
+import type { UserTree, Template, Rarity } from '@/types';
 
 export default function PomodoroPage() {
   const router = useRouter();
@@ -26,7 +27,7 @@ export default function PomodoroPage() {
     tree_name: string;
     image_url: string;
     description: string;
-    probability: number;
+    rarity: Rarity;
     focus_minutes: number;
   }>>([]);
 
@@ -102,7 +103,7 @@ export default function PomodoroPage() {
             tree_name: item.tree.template?.name || item.tree.customName || item.template?.name || '',
             image_url: item.tree.template?.imageUrl || item.template?.imageUrl || '',
             description: item.tree.template?.description || item.template?.description || '',
-            probability: item.template?.probability ?? 25,
+            rarity: getRarityInfo(item.tree.template?.rarity ?? item.template?.rarity ?? 'comun').name,
             focus_minutes: timer.duration,
           }))
         );

@@ -2,13 +2,14 @@
 
 import { useState, useCallback, useMemo } from 'react';
 import { Modal, Icon, Button, Badge } from '@/components/ui';
-import { getRarityFromProbability } from '@/lib/utils/rarity';
+import { getRarityColor } from '@/lib/utils/rarity';
+import type { Rarity } from '@/types';
 
 interface TreeData {
   tree_name: string;
   image_url: string;
   description: string;
-  probability: number;
+  rarity: Rarity;
   focus_minutes: number;
 }
 
@@ -61,10 +62,9 @@ export function TreeEarnedModal({ open, trees, onClose, onViewForest }: TreeEarn
   const isLastTree = currentIndex >= trees.length - 1;
   const currentTree = trees[currentIndex] ?? null;
 
-  // Rareza del árbol actual → color y nivel de drama
-  const rarity = currentTree ? getRarityFromProbability(currentTree.probability) : null;
-  const drama = rarity ? RARITY_DRAMA[rarity.name] ?? RARITY_DRAMA['Común'] : RARITY_DRAMA['Común'];
-  const rColor = rarity?.color ?? '#6B7280';
+  // Color y nivel de drama según la rareza del árbol actual
+  const drama = currentTree ? RARITY_DRAMA[currentTree.rarity] ?? RARITY_DRAMA['Común'] : RARITY_DRAMA['Común'];
+  const rColor = currentTree ? getRarityColor(currentTree.rarity) : '#6B7280';
 
   // Posiciones/colores según la rareza; el re-montaje por confettiKey (en las
   // keys del map) reinicia la animación al abrir o pasar de árbol.
@@ -217,7 +217,7 @@ export function TreeEarnedModal({ open, trees, onClose, onViewForest }: TreeEarn
             </h3>
 
             {/* Badge de rareza */}
-            <Badge probability={currentTree.probability} />
+            <Badge rarity={currentTree.rarity} />
 
             {/* Descripción */}
             {currentTree.description && (

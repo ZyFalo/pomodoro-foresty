@@ -1,6 +1,7 @@
 import { withAdmin } from '@/lib/auth/middleware';
 import { prisma } from '@/lib/db/prisma';
-import { RARITY_RANGES } from '@/lib/utils/constants';
+import { RARITY_CONFIG } from '@/lib/utils/constants';
+import { getRarityInfo } from '@/lib/utils/rarity';
 
 export const GET = withAdmin(async () => {
   const [
@@ -26,22 +27,17 @@ export const GET = withAdmin(async () => {
   ]);
 
   // Trees by rarity
-  const treesWithProb = await prisma.userTree.findMany({
-    select: { template: { select: { probability: true } } },
+  const treesWithRarity = await prisma.userTree.findMany({
+    select: { template: { select: { rarity: true } } },
   });
 
   const byRarity: Record<string, number> = {};
-  for (const range of RARITY_RANGES) {
-    byRarity[range.name] = 0;
+  for (const r of RARITY_CONFIG) {
+    byRarity[r.name] = 0;
   }
-  for (const item of treesWithProb) {
-    const prob = item.template.probability;
-    for (const range of RARITY_RANGES) {
-      if (prob >= range.min && prob <= range.max) {
-        byRarity[range.name] += 1;
-        break;
-      }
-    }
+  for (const item of treesWithRarity) {
+    const { name } = getRarityInfo(item.template.rarity);
+    byRarity[name] = (byRarity[name] || 0) + 1;
   }
 
   return Response.json({

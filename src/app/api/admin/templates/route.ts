@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server';
 import { withAdmin, getClientIP } from '@/lib/auth/middleware';
 import { prisma } from '@/lib/db/prisma';
 import { logActivity } from '@/lib/services/activity-logger';
+import { RARITY_CONFIG } from '@/lib/utils/constants';
 
 // GET /api/admin/templates
 export const GET = withAdmin(async (req: NextRequest) => {
@@ -28,14 +29,14 @@ export const GET = withAdmin(async (req: NextRequest) => {
 export const POST = withAdmin(async (req: NextRequest, user) => {
   try {
     const body = await req.json();
-    const { name, category, description, image_url, probability } = body;
+    const { name, category, description, image_url, rarity } = body;
 
-    if (!name || !category || !description || !image_url || !probability) {
+    if (!name || !category || !description || !image_url || !rarity) {
       return Response.json({ error: 'Todos los campos son requeridos' }, { status: 400 });
     }
 
-    if (probability < 1 || probability > 25) {
-      return Response.json({ error: 'La probabilidad debe estar entre 1 y 25' }, { status: 400 });
+    if (!RARITY_CONFIG.some((r) => r.key === rarity)) {
+      return Response.json({ error: 'Rareza no válida' }, { status: 400 });
     }
 
     const template = await prisma.template.create({
@@ -44,7 +45,7 @@ export const POST = withAdmin(async (req: NextRequest, user) => {
         category,
         description,
         imageUrl: image_url,
-        probability,
+        rarity,
         createdById: user.id,
       },
     });

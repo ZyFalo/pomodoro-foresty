@@ -1,26 +1,45 @@
 import { prisma } from '@/lib/db/prisma';
 import { logActivity } from './activity-logger';
+import { RARITY_CONFIG } from '@/lib/utils/constants';
 import type { Template, UserTree } from '@/generated/prisma/client';
 
+/**
+ * Sorteo ponderado en DOS niveles (estilo gacha):
+ *   1. Se elige la RAREZA según pesos fijos (RARITY_CONFIG.weight), renormalizando
+ *      solo entre rarezas que tienen al menos una plantilla activa.
+ *   2. Se elige UNIFORMEMENTE una plantilla dentro de esa rareza.
+ * Así la probabilidad de cada rareza es estable e independiente del número de
+ * plantillas que existan por rareza.
+ */
 export async function weightedRandomTree(): Promise<Template | null> {
-  const templates = await prisma.template.findMany({
-    where: { isActive: true },
-  });
-
+  const templates = await prisma.template.findMany({ where: { isActive: true } });
   if (templates.length === 0) return null;
 
-  const totalWeight = templates.reduce((sum, t) => sum + t.probability, 0);
-  const random = Math.random() * totalWeight;
+  // Agrupar plantillas por rareza
+  const byRarity = new Map<string, Template[]>();
+  for (const t of templates) {
+    const arr = byRarity.get(t.rarity) ?? [];
+    arr.push(t);
+    byRarity.set(t.rarity, arr);
+  }
 
-  let accumulated = 0;
-  for (const template of templates) {
-    accumulated += template.probability;
-    if (accumulated > random) {
-      return template;
+  // Paso 1: elegir rareza por peso, solo entre las que tienen stock (renormalizado)
+  const available = RARITY_CONFIG.filter((r) => byRarity.has(r.key));
+  if (available.length === 0) return null;
+  const totalWeight = available.reduce((sum, r) => sum + r.weight, 0);
+  let random = Math.random() * totalWeight;
+  let chosen = available[available.length - 1];
+  for (const r of available) {
+    random -= r.weight;
+    if (random < 0) {
+      chosen = r;
+      break;
     }
   }
 
-  return templates[templates.length - 1];
+  // Paso 2: elegir uniformemente dentro de la rareza
+  const pool = byRarity.get(chosen.key)!;
+  return pool[Math.floor(Math.random() * pool.length)];
 }
 
 export type EarnedTreeResult = { userTree: UserTree & { template: Template }; template: Template };

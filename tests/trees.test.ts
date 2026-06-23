@@ -12,14 +12,14 @@ import { prisma } from '@/lib/db/prisma';
 
 const findMany = vi.mocked(prisma.template.findMany);
 
-function makeTemplate(id: string, probability: number): Template {
+function makeTemplate(id: string, rarity: Template['rarity']): Template {
   return {
     id,
     name: id,
     category: 'Test',
     description: '',
     imageUrl: '',
-    probability,
+    rarity,
     isActive: true,
     createdById: 'admin',
     createdAt: new Date(0),
@@ -27,7 +27,7 @@ function makeTemplate(id: string, probability: number): Template {
   };
 }
 
-describe('weightedRandomTree', () => {
+describe('weightedRandomTree (sorteo en dos niveles)', () => {
   afterEach(() => {
     vi.restoreAllMocks();
     findMany.mockReset();
@@ -38,34 +38,30 @@ describe('weightedRandomTree', () => {
     expect(await weightedRandomTree()).toBeNull();
   });
 
-  it('selecciona según el peso acumulado de probabilidad', async () => {
-    const templates = [
-      makeTemplate('a', 1),
-      makeTemplate('b', 1),
-      makeTemplate('c', 1),
-    ];
-    findMany.mockResolvedValue(templates);
-
-    // total = 3. random = Math.random() * 3
-    vi.spyOn(Math, 'random').mockReturnValue(0); // random = 0 → acumulado 'a' (1) > 0
+  it('si solo hay una rareza con stock, siempre elige de esa rareza', async () => {
+    findMany.mockResolvedValue([makeTemplate('a', 'legendario')]);
+    vi.spyOn(Math, 'random').mockReturnValue(0.999999);
     expect((await weightedRandomTree())?.id).toBe('a');
-
-    vi.spyOn(Math, 'random').mockReturnValue(0.5); // random = 1.5 → acumulado 'b' (2) > 1.5
-    expect((await weightedRandomTree())?.id).toBe('b');
   });
 
-  it('respeta los pesos desiguales (mayor probabilidad = más frecuente)', async () => {
-    const templates = [makeTemplate('raro', 1), makeTemplate('comun', 9)];
-    findMany.mockResolvedValue(templates);
+  it('elige la rareza según su peso, renormalizado entre las disponibles', async () => {
+    // Disponibles (en orden de config): legendario (peso 2) y común (peso 50) → total 52
+    findMany.mockResolvedValue([makeTemplate('leg', 'legendario'), makeTemplate('com', 'comun')]);
 
-    // total = 10. random = 5 → acumulado 'raro' (1) no, 'comun' (10) sí
+    // random = 0 → cae en legendario (primer tramo)
+    vi.spyOn(Math, 'random').mockReturnValue(0);
+    expect((await weightedRandomTree())?.rarity).toBe('legendario');
+
+    // random = 0.5 → 26 de 52 → supera el tramo de legendario (2) → común
     vi.spyOn(Math, 'random').mockReturnValue(0.5);
-    expect((await weightedRandomTree())?.id).toBe('comun');
+    expect((await weightedRandomTree())?.rarity).toBe('comun');
   });
 
-  it('cae al último elemento como fallback', async () => {
-    findMany.mockResolvedValue([makeTemplate('a', 1), makeTemplate('b', 1)]);
-    vi.spyOn(Math, 'random').mockReturnValue(0.999999); // random ≈ 2 → último
-    expect((await weightedRandomTree())?.id).toBe('b');
+  it('dentro de la rareza elegida devuelve una de sus plantillas', async () => {
+    findMany.mockResolvedValue([makeTemplate('x', 'raro'), makeTemplate('y', 'raro')]);
+    vi.spyOn(Math, 'random').mockReturnValue(0);
+    const result = await weightedRandomTree();
+    expect(result?.rarity).toBe('raro');
+    expect(['x', 'y']).toContain(result?.id);
   });
 });

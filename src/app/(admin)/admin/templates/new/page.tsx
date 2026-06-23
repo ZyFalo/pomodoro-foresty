@@ -5,8 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/auth-store';
 import { Button, Icon } from '@/components/ui';
 import { ImageUpload } from '@/components/admin';
-import { TREE_CATEGORIES } from '@/lib/utils/constants';
-import { getRarityFromProbability } from '@/lib/utils/rarity';
+import { TREE_CATEGORIES, RARITY_CONFIG } from '@/lib/utils/constants';
 
 export default function NewTemplatePage() {
   const router = useRouter();
@@ -16,13 +15,11 @@ export default function NewTemplatePage() {
     category: TREE_CATEGORIES[0] as string,
     description: '',
     image_url: '',
-    probability: 15,
+    rarity: 'poco_comun' as string,
     is_active: true,
   });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
-
-  const rarity = getRarityFromProbability(form.probability);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -100,23 +97,28 @@ export default function NewTemplatePage() {
         />
 
         <div>
-          <label className="text-sm font-medium text-white-73 mb-1.5 block">
-            Probabilidad: <span className="text-white">{form.probability}</span> —{' '}
-            <span className="font-semibold" style={{ color: rarity.color }}>{rarity.name}</span>
-          </label>
-          <input
-            type="range"
-            min={1}
-            max={25}
-            value={form.probability}
-            onChange={(e) => setForm({ ...form, probability: parseInt(e.target.value) })}
-            className="w-full accent-primary"
-            style={{ accentColor: rarity.color }}
-          />
-          <div className="flex justify-between text-xs text-white-40 mt-1.5">
-            <span>1 (Legendario)</span>
-            <span>25 (Común)</span>
+          <label className="text-sm font-medium text-white-73 mb-2 block">Rareza</label>
+          <div className="flex flex-wrap gap-2">
+            {RARITY_CONFIG.map((r) => {
+              const selected = form.rarity === r.key;
+              return (
+                <button
+                  type="button"
+                  key={r.key}
+                  onClick={() => setForm({ ...form, rarity: r.key })}
+                  className={`flex items-center gap-2 px-3.5 py-2 rounded-pill border text-sm font-medium transition-all duration-200 cursor-pointer ${
+                    selected ? 'text-white' : 'text-white-60 border-white-15 bg-white-5 hover:bg-white-10 hover:text-white'
+                  }`}
+                  style={selected ? { borderColor: r.color, backgroundColor: `${r.color}26`, boxShadow: `0 0 14px ${r.color}40` } : undefined}
+                >
+                  <span className="w-2.5 h-2.5 rounded-full" style={{ background: r.color }} />
+                  {r.name}
+                  <span className="text-xs text-white-40">{r.weight}%</span>
+                </button>
+              );
+            })}
           </div>
+          <p className="text-xs text-white-40 mt-2">El porcentaje es la probabilidad de que salga esta rareza al ganar un árbol.</p>
         </div>
 
         <div className="flex items-center gap-3">
