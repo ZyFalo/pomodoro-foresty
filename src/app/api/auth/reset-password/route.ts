@@ -1,9 +1,11 @@
 import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/db/prisma';
 import { hashPassword } from '@/lib/auth/password';
+import { createToken } from '@/lib/auth/jwt';
 import { resetPasswordSchema } from '@/lib/utils/validation';
 import { logActivity } from '@/lib/services/activity-logger';
 import { getClientIP } from '@/lib/auth/middleware';
+import { extractSettings } from '@/types';
 
 export async function POST(req: NextRequest) {
   try {
@@ -23,6 +25,10 @@ export async function POST(req: NextRequest) {
 
     if (!user) {
       return Response.json({ error: 'Usuario no encontrado' }, { status: 404 });
+    }
+
+    if (!user.isActive) {
+      return Response.json({ error: 'Cuenta desactivada. Contacta al administrador.' }, { status: 403 });
     }
 
     const devMode = !process.env.RESEND_API_KEY;
@@ -59,7 +65,21 @@ export async function POST(req: NextRequest) {
       ip_address: getClientIP(req),
     });
 
-    return Response.json({ message: 'Contraseña restablecida correctamente' });
+    // Auto-login: emite el JWT y devuelve el usuario (mismo contrato que /login)
+    const token = await createToken({ userId: user.id, role: user.role });
+
+    return Response.json({
+      message: 'Contraseña restablecida correctamente',
+      token,
+      user: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+        email_verified: user.emailVerified,
+        settings: extractSettings(user),
+      },
+    });
   } catch (error) {
     console.error('Error en reset-password:', error);
     return Response.json({ error: 'Error interno del servidor' }, { status: 500 });

@@ -48,12 +48,15 @@ export function useAuth() {
   }, []);
 
   const verifyEmail = useCallback(async (email: string, code: string) => {
-    const data = await fetchAPI<{ message: string }>(`${API_BASE}/verify-email`, {
+    const data = await fetchAPI<LoginResponse>(`${API_BASE}/verify-email`, {
       method: 'POST',
       body: JSON.stringify({ email, code }),
     });
+    // Auto-login: entra directo a la plataforma tras verificar
+    setAuth(data.token, data.user);
+    router.push(data.user.role === 'admin' ? '/admin' : '/pomodoro');
     return data;
-  }, []);
+  }, [setAuth, router]);
 
   const resendCode = useCallback(async (email: string) => {
     const data = await fetchAPI<{ message: string }>(`${API_BASE}/resend-code`, {
@@ -72,12 +75,15 @@ export function useAuth() {
   }, []);
 
   const resetPassword = useCallback(async (email: string, code: string, new_password: string) => {
-    const data = await fetchAPI<{ message: string }>(`${API_BASE}/reset-password`, {
+    const data = await fetchAPI<LoginResponse>(`${API_BASE}/reset-password`, {
       method: 'POST',
       body: JSON.stringify({ email, code, new_password }),
     });
+    // Auto-login: entra directo a la plataforma tras restablecer la contraseña
+    setAuth(data.token, data.user);
+    router.push(data.user.role === 'admin' ? '/admin' : '/pomodoro');
     return data;
-  }, []);
+  }, [setAuth, router]);
 
   const logout = useCallback(() => {
     useTimerStore.getState().reset();

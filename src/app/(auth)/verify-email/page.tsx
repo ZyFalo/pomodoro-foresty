@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { AuthCard } from '@/components/auth';
 import { OTPInput } from '@/components/auth';
@@ -10,7 +10,6 @@ import { useAuth } from '@/hooks/useAuth';
 
 function VerifyEmailContent() {
   const { verifyEmail, resendCode } = useAuth();
-  const router = useRouter();
   const searchParams = useSearchParams();
   const email = searchParams.get('email') ?? '';
 
@@ -38,9 +37,9 @@ function VerifyEmailContent() {
     setError('');
     setLoading(true);
     try {
+      // verifyEmail hace auto-login y redirige a la plataforma
       await verifyEmail(email, code);
       setSuccess('Email verificado correctamente. Redirigiendo...');
-      setTimeout(() => router.push('/login'), 1500);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al verificar');
     } finally {

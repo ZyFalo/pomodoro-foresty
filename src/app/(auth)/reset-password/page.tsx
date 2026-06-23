@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { AuthCard, OTPInput } from '@/components/auth';
 import { Button, GlassCard, Input } from '@/components/ui';
@@ -9,7 +9,6 @@ import { useAuth } from '@/hooks/useAuth';
 
 function ResetPasswordContent() {
   const { resetPassword } = useAuth();
-  const router = useRouter();
   const searchParams = useSearchParams();
   const email = searchParams.get('email') ?? '';
 
@@ -41,9 +40,9 @@ function ResetPasswordContent() {
 
     setLoading(true);
     try {
+      // resetPassword hace auto-login y redirige a la plataforma
       await resetPassword(email, code, newPassword);
       setSuccess('Contraseña restablecida correctamente. Redirigiendo...');
-      setTimeout(() => router.push('/login'), 2000);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al restablecer');
     } finally {
