@@ -28,6 +28,25 @@ interface LogItem {
   user: { username: string } | null;
 }
 
+// Color del badge de evento (solo presentación; no altera datos)
+function eventBadgeClass(eventType: string): string {
+  if (eventType === 'login' || eventType === 'registro')
+    return 'bg-blue/15 text-blue border-blue/30';
+  if (eventType === 'pomodoro_completado')
+    return 'bg-primary/15 text-primary-light border-primary/30';
+  if (eventType === 'arbol_ganado')
+    return 'bg-success/15 text-success border-success/30';
+  if (eventType.startsWith('template_'))
+    return 'bg-purple/15 text-purple border-purple/30';
+  if (eventType === 'usuario_desactivado')
+    return 'bg-danger/15 text-danger border-danger/30';
+  if (eventType === 'usuario_activado')
+    return 'bg-success/15 text-success border-success/30';
+  if (eventType === 'rol_cambiado' || eventType === 'contrasena_cambiada')
+    return 'bg-amber/15 text-amber border-amber/30';
+  return 'bg-white-8 text-white-60 border-white-15';
+}
+
 export default function LogsPage() {
   const { token } = useAuthStore();
   const [logs, setLogs] = useState<LogItem[]>([]);
@@ -62,19 +81,22 @@ export default function LogsPage() {
   }, [token, fetchLogs]);
 
   return (
-    <div className="p-8">
-      <h1 className="text-2xl font-bold text-gray-800 mb-6">Logs de actividad</h1>
+    <div className="animate-fade-up">
+      <div className="mb-6">
+        <h1 className="font-display text-3xl font-semibold text-white">Logs de actividad</h1>
+        <p className="text-sm text-white-50 mt-1">Registro de eventos del sistema</p>
+      </div>
 
       {/* Filters */}
-      <div className="flex flex-wrap gap-1.5 mb-4">
+      <div className="flex flex-wrap gap-1.5 mb-5">
         {EVENT_TYPES.map((t) => (
           <button
             key={t.value}
             onClick={() => setEventType(t.value)}
-            className={`px-3 py-1.5 rounded-pill text-xs font-medium border-none cursor-pointer transition-colors ${
+            className={`px-3.5 py-1.5 rounded-pill text-xs font-medium border cursor-pointer transition-all duration-200 ${
               eventType === t.value
-                ? 'bg-primary text-white'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                ? 'bg-primary text-white border-primary shadow-[0_4px_14px_rgba(46,139,87,0.3)]'
+                : 'bg-white-5 text-white-60 border-white-10 hover:bg-white-10 hover:text-white'
             }`}
           >
             {t.label}
@@ -82,65 +104,69 @@ export default function LogsPage() {
         ))}
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+      <div className="rounded-2xl bg-[#0E1A12]/80 border border-white-10 overflow-hidden backdrop-blur-[20px] shadow-[0_16px_40px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.06)]">
+        <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-gray-100 bg-gray-50">
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Fecha</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Usuario</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Evento</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Detalle</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">IP</th>
+            <tr className="border-b border-white-10 bg-white-5">
+              <th className="px-4 py-3.5 text-left text-xs font-semibold text-white-50 uppercase tracking-wide">Fecha</th>
+              <th className="px-4 py-3.5 text-left text-xs font-semibold text-white-50 uppercase tracking-wide">Usuario</th>
+              <th className="px-4 py-3.5 text-left text-xs font-semibold text-white-50 uppercase tracking-wide">Evento</th>
+              <th className="px-4 py-3.5 text-left text-xs font-semibold text-white-50 uppercase tracking-wide">Detalle</th>
+              <th className="px-4 py-3.5 text-left text-xs font-semibold text-white-50 uppercase tracking-wide">IP</th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={5} className="px-4 py-8 text-center">
+                <td colSpan={5} className="px-4 py-10 text-center">
                   <span className="animate-spin inline-block h-6 w-6 border-2 border-primary border-t-transparent rounded-full" />
                 </td>
               </tr>
             ) : logs.map((log) => (
-              <tr key={log.id} className="border-b border-gray-50 hover:bg-gray-50/50">
-                <td className="px-4 py-3 text-xs text-gray-500 whitespace-nowrap">
+              <tr key={log.id} className="border-b border-white-10 last:border-0 transition-colors hover:bg-white-5">
+                <td className="px-4 py-3.5 text-xs text-white-50 whitespace-nowrap">
                   {new Date(log.createdAt).toLocaleString('es-ES', {
                     day: '2-digit', month: '2-digit', year: '2-digit',
                     hour: '2-digit', minute: '2-digit',
                   })}
                 </td>
-                <td className="px-4 py-3 text-sm text-gray-700">
+                <td className="px-4 py-3.5 text-sm text-white-80 whitespace-nowrap">
                   {log.user && typeof log.user === 'object' ? log.user.username : '—'}
                 </td>
-                <td className="px-4 py-3">
-                  <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">
+                <td className="px-4 py-3.5">
+                  <span className={`inline-block text-xs font-medium px-2.5 py-1 rounded-pill border whitespace-nowrap ${eventBadgeClass(log.eventType)}`}>
                     {log.eventType}
                   </span>
                 </td>
-                <td className="px-4 py-3 text-sm text-gray-600 max-w-xs truncate">{log.detail}</td>
-                <td className="px-4 py-3 text-xs text-gray-400 font-mono">{log.ipAddress || '—'}</td>
+                <td className="px-4 py-3.5 text-sm text-white-60 max-w-xs truncate">{log.detail}</td>
+                <td className="px-4 py-3.5 text-xs text-white-40 font-mono whitespace-nowrap">{log.ipAddress || '—'}</td>
               </tr>
             ))}
             {!loading && logs.length === 0 && (
               <tr>
-                <td colSpan={5} className="px-4 py-8 text-center text-sm text-gray-400">
-                  <Icon name="history" size={24} className="text-gray-300 mb-2" />
+                <td colSpan={5} className="px-4 py-12 text-center text-sm text-white-40">
+                  <Icon name="history" size={28} className="text-white-20 mb-2 mx-auto" />
                   <p>No hay logs</p>
                 </td>
               </tr>
             )}
           </tbody>
         </table>
+        </div>
       </div>
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-2 mt-4">
+        <div className="flex items-center justify-center gap-2 mt-5">
           {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
             <button
               key={p}
               onClick={() => fetchLogs(p)}
-              className={`w-8 h-8 rounded-lg text-sm font-medium border-none cursor-pointer ${
-                p === page ? 'bg-primary text-white' : 'bg-white text-gray-600 hover:bg-gray-100'
+              className={`w-9 h-9 rounded-xl text-sm font-medium border cursor-pointer transition-all duration-200 ${
+                p === page
+                  ? 'bg-primary text-white border-primary shadow-[0_4px_14px_rgba(46,139,87,0.35)]'
+                  : 'bg-white-5 text-white-60 border-white-10 hover:bg-white-10 hover:text-white'
               }`}
             >
               {p}

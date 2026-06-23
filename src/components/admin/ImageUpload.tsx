@@ -42,15 +42,15 @@ export function ImageUpload({ value, onChange, token }: ImageUploadProps) {
 
   return (
     <div>
-      <label className="text-sm font-medium text-gray-600 mb-1 block">Imagen</label>
+      <label className="text-sm font-medium text-white-73 mb-1.5 block">Imagen</label>
       <div className="flex items-start gap-3">
         {/* Vista previa */}
-        <div className="w-20 h-20 shrink-0 rounded-lg border border-gray-200 bg-gray-50 flex items-center justify-center overflow-hidden">
+        <div className="w-20 h-20 shrink-0 rounded-2xl border border-white-15 bg-white-5 flex items-center justify-center overflow-hidden p-1.5">
           {value ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={value} alt="Vista previa" className="w-full h-full object-contain" />
           ) : (
-            <Icon name="park" size={28} className="text-gray-300" />
+            <Icon name="park" size={28} className="text-white-20" />
           )}
         </div>
 
@@ -61,7 +61,7 @@ export function ImageUpload({ value, onChange, token }: ImageUploadProps) {
             value={value}
             onChange={(e) => onChange(e.target.value)}
             placeholder="https://… o sube un archivo"
-            className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm outline-none focus:border-primary"
+            className="w-full px-4 h-11 bg-white-8 border border-white-20 rounded-2xl text-sm text-white placeholder:text-white-40 outline-none transition-colors focus:border-primary focus:bg-white-10"
             required
           />
           <input
@@ -75,7 +75,7 @@ export function ImageUpload({ value, onChange, token }: ImageUploadProps) {
             type="button"
             onClick={() => fileInputRef.current?.click()}
             disabled={uploading || !token}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-gray-200 bg-white text-sm text-gray-600 cursor-pointer hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center gap-1.5 px-3.5 h-10 rounded-2xl border border-white-20 bg-white-8 text-sm text-white-80 cursor-pointer hover:bg-white-15 hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Icon
               name={uploading ? 'progress_activity' : 'upload'}

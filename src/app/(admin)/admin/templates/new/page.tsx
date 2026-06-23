@@ -48,33 +48,33 @@ export default function NewTemplatePage() {
   };
 
   return (
-    <div className="p-8 max-w-2xl">
+    <div className="max-w-2xl animate-fade-up">
       <button
         onClick={() => router.back()}
-        className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 mb-4 border-none bg-transparent cursor-pointer"
+        className="group flex items-center gap-1.5 text-sm text-white-50 hover:text-white mb-5 border-none bg-transparent cursor-pointer transition-colors"
       >
-        <Icon name="arrow_back" size={18} /> Volver
+        <Icon name="arrow_back" size={18} className="transition-transform duration-200 group-hover:-translate-x-0.5" /> Volver
       </button>
-      <h1 className="text-2xl font-bold text-gray-800 mb-6">Nueva plantilla</h1>
+      <h1 className="font-display text-3xl font-semibold text-white mb-6">Nueva plantilla</h1>
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-4">
+      <form onSubmit={handleSubmit} className="rounded-2xl bg-[#0E1A12]/80 border border-white-10 p-6 space-y-5 backdrop-blur-[20px] shadow-[0_16px_40px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.06)]">
         <div>
-          <label className="text-sm font-medium text-gray-600 mb-1 block">Nombre</label>
+          <label className="text-sm font-medium text-white-73 mb-1.5 block">Nombre</label>
           <input
             type="text"
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
-            className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm outline-none focus:border-primary"
+            className="w-full px-4 h-11 bg-white-8 border border-white-20 rounded-2xl text-sm text-white placeholder:text-white-40 outline-none transition-colors focus:border-primary focus:bg-white-10"
             required
           />
         </div>
 
         <div>
-          <label className="text-sm font-medium text-gray-600 mb-1 block">Categoría</label>
+          <label className="text-sm font-medium text-white-73 mb-1.5 block">Categoría</label>
           <select
             value={form.category}
             onChange={(e) => setForm({ ...form, category: e.target.value })}
-            className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm outline-none focus:border-primary bg-white"
+            className="w-full px-4 h-11 bg-white-8 border border-white-20 rounded-2xl text-sm text-white outline-none transition-colors focus:border-primary focus:bg-white-10 [&>option]:bg-forest-900 [&>option]:text-white"
           >
             {TREE_CATEGORIES.map((c) => (
               <option key={c} value={c}>{c}</option>
@@ -83,11 +83,11 @@ export default function NewTemplatePage() {
         </div>
 
         <div>
-          <label className="text-sm font-medium text-gray-600 mb-1 block">Descripción</label>
+          <label className="text-sm font-medium text-white-73 mb-1.5 block">Descripción</label>
           <textarea
             value={form.description}
             onChange={(e) => setForm({ ...form, description: e.target.value })}
-            className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm outline-none focus:border-primary resize-none"
+            className="w-full px-4 py-2.5 bg-white-8 border border-white-20 rounded-2xl text-sm text-white placeholder:text-white-40 outline-none transition-colors focus:border-primary focus:bg-white-10 resize-none"
             rows={3}
             required
           />
@@ -100,8 +100,9 @@ export default function NewTemplatePage() {
         />
 
         <div>
-          <label className="text-sm font-medium text-gray-600 mb-1 block">
-            Probabilidad: {form.probability} — <span style={{ color: rarity.color }}>{rarity.name}</span>
+          <label className="text-sm font-medium text-white-73 mb-1.5 block">
+            Probabilidad: <span className="text-white">{form.probability}</span> —{' '}
+            <span className="font-semibold" style={{ color: rarity.color }}>{rarity.name}</span>
           </label>
           <input
             type="range"
@@ -110,20 +111,21 @@ export default function NewTemplatePage() {
             value={form.probability}
             onChange={(e) => setForm({ ...form, probability: parseInt(e.target.value) })}
             className="w-full accent-primary"
+            style={{ accentColor: rarity.color }}
           />
-          <div className="flex justify-between text-xs text-gray-400 mt-1">
+          <div className="flex justify-between text-xs text-white-40 mt-1.5">
             <span>1 (Legendario)</span>
             <span>25 (Común)</span>
           </div>
         </div>
 
         <div className="flex items-center gap-3">
-          <label className="text-sm font-medium text-gray-600">Activo</label>
+          <label className="text-sm font-medium text-white-73">Activo</label>
           <button
             type="button"
             onClick={() => setForm({ ...form, is_active: !form.is_active })}
-            className={`relative w-11 h-6 rounded-full transition-colors cursor-pointer border-none ${
-              form.is_active ? 'bg-primary' : 'bg-gray-300'
+            className={`relative w-11 h-6 rounded-pill transition-colors cursor-pointer border ${
+              form.is_active ? 'bg-primary border-primary' : 'bg-white-10 border-white-20'
             }`}
           >
             <div className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${

@@ -71,60 +71,75 @@ export default function UserDetailPage() {
     );
   }
 
-  if (!user) return <p className="p-8 text-gray-500">Usuario no encontrado</p>;
+  if (!user) return <p className="text-white-50">Usuario no encontrado</p>;
+
+  const initial = user.username.charAt(0).toUpperCase();
 
   return (
-    <div className="p-8 max-w-2xl">
+    <div className="max-w-2xl animate-fade-up">
       <button
         onClick={() => router.back()}
-        className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 mb-4 border-none bg-transparent cursor-pointer"
+        className="group flex items-center gap-1.5 text-sm text-white-50 hover:text-white mb-5 border-none bg-transparent cursor-pointer transition-colors"
       >
-        <Icon name="arrow_back" size={18} /> Volver
+        <Icon name="arrow_back" size={18} className="transition-transform duration-200 group-hover:-translate-x-0.5" /> Volver
       </button>
 
-      <h1 className="text-2xl font-bold text-gray-800 mb-6">{user.username}</h1>
+      {/* Header */}
+      <div className="flex items-center gap-4 mb-6">
+        <span className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary-light to-primary-dark flex items-center justify-center text-white text-xl font-semibold shadow-[0_4px_14px_rgba(46,139,87,0.4)]">
+          {initial}
+        </span>
+        <div>
+          <h1 className="font-display text-3xl font-semibold text-white leading-tight">{user.username}</h1>
+          <p className="text-sm text-white-50">{user.email}</p>
+        </div>
+      </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-4">
-        <div className="grid grid-cols-2 gap-4">
+      <div className="rounded-2xl bg-[#0E1A12]/80 border border-white-10 p-6 space-y-5 backdrop-blur-[20px] shadow-[0_16px_40px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.06)]">
+        <div className="grid grid-cols-2 gap-x-4 gap-y-5">
           <div>
-            <p className="text-xs text-gray-400 mb-1">Email</p>
-            <p className="text-sm text-gray-700">{user.email}</p>
+            <p className="text-xs text-white-40 mb-1">Email</p>
+            <p className="text-sm text-white-80 break-all">{user.email}</p>
           </div>
           <div>
-            <p className="text-xs text-gray-400 mb-1">Registrado</p>
-            <p className="text-sm text-gray-700">{new Date(user.createdAt).toLocaleDateString('es-ES')}</p>
+            <p className="text-xs text-white-40 mb-1">Registrado</p>
+            <p className="text-sm text-white-80">{new Date(user.createdAt).toLocaleDateString('es-ES')}</p>
           </div>
           <div>
-            <p className="text-xs text-gray-400 mb-1">Pomodoros completados</p>
-            <p className="text-sm font-semibold text-gray-800">{user.pomodorosCompleted}</p>
+            <p className="text-xs text-white-40 mb-1">Pomodoros completados</p>
+            <p className="text-base font-semibold text-white tabular-nums">{user.pomodorosCompleted}</p>
           </div>
           <div>
-            <p className="text-xs text-gray-400 mb-1">Minutos de enfoque</p>
-            <p className="text-sm font-semibold text-gray-800">{user.totalFocusMinutes}</p>
+            <p className="text-xs text-white-40 mb-1">Minutos de enfoque</p>
+            <p className="text-base font-semibold text-white tabular-nums">{user.totalFocusMinutes}</p>
           </div>
           <div>
-            <p className="text-xs text-gray-400 mb-1">Árboles</p>
-            <p className="text-sm font-semibold text-gray-800">{user.totalTrees}</p>
+            <p className="text-xs text-white-40 mb-1">Árboles</p>
+            <p className="text-base font-semibold text-white tabular-nums">{user.totalTrees}</p>
           </div>
           <div>
-            <p className="text-xs text-gray-400 mb-1">Email verificado</p>
-            <p className="text-sm text-gray-700">{user.emailVerified ? 'Sí' : 'No'}</p>
+            <p className="text-xs text-white-40 mb-1">Email verificado</p>
+            <span className={`inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-pill border ${
+              user.emailVerified ? 'bg-success/15 text-success border-success/30' : 'bg-white-8 text-white-60 border-white-15'
+            }`}>
+              {user.emailVerified ? 'Sí' : 'No'}
+            </span>
           </div>
         </div>
 
-        <hr className="border-gray-100" />
+        <hr className="border-white-10" />
 
         {/* Role toggle */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-4">
           <div>
-            <p className="text-sm font-medium text-gray-700">Rol</p>
-            <p className="text-xs text-gray-400">
-              Actual: <span className="font-medium">{user.role}</span>
+            <p className="text-sm font-medium text-white-90">Rol</p>
+            <p className="text-xs text-white-40">
+              Actual: <span className="font-medium text-white-73">{user.role}</span>
             </p>
           </div>
           <Button
             onClick={() => updateUser({ role: user.role === 'admin' ? 'user' : 'admin' })}
-            variant="secondary"
+            variant="glass"
             fullWidth={false}
             loading={saving}
           >
@@ -133,10 +148,10 @@ export default function UserDetailPage() {
         </div>
 
         {/* Status toggle */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-4">
           <div>
-            <p className="text-sm font-medium text-gray-700">Estado</p>
-            <p className="text-xs text-gray-400">
+            <p className="text-sm font-medium text-white-90">Estado</p>
+            <p className="text-xs">
               <span className={user.isActive ? 'text-success' : 'text-danger'}>
                 {user.isActive ? 'Activo' : 'Inactivo'}
               </span>

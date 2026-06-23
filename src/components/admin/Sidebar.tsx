@@ -17,20 +17,20 @@ export function Sidebar() {
   const { logout } = useAuth();
 
   return (
-    <aside className="w-60 h-screen bg-gray-900 flex flex-col shrink-0 sticky top-0">
+    <aside className="w-64 h-screen sticky top-0 shrink-0 flex flex-col bg-[#0C1610]/70 backdrop-blur-xl border-r border-white-10">
       {/* Brand */}
-      <div className="px-5 py-5 flex items-center gap-2.5 border-b border-white/10">
-        <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center">
-          <Icon name="park" size={18} className="text-white" />
+      <div className="px-5 py-6 flex items-center gap-3 border-b border-white-10">
+        <div className="w-10 h-10 rounded-[12px] bg-gradient-to-br from-primary-light to-primary-dark flex items-center justify-center shadow-[0_4px_14px_rgba(46,139,87,0.4)]">
+          <Icon name="park" size={20} className="text-white" filled />
         </div>
-        <div>
-          <p className="text-sm font-semibold text-white leading-tight">Pomodoro Forest</p>
-          <p className="text-xs text-gray-500">Panel Admin</p>
+        <div className="min-w-0">
+          <p className="font-display text-base font-semibold text-white leading-tight truncate">Pomodoro Forest</p>
+          <p className="text-xs text-white-40 leading-tight">Panel Admin</p>
         </div>
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 py-4 px-3">
+      <nav className="flex-1 py-5 px-3 space-y-1">
         {NAV_ITEMS.map(({ href, icon, label }) => {
           const isActive = href === '/admin'
             ? pathname === '/admin'
@@ -39,26 +39,34 @@ export function Sidebar() {
             <Link
               key={href}
               href={href}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg mb-1 text-sm font-medium no-underline transition-colors ${
+              className={`group flex items-center gap-3 px-3.5 h-11 rounded-2xl text-sm font-medium no-underline transition-all duration-200 ${
                 isActive
-                  ? 'bg-primary/20 text-primary-light'
-                  : 'text-gray-400 hover:bg-white/5 hover:text-white'
+                  ? 'bg-primary/20 text-white border border-primary/30 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]'
+                  : 'text-white-50 border border-transparent hover:bg-white-5 hover:text-white'
               }`}
             >
-              <Icon name={icon} size={20} />
+              <Icon
+                name={icon}
+                size={20}
+                filled={isActive}
+                className={`transition-transform duration-200 group-hover:scale-110 ${isActive ? 'text-primary-light' : ''}`}
+              />
               {label}
+              {isActive && (
+                <span className="ml-auto h-1.5 w-1.5 rounded-full bg-primary-light shadow-[0_0_8px_rgba(46,139,87,0.8)]" />
+              )}
             </Link>
           );
         })}
       </nav>
 
       {/* Footer */}
-      <div className="px-3 py-4 border-t border-white/10">
+      <div className="px-3 py-4 border-t border-white-10">
         <button
           onClick={logout}
-          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-400 hover:bg-white/5 hover:text-white transition-colors w-full border-none bg-transparent cursor-pointer"
+          className="group flex items-center gap-3 px-3.5 h-11 rounded-2xl text-sm font-medium text-white-50 hover:bg-white-5 hover:text-white transition-all duration-200 w-full border border-transparent bg-transparent cursor-pointer"
         >
-          <Icon name="logout" size={20} />
+          <Icon name="logout" size={20} className="transition-transform duration-200 group-hover:scale-110" />
           Cerrar sesión
         </button>
       </div>

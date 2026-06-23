@@ -50,97 +50,105 @@ export default function UsersPage() {
   }, [token, fetchUsers]);
 
   return (
-    <div className="p-8">
-      <h1 className="text-2xl font-bold text-gray-800 mb-6">Usuarios</h1>
+    <div className="animate-fade-up">
+      <div className="mb-6">
+        <h1 className="font-display text-3xl font-semibold text-white">Usuarios</h1>
+        <p className="text-sm text-white-50 mt-1">Gestiona las cuentas registradas</p>
+      </div>
 
       {/* Search */}
-      <div className="mb-4">
+      <div className="mb-5">
         <div className="relative max-w-xs">
-          <Icon name="search" size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+          <Icon name="search" size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white-40" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Buscar usuario..."
-            className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg text-sm outline-none focus:border-primary"
+            className="w-full pl-11 pr-4 h-11 bg-white-8 border border-white-20 rounded-2xl text-sm text-white placeholder:text-white-40 outline-none transition-colors focus:border-primary focus:bg-white-10"
           />
         </div>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+      <div className="rounded-2xl bg-[#0E1A12]/80 border border-white-10 overflow-hidden backdrop-blur-[20px] shadow-[0_16px_40px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.06)]">
+        <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-gray-100 bg-gray-50">
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Usuario</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Rol</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Estado</th>
-              <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">Pomodoros</th>
-              <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">Árboles</th>
-              <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">Registro</th>
-              <th className="px-4 py-3"></th>
+            <tr className="border-b border-white-10 bg-white-5">
+              <th className="px-4 py-3.5 text-left text-xs font-semibold text-white-50 uppercase tracking-wide">Usuario</th>
+              <th className="px-4 py-3.5 text-left text-xs font-semibold text-white-50 uppercase tracking-wide">Email</th>
+              <th className="px-4 py-3.5 text-left text-xs font-semibold text-white-50 uppercase tracking-wide">Rol</th>
+              <th className="px-4 py-3.5 text-left text-xs font-semibold text-white-50 uppercase tracking-wide">Estado</th>
+              <th className="px-4 py-3.5 text-right text-xs font-semibold text-white-50 uppercase tracking-wide">Pomodoros</th>
+              <th className="px-4 py-3.5 text-right text-xs font-semibold text-white-50 uppercase tracking-wide">Árboles</th>
+              <th className="px-4 py-3.5 text-right text-xs font-semibold text-white-50 uppercase tracking-wide">Registro</th>
+              <th className="px-4 py-3.5"></th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={8} className="px-4 py-8 text-center">
+                <td colSpan={8} className="px-4 py-10 text-center">
                   <span className="animate-spin inline-block h-6 w-6 border-2 border-primary border-t-transparent rounded-full" />
                 </td>
               </tr>
             ) : users.map((u) => (
-              <tr key={u.id} className="border-b border-gray-50 hover:bg-gray-50/50">
-                <td className="px-4 py-3 text-sm font-medium text-gray-800">{u.username}</td>
-                <td className="px-4 py-3 text-sm text-gray-600">{u.email}</td>
-                <td className="px-4 py-3">
-                  <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
-                    u.role === 'admin' ? 'bg-purple/10 text-purple' : 'bg-gray-100 text-gray-500'
+              <tr key={u.id} className="border-b border-white-10 last:border-0 transition-colors hover:bg-white-5">
+                <td className="px-4 py-3.5 text-sm font-medium text-white whitespace-nowrap">{u.username}</td>
+                <td className="px-4 py-3.5 text-sm text-white-60">{u.email}</td>
+                <td className="px-4 py-3.5">
+                  <span className={`inline-block text-xs font-medium px-2.5 py-1 rounded-pill border ${
+                    u.role === 'admin' ? 'bg-purple/15 text-purple border-purple/30' : 'bg-white-8 text-white-60 border-white-15'
                   }`}>
                     {u.role}
                   </span>
                 </td>
-                <td className="px-4 py-3">
-                  <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
-                    u.isActive ? 'bg-success/10 text-success' : 'bg-danger/10 text-danger'
+                <td className="px-4 py-3.5">
+                  <span className={`inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-pill border ${
+                    u.isActive ? 'bg-success/15 text-success border-success/30' : 'bg-danger/15 text-danger border-danger/30'
                   }`}>
+                    <span className={`h-1.5 w-1.5 rounded-full ${u.isActive ? 'bg-success' : 'bg-danger'}`} />
                     {u.isActive ? 'Activo' : 'Inactivo'}
                   </span>
                 </td>
-                <td className="px-4 py-3 text-sm text-gray-600 text-right">{u.pomodorosCompleted}</td>
-                <td className="px-4 py-3 text-sm text-gray-600 text-right">{u.totalTrees}</td>
-                <td className="px-4 py-3 text-sm text-gray-400 text-right">
+                <td className="px-4 py-3.5 text-sm text-white-80 text-right tabular-nums">{u.pomodorosCompleted}</td>
+                <td className="px-4 py-3.5 text-sm text-white-80 text-right tabular-nums">{u.totalTrees}</td>
+                <td className="px-4 py-3.5 text-sm text-white-40 text-right whitespace-nowrap">
                   {new Date(u.createdAt).toLocaleDateString('es-ES')}
                 </td>
-                <td className="px-4 py-3 text-right">
+                <td className="px-4 py-3.5 text-right">
                   <Link
                     href={`/admin/users/${u.id}`}
-                    className="w-8 h-8 rounded-lg hover:bg-gray-100 flex items-center justify-center inline-flex"
+                    className="w-9 h-9 rounded-xl bg-white-5 border border-white-10 hover:bg-white-10 hover:border-white-20 transition-colors flex items-center justify-center inline-flex"
                   >
-                    <Icon name="visibility" size={16} className="text-gray-500" />
+                    <Icon name="visibility" size={16} className="text-white-60" />
                   </Link>
                 </td>
               </tr>
             ))}
             {!loading && users.length === 0 && (
               <tr>
-                <td colSpan={8} className="px-4 py-8 text-center text-sm text-gray-400">
+                <td colSpan={8} className="px-4 py-10 text-center text-sm text-white-40">
                   No se encontraron usuarios
                 </td>
               </tr>
             )}
           </tbody>
         </table>
+        </div>
       </div>
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-2 mt-4">
+        <div className="flex items-center justify-center gap-2 mt-5">
           {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
             <button
               key={p}
               onClick={() => fetchUsers(p)}
-              className={`w-8 h-8 rounded-lg text-sm font-medium border-none cursor-pointer ${
-                p === page ? 'bg-primary text-white' : 'bg-white text-gray-600 hover:bg-gray-100'
+              className={`w-9 h-9 rounded-xl text-sm font-medium border cursor-pointer transition-all duration-200 ${
+                p === page
+                  ? 'bg-primary text-white border-primary shadow-[0_4px_14px_rgba(46,139,87,0.35)]'
+                  : 'bg-white-5 text-white-60 border-white-10 hover:bg-white-10 hover:text-white'
               }`}
             >
               {p}
