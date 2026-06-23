@@ -19,29 +19,20 @@ export function Toast({ open, message, variant, onClose }: ToastProps) {
 
   if (!open) return null;
 
-  const styles = {
-    success: {
-      bg: 'bg-emerald-50 border-emerald-200',
-      text: 'text-emerald-800',
-      icon: 'check_circle' as const,
-      iconColor: 'text-emerald-500',
-    },
-    error: {
-      bg: 'bg-red-50 border-red-200',
-      text: 'text-red-800',
-      icon: 'error' as const,
-      iconColor: 'text-red-500',
-    },
+  const config = {
+    success: { icon: 'check_circle' as const, accent: 'text-success' },
+    error: { icon: 'error' as const, accent: 'text-danger' },
   }[variant];
 
   return (
-    <div className="fixed top-4 left-1/2 -translate-x-1/2 z-[60] animate-slide-down">
-      <div className={`flex items-center gap-2 px-4 py-3 rounded-xl border shadow-lg ${styles.bg}`}>
-        <Icon name={styles.icon} size={20} className={styles.iconColor} />
-        <span className={`text-sm font-medium ${styles.text}`}>{message}</span>
+    <div className="fixed top-5 left-1/2 -translate-x-1/2 z-[60] animate-slide-down">
+      <div className="flex items-center gap-2.5 pl-4 pr-3 py-3 rounded-2xl bg-[#0E1A12]/90 border border-white-15 backdrop-blur-xl shadow-[0_16px_40px_rgba(0,0,0,0.4)]">
+        <Icon name={config.icon} size={20} className={config.accent} />
+        <span className="text-sm font-medium text-white-90">{message}</span>
         <button
           onClick={onClose}
-          className={`ml-2 border-none bg-transparent cursor-pointer ${styles.text} opacity-60 hover:opacity-100`}
+          className="ml-1 border-none bg-transparent cursor-pointer text-white-40 hover:text-white transition-colors"
+          aria-label="Cerrar"
         >
           <Icon name="close" size={16} />
         </button>
