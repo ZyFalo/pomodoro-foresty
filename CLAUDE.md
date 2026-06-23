@@ -81,17 +81,19 @@ Todas las rutas usan Next.js Route Handlers. Las rutas protegidas envuelven su h
 
 El cliente Prisma se genera en `src/generated/prisma/` y se importa como singleton desde `@/lib/db/prisma`. Tras cualquier cambio al schema, ejecutar `npx prisma generate`.
 
-### Sistema de Rareza
+### Sistema de Rareza (sorteo en dos niveles)
 
-Definido en `src/lib/utils/constants.ts` (RARITY_RANGES). La selección ponderada está en `src/lib/services/trees.ts`.
+Cada `Template` tiene un campo `rarity` (enum `TreeRarity`: `comun | poco_comun | raro | epico | legendario`). La configuración (nombre visible, color y **peso de sorteo**) está en `RARITY_CONFIG` de `src/lib/utils/constants.ts`; `getRarityInfo()` en `src/lib/utils/rarity.ts` mapea la clave del enum al nombre/color visibles.
 
-| Probability | Rareza | Color |
+El sorteo (`weightedRandomTree` en `src/lib/services/trees.ts`) es **en dos niveles**: (1) se elige la rareza según los pesos fijos (renormalizados solo entre rarezas con plantillas activas), (2) se elige uniformemente una plantilla dentro de esa rareza. Así la probabilidad de cada rareza es **estable e independiente del número de plantillas**.
+
+| Rareza | Peso (%) | Color |
 |---|---|---|
-| 1-2 | Legendario | #FFD700 |
-| 3-5 | Épico | #9333EA |
-| 6-10 | Raro | #3B82F6 |
-| 11-15 | Poco común | #22C55E |
-| 16-25 | Común | #6B7280 |
+| Legendario | 2 | #FFD700 |
+| Épico | 6 | #9333EA |
+| Raro | 12 | #3B82F6 |
+| Poco común | 30 | #22C55E |
+| Común | 50 | #6B7280 |
 
 ## Patrones Clave
 
