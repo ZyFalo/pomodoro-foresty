@@ -124,7 +124,7 @@ export default function UserDetailPage() {
           </div>
           <Button
             onClick={() => updateUser({ role: user.role === 'admin' ? 'user' : 'admin' })}
-            variant="outline"
+            variant="secondary"
             fullWidth={false}
             loading={saving}
           >
@@ -144,7 +144,7 @@ export default function UserDetailPage() {
           </div>
           <Button
             onClick={() => updateUser({ is_active: !user.isActive })}
-            variant={user.isActive ? 'outline' : 'primary'}
+            variant={user.isActive ? 'danger' : 'primary'}
             fullWidth={false}
             loading={saving}
           >

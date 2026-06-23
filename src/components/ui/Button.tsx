@@ -5,7 +5,7 @@ import { Icon } from './Icon';
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
   icon?: string;
-  variant?: 'primary' | 'glass' | 'outline';
+  variant?: 'primary' | 'glass' | 'outline' | 'secondary' | 'danger';
   size?: 'default' | 'large';
   fullWidth?: boolean;
   loading?: boolean;
@@ -28,6 +28,9 @@ export function Button({
     primary: 'bg-gradient-to-br from-primary to-primary-dark text-white rounded-pill hover:opacity-90',
     glass: 'bg-white-8 border border-white-20 text-white-80 rounded-pill hover:bg-white-10',
     outline: 'bg-transparent border border-white-20 text-white-80 rounded-pill hover:bg-white-5',
+    // Variantes para tema claro (paneles admin sobre cards blancas)
+    secondary: 'bg-white border border-gray-300 text-gray-700 rounded-pill hover:bg-gray-50',
+    danger: 'bg-danger text-white rounded-pill hover:opacity-90',
   };
 
   const sizes = {
@@ -42,7 +45,7 @@ export function Button({
       {...props}
     >
       {loading ? (
-        <span className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full" />
+        <span className="animate-spin h-5 w-5 border-2 border-current border-t-transparent rounded-full" />
       ) : icon ? (
         <Icon name={icon} size={20} />
       ) : null}
