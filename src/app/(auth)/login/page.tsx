@@ -72,10 +72,15 @@ export default function LoginPage() {
             <div className="flex-1 h-px bg-white-20" />
           </div>
 
-          {/* Google button */}
-          <Button variant="glass" icon="public" type="button">
-            Continuar con Google
-          </Button>
+          {/* Google button — próximamente (deshabilitado) */}
+          <div className="relative">
+            <Button variant="glass" icon="public" type="button" disabled>
+              Continuar con Google
+            </Button>
+            <span className="absolute top-1/2 right-3 -translate-y-1/2 px-2 py-0.5 rounded-pill bg-accent-green/20 border border-accent-green/40 text-[10px] font-semibold text-accent-green">
+              Próximamente
+            </span>
+          </div>
         </form>
       </GlassCard>
 
