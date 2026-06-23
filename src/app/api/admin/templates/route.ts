@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server';
-import { withAdmin } from '@/lib/auth/middleware';
+import { withAdmin, getClientIP } from '@/lib/auth/middleware';
 import { prisma } from '@/lib/db/prisma';
+import { logActivity } from '@/lib/services/activity-logger';
 
 // GET /api/admin/templates
 export const GET = withAdmin(async (req: NextRequest) => {
@@ -46,6 +47,13 @@ export const POST = withAdmin(async (req: NextRequest, user) => {
         probability,
         createdById: user.id,
       },
+    });
+
+    await logActivity({
+      user_id: user.id,
+      event_type: 'template_creado',
+      detail: `Plantilla creada: ${template.name}`,
+      ip_address: getClientIP(req),
     });
 
     return Response.json(template, { status: 201 });

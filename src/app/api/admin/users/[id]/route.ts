@@ -68,13 +68,29 @@ export const PUT = withAdmin(async (req: NextRequest, admin) => {
       },
     });
 
-    // Log if user was deactivated
+    // Auditoría de la acción admin sobre el usuario
+    const ip = getClientIP(req);
     if (is_active === false) {
-      const ip = getClientIP(req);
       await logActivity({
         user_id: admin.id,
         event_type: 'usuario_desactivado',
         detail: `Usuario ${user.username} desactivado por admin`,
+        ip_address: ip,
+      });
+    }
+    if (is_active === true) {
+      await logActivity({
+        user_id: admin.id,
+        event_type: 'usuario_activado',
+        detail: `Usuario ${user.username} activado por admin`,
+        ip_address: ip,
+      });
+    }
+    if (role === 'user' || role === 'admin') {
+      await logActivity({
+        user_id: admin.id,
+        event_type: 'rol_cambiado',
+        detail: `Rol de ${user.username} cambiado a ${role}`,
         ip_address: ip,
       });
     }

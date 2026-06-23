@@ -29,6 +29,8 @@ enum EventType {
   template_editado
   template_eliminado
   usuario_desactivado
+  usuario_activado
+  rol_cambiado
   contrasena_cambiada
 }
 

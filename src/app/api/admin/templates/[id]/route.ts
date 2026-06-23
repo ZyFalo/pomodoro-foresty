@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server';
-import { withAdmin } from '@/lib/auth/middleware';
+import { withAdmin, getClientIP } from '@/lib/auth/middleware';
 import { prisma } from '@/lib/db/prisma';
+import { logActivity } from '@/lib/services/activity-logger';
 
 function getIdFromUrl(url: string): string {
   return url.split('/templates/')[1]?.split('?')[0]?.split('/')[0] ?? '';
@@ -17,7 +18,7 @@ export const GET = withAdmin(async (req: NextRequest) => {
 });
 
 // PUT /api/admin/templates/:id
-export const PUT = withAdmin(async (req: NextRequest) => {
+export const PUT = withAdmin(async (req: NextRequest, admin) => {
   try {
     const id = getIdFromUrl(req.url);
     const body = await req.json();
@@ -41,6 +42,13 @@ export const PUT = withAdmin(async (req: NextRequest) => {
       data: update,
     });
 
+    await logActivity({
+      user_id: admin.id,
+      event_type: 'template_editado',
+      detail: `Plantilla editada: ${template.name}`,
+      ip_address: getClientIP(req),
+    });
+
     return Response.json(template);
   } catch (error) {
     // Check if it's a "not found" error from Prisma
@@ -52,10 +60,16 @@ export const PUT = withAdmin(async (req: NextRequest) => {
 });
 
 // DELETE /api/admin/templates/:id
-export const DELETE = withAdmin(async (req: NextRequest) => {
+export const DELETE = withAdmin(async (req: NextRequest, admin) => {
   const id = getIdFromUrl(req.url);
   try {
-    await prisma.template.delete({ where: { id } });
+    const deleted = await prisma.template.delete({ where: { id } });
+    await logActivity({
+      user_id: admin.id,
+      event_type: 'template_eliminado',
+      detail: `Plantilla eliminada: ${deleted.name}`,
+      ip_address: getClientIP(req),
+    });
     return Response.json({ message: 'Plantilla eliminada' });
   } catch (error) {
     if ((error as { code?: string }).code === 'P2025') {

@@ -12,6 +12,11 @@ const EVENT_TYPES = [
   { value: 'arbol_ganado', label: 'Árbol ganado' },
   { value: 'contrasena_cambiada', label: 'Contraseña' },
   { value: 'usuario_desactivado', label: 'Desactivado' },
+  { value: 'usuario_activado', label: 'Activado' },
+  { value: 'rol_cambiado', label: 'Rol' },
+  { value: 'template_creado', label: 'Plantilla creada' },
+  { value: 'template_editado', label: 'Plantilla editada' },
+  { value: 'template_eliminado', label: 'Plantilla eliminada' },
 ];
 
 interface LogItem {
@@ -61,7 +66,7 @@ export default function LogsPage() {
       <h1 className="text-2xl font-bold text-gray-800 mb-6">Logs de actividad</h1>
 
       {/* Filters */}
-      <div className="flex gap-1.5 mb-4">
+      <div className="flex flex-wrap gap-1.5 mb-4">
         {EVENT_TYPES.map((t) => (
           <button
             key={t.value}
